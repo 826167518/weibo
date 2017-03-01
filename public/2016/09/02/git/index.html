@@ -5,16 +5,19 @@
   
   <title>git使用说明 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在linux下搭建git环境1、创建Github账号，https://github.com">
+  <meta name="description" content="在linux下搭建git环境
+###1、创建Github账号，https://github.com">
 <meta property="og:type" content="article">
 <meta property="og:title" content="git使用说明">
 <meta property="og:url" content="http://datura.me/2016/09/02/git/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="在linux下搭建git环境1、创建Github账号，https://github.com">
-<meta property="og:updated_time" content="2017-03-01T05:59:43.000Z">
+<meta property="og:description" content="在linux下搭建git环境
+###1、创建Github账号，https://github.com">
+<meta property="og:updated_time" content="2017-03-01T03:46:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git使用说明">
-<meta name="twitter:description" content="在linux下搭建git环境1、创建Github账号，https://github.com">
+<meta name="twitter:description" content="在linux下搭建git环境
+###1、创建Github账号，https://github.com">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -249,12 +252,25 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>在linux下搭建git环境<br>1、创建Github账号，<a href="https://github.com" target="_blank" rel="external">https://github.com</a><br><a id="more"></a><br>2、Linux创建SSH密钥：</p>
+        <p>在linux下搭建git环境</p>
+<p>###1、创建Github账号，<a href="https://github.com" target="_blank" rel="external">https://github.com</a><br><a id="more"></a></p>
+<p>###2、Linux创建SSH密钥：</p>
 <pre><code>ssh-keygen  ##一直默认就可以了  
-</code></pre><p>3、将公钥加入到Github账户信息Account Settings-&gt;SSH Key<br>4、测试验证是否成功。<br>    ssh -T git@github.com<br>    Hi someone! You’ve successfully authenticated, but GitHub does not provide shell access.  </p>
-<p>同步github到本地<br>1、复制项目到本地：<br>    git clone git://github.com:xxxx/test.git ##以gitreadonly方式克隆到本地，只可以读<br>    git clone git@github.com:xxx/test.git  ##以SSH方式克隆到本地，可以读写<br>    git clone <a href="https://github.com/xxx/test.git" target="_blank" rel="external">https://github.com/xxx/test.git</a> ##以https方式克隆到本地，可以读写<br>    git fetch git@github.com:xxx/xxx.git  ##获取到本地但不合并<br>    git pull git@github.com:xxx/xxx.git ##获取并合并内容到本地  </p>
-<p>本地提交项目到github<br>1、本地配置<br>    git config –global user.name ‘onovps’<br>    git config –global user.email ‘onovps@onovps.com’ #全局联系方式，可选<br>2、新建Git项目并提交到Github。<br>    mkdir testdir &amp; cd testdir<br>    touch README.md<br>    git init #初始化一个本地库<br>    git add README.md #添加文件到本地仓库<br>    git rm README.md #本地倒库内删除<br>    git commit -m “first commit” #提交到本地库并备注，此时变更仍在本地。<br>    git commit -a  ##自动更新变化的文件，a可以理解为auto<br>    git remote add xxx git@github.com:xxx/xxx.git  #增加一个远程服务器的别名。<br>    git remote rm xxx   ##删除远程版本库的别名<br>    git push -u remotename master #将本地文件提交到Github的remoname版本库中。此时才更新了本地变更到github服务上。  </p>
-<p>分支版本操作<br>1、创建和合并分支<br>    git branch #显示当前分支是master<br>    git branch new-feature  #创建分支<br>    git checkout new-feature  #切换到新分支<br>    vi page_cache.inc.php<br>    git add page_cache.inc.php<br>    git commit -a -m “added initial version of page cache”<br>    git push origin new-feature  ##把分支提交到远程服务器，只是把分支结构和内容提交到远程，并没有发生和主干的合并行为。<br>2、如果new-feature分支成熟了，觉得有必要合并进master<br>    git checkout master  #切换到新主干<br>    git merge new-feature  ##把分支合并到主干<br>    git branch #显示当前分支是master<br>    git push  #此时主干中也合并了new-feature的代码  </p>
+</code></pre><p>###3、将公钥加入到Github账户信息Account Settings-&gt;SSH Key</p>
+<p>###4、测试验证是否成功。<br>    ssh -T git@github.com<br>    Hi someone! You’ve successfully authenticated, but GitHub does not provide shell access.  </p>
+<p>#同步github到本地</p>
+<p>###1、复制项目到本地：</p>
+<pre><code>git clone git://github.com:xxxx/test.git ##以gitreadonly方式克隆到本地，只可以读    
+git clone git@github.com:xxx/test.git  ##以SSH方式克隆到本地，可以读写  
+git clone https://github.com/xxx/test.git ##以https方式克隆到本地，可以读写  
+git fetch git@github.com:xxx/xxx.git  ##获取到本地但不合并  
+git pull git@github.com:xxx/xxx.git ##获取并合并内容到本地  
+</code></pre><p>#本地提交项目到github</p>
+<p>###1、本地配置<br>    git config –global user.name ‘onovps’<br>    git config –global user.email ‘onovps@onovps.com’ #全局联系方式，可选  </p>
+<p>###2、新建Git项目并提交到Github。<br>    mkdir testdir &amp; cd testdir<br>    touch README.md<br>    git init #初始化一个本地库<br>    git add README.md #添加文件到本地仓库<br>    git rm README.md #本地倒库内删除<br>    git commit -m “first commit” #提交到本地库并备注，此时变更仍在本地。<br>    git commit -a  ##自动更新变化的文件，a可以理解为auto<br>    git remote add xxx git@github.com:xxx/xxx.git  #增加一个远程服务器的别名。<br>    git remote rm xxx   ##删除远程版本库的别名<br>    git push -u remotename master #将本地文件提交到Github的remoname版本库中。此时才更新了本地变更到github服务上。  </p>
+<p>#分支版本操作</p>
+<p>###1、创建和合并分支<br>    git branch #显示当前分支是master<br>    git branch new-feature  #创建分支<br>    git checkout new-feature  #切换到新分支<br>    vi page_cache.inc.php<br>    git add page_cache.inc.php<br>    git commit -a -m “added initial version of page cache”<br>    git push origin new-feature  ##把分支提交到远程服务器，只是把分支结构和内容提交到远程，并没有发生和主干的合并行为。  </p>
+<p>###2、如果new-feature分支成熟了，觉得有必要合并进master<br>    git checkout master  #切换到新主干<br>    git merge new-feature  ##把分支合并到主干<br>    git branch #显示当前分支是master<br>    git push  #此时主干中也合并了new-feature的代码  </p>
 
       
     </div>
@@ -266,7 +282,7 @@
         <p><span>本文标题:</span><a href="/2016/09/02/git/">git使用说明</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2016年09月02日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年03月01日 - 00时59分</p>
+        <p><span>最后更新:</span>2017年02月28日 - 22时46分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/09/02/git/" title="git使用说明">http://datura.me/2016/09/02/git/</a>
             <span class="copy-path" data-clipboard-text="原文: http://datura.me/2016/09/02/git/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
