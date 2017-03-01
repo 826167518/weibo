@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>tsung使用说明 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1、tsung安装
+tsung 一个非常优秀的压力测试工具，在8核32G机器上可以轻易的产生每秒10000个并发请求，且占用的资源很少，当前版本1.5.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tsung使用说明">
+<meta property="og:url" content="http://datura.me/2017/01/08/tsung说明文档/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1、tsung安装
+tsung 一个非常优秀的压力测试工具，在8核32G机器上可以轻易的产生每秒10000个并发请求，且占用的资源很少，当前版本1.5.0">
+<meta property="og:image" content="http://static.oschina.net/uploads/space/2015/0706/135050_sSxO_780347.png">
+<meta property="og:image" content="http://static.oschina.net/uploads/space/2015/0706/135106_dKTc_780347.png">
+<meta property="og:image" content="http://static.oschina.net/uploads/space/2015/0706/135120_sPqf_780347.png">
+<meta property="og:updated_time" content="2017-03-01T05:59:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tsung使用说明">
+<meta name="twitter:description" content="1、tsung安装
+tsung 一个非常优秀的压力测试工具，在8核32G机器上可以轻易的产生每秒10000个并发请求，且占用的资源很少，当前版本1.5.0">
+<meta name="twitter:image" content="http://static.oschina.net/uploads/space/2015/0706/135050_sSxO_780347.png">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Datura</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ccwebsite.com/">兮兮</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.dandyweng.com/">翁天信</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.plqblog.com/views/index.php">潘利强</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.hankin.cn/">hankin</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.waydrow.com/">waydrow</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">纯海迷、爱运动、爱交友、爱旅行、喜欢接触新鲜事物、迎接新的挑战，更爱游离于错综复杂的编码与逻辑中</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Datura</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Datura</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-tsung说明文档" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/08/tsung说明文档/" class="article-date">
+      <time datetime="2017-01-08T05:00:00.000Z" itemprop="datePublished">2017-01-08</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      tsung使用说明
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>1、tsung安装</p>
+<p>tsung 一个非常优秀的压力测试工具，在8核32G机器上可以轻易的产生每秒10000个并发请求，且占用的资源很少，当前版本1.5.0<br><a id="more"></a><br>使用erlang开发，需要先安装erlang虚拟机。安装过程略</p>
+<p>2、tsung使用<br>$ tsung -f ./tsung/tsung.xml sta</p>
+<p>3、tusng.xml</p>
+<p>下面是我自己的tsung.xml</p>
+<pre><code>    &lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE tsung SYSTEM &quot;/usr/local/share/tsung/tsung-1.0.dtd&quot;&gt;
+&lt;!-- dumptraffic是调试模式，如果为true，就会打印详细的请求返回信息，一般设置为false， --&gt;
+&lt;tsung loglevel=&quot;notice&quot; dumptraffic=&quot;false&quot; version=&quot;1.0&quot;&gt;
+&lt;!-- tsung所在的服务器，maxusers就是tsung产生的最大用户数 --&gt;
+  &lt;clients&gt;
+&lt;client host=&quot;localhost&quot; use_controller_vm=&quot;true&quot;  maxusers=&quot;100000&quot; /&gt;
+  &lt;/clients&gt;
+&lt;!-- 被测服务器的ip和端口号，type一般设为tcp -&gt;
+  &lt;servers&gt;
+&lt;server host=&quot;@server&quot; port=&quot;@port&quot; type=&quot;tcp&quot;/&gt;
+  &lt;/servers&gt;
+&lt;!-- tsung产生的压力 --&gt;
+&lt;load&gt;
+&lt;!-- phase=&quot;1&quot; 第一阶段；duration：测试持续时间；unit：单位秒 --&gt;
+&lt;arrivalphase phase=&quot;1&quot; duration=&quot;@duration&quot; unit=&quot;second&quot;&gt;
+&lt;!-- maxnumber：最大用户数；arrivalrate：每秒新增用户数；unit：单位秒--&gt;
+  &lt;users maxnumber=&quot;@maxuser&quot; arrivalrate=&quot;@user&quot; unit=&quot;second&quot;/&gt;
+&lt;/arrivalphase&gt;
+  &lt;/load&gt;
+&lt;!-- 外部变量 --&gt;
+  &lt;options&gt;
+&lt;!-- 引入一个外部文件，类型为file_server，变量名为userfile，文件路径：/tmp/users--&gt;
+&lt;!-- 文件是以逗号分隔的csv文件 --&gt;
+&lt;option name=&quot;file_server&quot; id=&quot;userfile&quot; value=&quot;/tmp/users&quot;/&gt;
+  &lt;/options&gt;
+&lt;!-- 会话，每个用户都按照sessions中的配置发送请求 --&gt;
+  &lt;sessions&gt;
+&lt;!--probability=“100”:这个session的请求概率是100%，如果要同时测多个api，可以设置请求概率；请求类型为http --&gt;
+&lt;session name=&quot;test&quot; probability=&quot;100&quot; type=&quot;ts_http&quot;&gt;
+&lt;!-- 请求次数，to是最大请求数，如果设为100，就是每个用户请求100次 --&gt;
+  &lt;for from=&quot;1&quot; to=&quot;@loop&quot; incr=&quot;1&quot; var=&quot;counter&quot;&gt;
+&lt;!-- 解析前面引入的外部文件，以逗号做为分隔符，随机读取 --&gt;
+&lt;setdynvars sourcetype=&quot;file&quot; fileid=&quot;userfile&quot; delimiter=&quot;,&quot; order=&quot;random&quot;&gt;
+  &lt;var name=&quot;user_id&quot; /&gt;
+  &lt;var name=&quot;passwd&quot; /&gt;
+  &lt;var name=&quot;auth_token&quot; /&gt;
+&lt;/setdynvars&gt;
+&lt;!-- 返回随机小数，变量名为decimal，code中可以写erlang函数 --&gt;
+&lt;setdynvars sourcetype=&quot;eval&quot; code=&quot;fun({Pid,DynVars}) -&gt; random:uniform() end.&quot;&gt;
+  &lt;var name=&quot;decimal&quot; /&gt;
+&lt;/setdynvars&gt;
+&lt;!-- 返回随机数，从1到10000 --&gt;
+&lt;setdynvars sourcetype=&quot;random_number&quot; start=&quot;1&quot; end=&quot;10000&quot;&gt;
+   &lt;var name=&quot;int_1_10000&quot; /&gt;
+&lt;/setdynvars&gt;
+&lt;!-- 返回随机字符串，长度为10 --&gt;
+&lt;setdynvars sourcetype=&quot;random_string&quot; length=&quot;10&quot;&gt;
+   &lt;var name=&quot;string_10&quot; /&gt;
+&lt;/setdynvars&gt;
+&lt;!-- subst=&quot;true&quot;：如果在request中使用变量，需要设置subst --&gt;
+&lt;request subst=&quot;true&quot;&gt;
+&lt;!-- url：被测试的url；method：GET、POST等；contents：POST请求的参数 --&gt;
+  &lt;http url=&quot;@api&quot; method=&quot;@method&quot; contents=&quot;@contents&quot; version=&quot;1.1&quot;&gt;
+&lt;!-- http header，可以添加Authorization、Cookie等，注意变量的使用格式：%%_xxx%% --&gt;
+&lt;http_header name=&quot;Authorization&quot; value=&quot;111&quot;/&gt;
+&lt;http_header name=&quot;Cookie&quot; value=&quot;authToken=%%_auth_token%%; Path=/&quot;/&gt;
+&lt;!-- content-Type：POST请求参数的格式，如果是json格式可以这样写 --&gt;
+&lt;http_header name=&quot;Content-Type&quot; value=&quot;application/json&quot;/&gt;
+  &lt;/http&gt;
+&lt;/request&gt;
+&lt;!-- thinktime：两次请求之间的间隔时间，一般小于10s --&gt;
+&lt;thinktime value=&quot;1&quot;/&gt;
+  &lt;/for&gt;
+&lt;/session&gt;
+  &lt;/sessions&gt;
+&lt;/tsung&gt; 
+</code></pre><p>如果被测接口需要登录跳转，可以指明跳转条件：   </p>
+<pre><code>&lt;!-- if need login, http 302 will be return --&gt;
+&lt;request subst=&quot;true&quot;&gt;
+  &lt;dyn_variable name=&quot;redirect1&quot; re=&quot;Location: ((http|https)://.*)\r&quot;/&gt;
+  &lt;http url=&quot;@api&quot; method=&quot;@method&quot; contents=&quot;@contents&quot; version=&quot;1.1&quot;&gt;&lt;/http&gt;
+&lt;/request&gt;
+
+&lt;if var=&quot;redirect1&quot; neq=&quot;&quot;&gt;
+  &lt;request subst=&quot;true&quot;&gt;
+&lt;!-- 这里可以使用xpath提取页面中的元素值 --&gt;
+&lt;dyn_variable name=&quot;lt&quot; xpath=&quot;//input[@name=&apos;lt&apos;]/@value&quot;/&gt;
+&lt;dyn_variable name=&quot;s_uuid&quot; xpath=&quot;//input[@name=&apos;s_uuid&apos;]/@value&quot;/&gt;
+&lt;dyn_variable name=&quot;eventId&quot; xpath=&quot;//input[@name=&apos;_eventId&apos;]/@value&quot;/&gt;
+&lt;http url=&quot;%%_redirect1%%&quot; method=&quot;GET&quot;&gt;&lt;/http&gt;
+  &lt;/request&gt;
+
+  &lt;request subst=&quot;true&quot;&gt;
+&lt;dyn_variable name=&quot;redirect2&quot; re=&quot;Location: (http://.*)\r&quot;/&gt;
+&lt;http url=&quot;%%_redirect1%%&quot; method=&quot;POST&quot; contents=&quot;username=%%_username%%&amp;amp;password=%%_password%%&amp;amp;lt=%%_lt%%&amp;amp;s_uuid=%%_s_uuid%%&amp;amp;_eventId=%%_eventId%%&amp;amp;j_captcha_response=&apos;&apos;&quot;&gt;&lt;/http&gt;
+  &lt;/request&gt;
+
+  &lt;request subst=&quot;true&quot;&gt;
+&lt;dyn_variable name=&quot;redirect3&quot; re=&quot;Location: (http://.*)\r&quot;/&gt;
+&lt;http url=&quot;%%_redirect2%%&quot; method=&quot;GET&quot;&gt;&lt;/http&gt;
+  &lt;/request&gt;
+
+  &lt;request subst=&quot;true&quot;&gt;
+&lt;http url=&quot;%%_redirect3%%&quot; method=&quot;@method&quot; contents=&quot;@contents&quot;&gt;&lt;/http&gt;
+  &lt;/request&gt;
+&lt;/if&gt;
+</code></pre><p>4、通过shell控制tsung</p>
+<p>如果每次使用tsung -f tsung.xml start运行tsung，那么每次修改测试接口或者压力改变都需要修改xml，非常麻烦，我写了一个shell脚本，替换上面的tsung.xml中以@开头的变量</p>
+<pre><code>#!/bin/bash
+defaultTestFile=&quot;$HOME/tsung_test.xml&quot;
+defaultUser=20
+defaultDuration=100
+# s
+defaultThinktime=1
+defaultServer=&quot;tomcat1&quot;
+defaultPort=9000
+defaultApi=&quot;/test&quot;
+defaultMethod=&quot;POST&quot;
+defaultLoopCount=50
+defaultMaxuser=5000
+
+while [ $# -gt 0 ]; do
+  case &quot;$1&quot; in
+-f|--testFile)
+testFile=$2
+shift 
+shift ;;
+-u|--user)
+user=$2
+shift 
+shift ;;
+-d|--duration)
+duration=$2
+shift 
+shift ;;
+-t|--thinktime)
+thinktime=$2
+shift 
+shift ;;
+-s|--server)
+server=$2
+shift 
+shift ;;
+-p|--port)
+port=$2
+shift 
+shift ;;
+-a|--api)
+api=$2
+shift 
+shift ;;
+-m|--method)
+method=$2
+shift 
+shift ;;
+-l|--loopCount)
+loopCount=$2
+shift 
+shift ;;
+-x|--maxuser)
+maxuser=$2
+shift 
+shift ;;
+-h|--help)
+echo &quot;-f | --testFile: tsung test file xml,default $defaultTestFile&quot;
+echo &quot;-u | --user: user number per second, default $defaultUser&quot;
+echo &quot;-x | --maxuser: max user number, default $defaultMaxuser&quot;
+echo &quot;-d | --duration: times used to generate user,default $defaultDuration s&quot;
+echo &quot;-t | --thinktime: the inteval time between two request,default $defaultThinktime s&quot;
+echo &quot;-l | --loopCount: Each user&apos;s request number,default $defaultLoopCount&quot;
+echo &quot;-s | --server: play server,default $defaultServer&quot;
+echo &quot;-p | --port: play server http port,default $defaultPort&quot;
+echo &quot;-a | --api: api, default $defaultApi&quot;
+echo &quot;-m | --method: POST/GET,default $defaultMethod&quot;
+echo &quot;-h | --help: print this help&quot;
+shift
+exit 1
+;;
+--)
+  shift
+  break
+  ;;
+*)
+  echo &quot;wrong input:$1,use -h or --help see how to use&quot; 1&gt;&amp;2
+  exit 1
+  ;;
+  esac
+done
+
+processName=&quot;tsung&quot;
+pid=`ps aux | grep $processName | grep -v grep | awk &apos;{print $2}&apos;`
+#convert from string to array
+pid=($pid)
+if [ ${#pid[*]} -gt 3 ]; then
+  echo &quot;warning!!! a $processName process is running,please wait&quot;
+  exit 1
+fi
+
+#env
+#set default parameters
+testFile=${testFile:=$defaultTestFile}
+user=${user:=$defaultUser}
+duration=${duration:=$defaultDuration}
+thinktime=${thinktime:=$defaultThinktime}
+server=${server:=$defaultServer}
+port=${port:=$defaultPort}
+api=${api:=$defaultApi}
+method=${method:=$defaultMethod}
+loopCount=${loopCount:=$defaultLoopCount}
+maxuser=${maxuser:=$defaultMaxuser}
+
+#key of params is nodname in tusng_test.xml file
+declare -A params
+params=( \
+  [&quot;user&quot;]=$user \
+  [&quot;maxuser&quot;]=$maxuser \
+  [&quot;duration&quot;]=$duration \
+  [&quot;thinktime&quot;]=$thinktime \
+  [&quot;server&quot;]=$server \
+  [&quot;port&quot;]=$port \
+  [&quot;api&quot;]=$api \
+  [&quot;method&quot;]=$method \
+  [&quot;loopCount&quot;]=$loopCount \
+  )
+reportPath=&quot;$HOME/.tsung/log&quot;
+currentTest=`date +%Y%m%d-%H%M`
+reportPath=&quot;$reportPath/$currentTest&quot;
+mkdir -p $reportPath
+#deal with jmx file
+cp $testFile $reportPath
+currentTestFile=&quot;$reportPath/tsung_test.xml&quot;
+function replace(){
+  echo &quot;$1:$2&quot; | tee -a &quot;$reportPath/test.env&quot;
+  #change / to \/ for sed 
+  local val=${2//\//\\\/}
+  sed -i &quot;s/@${1}/${val}/&quot; $currentTestFile
+}
+for key in ${!params[*]}
+do
+  replace $key ${params[$key]}
+done
+#start tsung 
+tsung -f $currentTestFile start &amp;
+wait %1
+cd $reportPath
+/usr/local/lib/tsung/bin/tsung_stats.pl
+</code></pre><p>5、tsung结果分析</p>
+<p>tsung生成的测试报告都放在$HOME/.tsung/log下，以日期加时间的方式命名，如：<code>.tsung/log/20150407-1951</code>，其中最重要的几张图是</p>
+<ul>
+<li>tsung产生的用户数曲线图 .tsung/log/20150407-1951/images/graphes-Users-simultaneous.png<br><img src="http://static.oschina.net/uploads/space/2015/0706/135050_sSxO_780347.png" alt=""></li>
+</ul>
+<p>Y轴代表每秒用户数，tsung每秒会产生一批用户，这个统计结果是每十秒统计一次，所有的图的起始位置显示的是0，其实是第一个10秒</p>
+<ul>
+<li><p>http接口响应数曲线图（TPS） .tsung/log/20150407-1951/images/graphes-HTTP_CODE-rate.png<br><img src="http://static.oschina.net/uploads/space/2015/0706/135106_dKTc_780347.png" alt=""></p>
+<p>Y轴是每秒响应数，右上角的200是http状态码，如果有多个状态码，会有多条不同颜色的曲线。</p>
+</li>
+<li><p>http接口响应时间曲线图 .tsung/log/20150407-1951/images/graphes-Perfs-mean.png</p>
+</li>
+</ul>
+<p><img src="http://static.oschina.net/uploads/space/2015/0706/135120_sPqf_780347.png" alt=""></p>
+<p>  Y轴是接口响应时间，单位是毫秒，request的线代表请求响应总耗时，connect的线代表tcp链接建立的时间。</p>
+<p>6、主要统计信息<br>Tsung统计数据是平均每十秒重置一次，所以这里的响应时间（连接、请求、页面、会话）是指每十秒的平均响应时间；<br>connect： 表示 每个连接持续时间；<br>Hightest 10sec mean    连接最长持续时间<br>Lowest 10sec mean    连接最短持续时间<br>Highest rate     每秒最高建立连接速率<br>Mean    平均每个连接持续时间<br>Count    总连接数<br>page： 表示 每个请求集合的响应时间,（一个页面表示一组没有被thinktime间隔的请求）<br>request： 表示 每个请求的响应时间；<br>Hightest 10sec mean    请求最长响应时间<br>Lowest 10sec mean    请求最短响应时间<br>Highest rate     请求最快发送速率<br>Mean    平均每个请求响应时间<br>Count    总请求数<br>session： 表示 每个用户会话持续时间；<br>Hightest 10sec mean    会话最长持续时间<br>Lowest 10sec mean    会话最短持续时间<br>Highest rate     每秒最高进行会话速率<br>Mean    平均每个会话持续时间<br>Count    总会话数  </p>
+<p>7、数据流量统计<br>size_rcv: 表示 响应请求数据量<br>size_sent:表示 发送请求数据量<br>Hightest rate    每秒最高 响应/发送 请求数据量<br>Total     响应/发送 请求总数据量  </p>
+<p>8、计数统计<br>connected    表示会话开始且尚未结束，并且已建立连接的最大用户数<br>finished_user_count    表示已经完成会话的最大用户数<br>users    表示会话开始且尚未结束的最大用户数<br>users_count    表示Tsung总共生成的用户总数  </p>
+<p>9、错误统计<br>Error_abort_max_conn_retries    重新尝试连接错误<br>Error_connect_timeout    连接超时错误<br>Error_connect_nxdomain    不存在的域错误<br>Error_unknown    位置错误  </p>
+<p>Highest rate     发生错误最高速率<br>Total number    发生该错误总个数  </p>
+<p>10、http返回状态码统计<br>200：表示客户端请求已成功响应<br>Highest rate    状态码返回最高速率<br>Total number    返回状态码的总个数  </p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/01/08/tsung说明文档/">tsung使用说明</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
+        <p><span>发布时间:</span>2017年01月08日 - 00时00分</p>
+        <p><span>最后更新:</span>2017年03月01日 - 00时59分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/01/08/tsung说明文档/" title="tsung使用说明">http://datura.me/2017/01/08/tsung说明文档/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/01/08/tsung说明文档/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"Datura"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2017/02/28/Glances/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Glances
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/11/05/yum仓库搭建之RPM包制作/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">yum仓库搭建之RPM包制作</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/01/08/tsung说明文档/" data-title="tsung使用说明" data-url="http://datura.me/2017/01/08/tsung说明文档/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"null"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/02/28/Glances/" title="上一篇: Glances">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2016/11/05/yum仓库搭建之RPM包制作/" title="下一篇: yum仓库搭建之RPM包制作">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 Datura
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
