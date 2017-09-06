@@ -6,11 +6,11 @@
 menu:
   博客首页: /
 #  作品展示: /works
-  留言打卡: /about
+#  留言打卡: /about
 #  前端导航: /FrontEndGuide
-# 静心阅读: /tags
-# 光影之路: /instagram
-# 随笔: /tags/随笔
+#  静心阅读: /tags
+#  光影之路: /instagram
+#  随笔: /tags/随笔
 
 # Link to your avatar | 填写头像地址
 avatar: /img/head.jpg
@@ -132,6 +132,7 @@ tagcloud: true
 # friends: false
 friends:
   MOxFIVE: http://MOxFIVE.github.io/
+  Arvon: http://arvon.top/
   DoubleV: http://www.vsay.cn/
   兮兮: http://www.ccwebsite.com/
   翁天信: http://blog.dandyweng.com/

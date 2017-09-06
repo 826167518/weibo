@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   
-  <title>linux—SSH（二）Rsync备份 | Hexo</title>
+  <title>linux—SSH（二）Rsync备份 | Datura</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="一、Rsync软件介绍
 rsync从字面上的意思就是remote sync （远程同步）的意思，是类unix系统下的远程数据镜像备份工具，可以镜像保存整个目录树和文件系统，并保持原来文件的权限、时间、软硬链接等，此外它还支持匿名传输；Rsync不仅可以远程同步数据（类似于scp）还可以本地同步数据（类似于cp），但不同于cp或scp的是rsync不像cp/scp一样会覆盖以前的数据，Rsync使用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux—SSH（二）Rsync备份">
 <meta property="og:url" content="http://datura.me/2016/09/02/linux—SSH（二）Rsync备份/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Datura">
 <meta property="og:description" content="一、Rsync软件介绍
 rsync从字面上的意思就是remote sync （远程同步）的意思，是类unix系统下的远程数据镜像备份工具，可以镜像保存整个目录树和文件系统，并保持原来文件的权限、时间、软硬链接等，此外它还支持匿名传输；Rsync不仅可以远程同步数据（类似于scp）还可以本地同步数据（类似于cp），但不同于cp或scp的是rsync不像cp/scp一样会覆盖以前的数据，Rsync使用">
 <meta property="og:updated_time" content="2017-03-01T05:59:43.000Z">
@@ -19,7 +19,7 @@ rsync从字面上的意思就是remote sync （远程同步）的意思，是类
 <meta name="twitter:description" content="一、Rsync软件介绍
 rsync从字面上的意思就是remote sync （远程同步）的意思，是类unix系统下的远程数据镜像备份工具，可以镜像保存整个目录树和文件系统，并保持原来文件的权限、时间、软硬链接等，此外它还支持匿名传输；Rsync不仅可以远程同步数据（类似于scp）还可以本地同步数据（类似于cp），但不同于cp或scp的是rsync不像cp/scp一样会覆盖以前的数据，Rsync使用">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -118,8 +118,6 @@ rsync从字面上的意思就是remote sync （远程同步）的意思，是类
                         
                             <li><a href="/">博客首页</a></li>
                         
-                            <li><a href="/about">留言打卡</a></li>
-                        
                         </ul>
                     </nav>
                     <nav class="header-nav">
@@ -148,6 +146,8 @@ rsync从字面上的意思就是remote sync （远程同步）的意思，是类
                     <div id="js-friends">
                     
                       <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://arvon.top/">Arvon</a>
                     
                       <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
                     
@@ -198,8 +198,6 @@ rsync从字面上的意思就是remote sync （远程同步）的意思，是类
                 <ul>
                 
                     <li><a href="/">博客首页</a></li>
-                
-                    <li><a href="/about">留言打卡</a></li>
                 
                 <div class="clearfix"></div>
                 </ul>
@@ -886,15 +884,20 @@ total size is 1010  speedup is 10.86
 
 <nav id="article-nav">
   
-    <a href="/2016/09/02/zabbix2.6安装/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/09/02/keepalive+nginx实现高可用/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          zabbix2.6安装
+          keepalive+nginx实现高可用
         
       </div>
     </a>
   
+  
+    <a href="/2016/09/02/zabbix2.6安装/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">zabbix2.6安装</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
   
 </nav>
 
@@ -975,16 +978,18 @@ total size is 1010  speedup is 10.86
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/09/02/zabbix2.6安装/" title="上一篇: zabbix2.6安装">
+            <a href="/2016/09/02/keepalive+nginx实现高可用/" title="上一篇: keepalive+nginx实现高可用">
                 <i class="fa fa-angle-left"></i>
             </a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2016/09/02/zabbix2.6安装/" title="下一篇: zabbix2.6安装">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>yum仓库搭建之RPM包制作 | Hexo</title>
+  <title>yum仓库搭建之RPM包制作 | Datura</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="常见的软件安装方式有以下几种1.yum安装，可自动解决依赖，但不能自定义软件安装位置2.编译安装，可指定安装路径，指定装模块，但编译参数冗长，且耗时较长，不能解决依赖问题。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="yum仓库搭建之RPM包制作">
 <meta property="og:url" content="http://datura.me/2016/11/05/yum仓库搭建之RPM包制作/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Datura">
 <meta property="og:description" content="常见的软件安装方式有以下几种1.yum安装，可自动解决依赖，但不能自定义软件安装位置2.编译安装，可指定安装路径，指定装模块，但编译参数冗长，且耗时较长，不能解决依赖问题。">
-<meta property="og:updated_time" content="2017-03-01T06:04:30.000Z">
+<meta property="og:updated_time" content="2017-03-17T03:47:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="yum仓库搭建之RPM包制作">
 <meta name="twitter:description" content="常见的软件安装方式有以下几种1.yum安装，可自动解决依赖，但不能自定义软件安装位置2.编译安装，可指定安装路径，指定装模块，但编译参数冗长，且耗时较长，不能解决依赖问题。">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -115,8 +115,6 @@
                         
                             <li><a href="/">博客首页</a></li>
                         
-                            <li><a href="/about">留言打卡</a></li>
-                        
                         </ul>
                     </nav>
                     <nav class="header-nav">
@@ -145,6 +143,8 @@
                     <div id="js-friends">
                     
                       <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://arvon.top/">Arvon</a>
                     
                       <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
                     
@@ -195,8 +195,6 @@
                 <ul>
                 
                     <li><a href="/">博客首页</a></li>
-                
-                    <li><a href="/about">留言打卡</a></li>
                 
                 <div class="clearfix"></div>
                 </ul>
@@ -249,7 +247,7 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p> 常见的软件安装方式有以下几种<br>1.yum安装，可自动解决依赖，但不能自定义软件安装位置<br>2.编译安装，可指定安装路径，指定装模块，但编译参数冗长，且耗时较长，不能解决依赖问题。<br><a id="more"></a><br>3.rpm安装，安装速度较速，但不能自动解决依赖，尤其是遇到需要的依赖包较多时，特别费时。<br>本文主要介绍利用fpm工具制作个性化的rpm包，后期可放到yum仓库中，直接用yum安装。<br>【fpm介绍】<br>项目地址：<a href="https://github.com/jordansissel/fpm" target="_blank" rel="external">https://github.com/jordansissel/fpm</a><br>作者把这个fpm称作Effing Package Management，翻译过来就是该死的包管理器，粗暴一点就是去他妈的包管理器。Ubuntu及CentOS的包管理及安装方式完全不同，要想同时掌握这两种平台下的软件包安装方法是很困难的，为了不再遭受这痛苦，fpm便应运而生了。fpm是由jordansissel于2011年开发的一套打包工具，可快速度地将你安装好的程序目录或包打包为rpm及deb等结尾软件包。与传统的打包工具(rpmbuild、dh_make)相比，制作起来更加简单、方便、快捷。<br>【fpm安装】<br>1.安装ruby及gcc    </p>
+        <p> 常见的软件安装方式有以下几种<br>1.yum安装，可自动解决依赖，但不能自定义软件安装位置<br>2.编译安装，可指定安装路径，指定装模块，但编译参数冗长，且耗时较长，不能解决依赖问题。<br><a id="more"></a><br>3.rpm安装，安装速度较快，但不能自动解决依赖，尤其是遇到需要的依赖包较多时，特别费时。<br>本文主要介绍利用fpm工具制作个性化的rpm包，后期可放到yum仓库中，直接用yum安装。<br>【fpm介绍】<br>项目地址：<a href="https://github.com/jordansissel/fpm" target="_blank" rel="external">https://github.com/jordansissel/fpm</a><br>作者把这个fpm称作Effing Package Management，翻译过来就是该死的包管理器，粗暴一点就是去他妈的包管理器。Ubuntu及CentOS的包管理及安装方式完全不同，要想同时掌握这两种平台下的软件包安装方法是很困难的，为了不再遭受这痛苦，fpm便应运而生了。fpm是由jordansissel于2011年开发的一套打包工具，可快速度地将你安装好的程序目录或包打包为rpm及deb等结尾软件包。与传统的打包工具(rpmbuild、dh_make)相比，制作起来更加简单、方便、快捷。<br>【fpm安装】<br>1.安装ruby及gcc    </p>
 <pre><code>yum install ruby-devel gcc  
 </code></pre><p>2.安装fpm    </p>
 <pre><code>gem install fpm  
@@ -333,7 +331,7 @@ createrepo /data/apps/data/nginx/yum/ssy/ssy201606/x86_64/6/easemob-ssy/packages
         <p><span>本文标题:</span><a href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2016年11月05日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年03月01日 - 01时04分</p>
+        <p><span>最后更新:</span>2017年03月16日 - 23时47分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/11/05/yum仓库搭建之RPM包制作/" title="yum仓库搭建之RPM包制作">http://datura.me/2016/11/05/yum仓库搭建之RPM包制作/</a>
             <span class="copy-path" data-clipboard-text="原文: http://datura.me/2016/11/05/yum仓库搭建之RPM包制作/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -454,7 +452,7 @@ createrepo /data/apps/data/nginx/yum/ssy/ssy201606/x86_64/6/easemob-ssy/packages
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");
