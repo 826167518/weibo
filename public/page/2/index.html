@@ -272,10 +272,10 @@
 
 
   
-    <article id="post-linux_traceroute_命令详解" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux traceroute 命令详解" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/11/03/linux_traceroute_命令详解/" class="article-date">
+      <a href="/2016/11/03/linux traceroute 命令详解/" class="article-date">
       <time datetime="2016-11-03T04:00:00.000Z" itemprop="datePublished">2016-11-03</time>
 </a>
     </div>
@@ -289,7 +289,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a>
+      <a class="article-title" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a>
     </h1>
   
 
@@ -311,7 +311,7 @@
       
       
         <p class="article-more-link">
-          <a  href="/2016/11/03/linux_traceroute_命令详解/#more">大航海 >></a>
+          <a  href="/2016/11/03/linux traceroute 命令详解/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -370,6 +370,64 @@
       
         <p class="article-more-link">
           <a  href="/2016/11/03/tcpdump抓包命令详解/#more">大航海 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-linux_traceroute_命令详解" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/03/linux_traceroute_命令详解/" class="article-date">
+      <time datetime="2016-11-03T04:00:00.000Z" itemprop="datePublished">2016-11-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+        <p class="article-more-link">
+          <a  href="/2016/11/03/linux_traceroute_命令详解/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -566,10 +624,10 @@
 
 
   
-    <article id="post-linux—SSH1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-keepalive+nginx实现高可用" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/02/linux—SSH1/" class="article-date">
+      <a href="/2016/09/02/keepalive+nginx实现高可用/" class="article-date">
       <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
 </a>
     </div>
@@ -583,7 +641,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/linux—SSH1/">linux—SSH1</a>
+      <a class="article-title" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a>
     </h1>
   
 
@@ -593,9 +651,10 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <p>一、远程连接简介</p>
-<p>l  远程连接服务器</p>
-<p>远程连接服务器通过文字或图形接口的方式来远程登陆系统，在远程的终端前面登陆linux主机并取得操作主机的接口shell，登陆后的操作就像在系统前面一样，这样可以进行系统管理的任务<br>
+              <p>1安装相应基础服务</p>
+<pre><code>yum install openssl-devel
+yum install popt-devel
+</code></pre><p>2下载并安装keepalive安装包<br>    wget <a href="http://www.keepalived.org/software/keepalived-1.2.12.tar.gz">http://www.keepalived.org/software/keepalived-1.2.12.tar.gz</a><br>    tar xzf keepalived-1.2.12.tar.gz;<br>    cd keepalived-1.2.12<br>    ./configure –prefix=/usr/local/keepalived-1.2.12;<br>    make &amp;&amp; make install<br>
           
       
     </div>
@@ -607,7 +666,7 @@
       
       
         <p class="article-more-link">
-          <a  href="/2016/09/02/linux—SSH1/#more">大航海 >></a>
+          <a  href="/2016/09/02/keepalive+nginx实现高可用/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -667,67 +726,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/09/02/git/#more">大航海 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-keepalive+nginx实现高可用" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/02/keepalive+nginx实现高可用/" class="article-date">
-      <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p>1安装相应基础服务</p>
-<pre><code>yum install openssl-devel
-yum install popt-devel
-</code></pre><p>2下载并安装keepalive安装包<br>    wget <a href="http://www.keepalived.org/software/keepalived-1.2.12.tar.gz">http://www.keepalived.org/software/keepalived-1.2.12.tar.gz</a><br>    tar xzf keepalived-1.2.12.tar.gz;<br>    cd keepalived-1.2.12<br>    ./configure –prefix=/usr/local/keepalived-1.2.12;<br>    make &amp;&amp; make install<br>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/02/keepalive+nginx实现高可用/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>

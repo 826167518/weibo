@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>mysql主从配置文件内容 | Datura</title>
+  <title>centos 7 部署 gitlab | Datura</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="mysql简要配置文件—master">
+  <meta name="description" content="gitlab的安装搭建">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql主从配置文件内容">
-<meta property="og:url" content="http://datura.me/2016/09/05/mysql主从配置文件内容/index.html">
+<meta property="og:title" content="centos 7 部署 gitlab">
+<meta property="og:url" content="http://datura.me/2017/09/08/gitlab安装/index.html">
 <meta property="og:site_name" content="Datura">
-<meta property="og:description" content="mysql简要配置文件—master">
-<meta property="og:updated_time" content="2017-03-01T05:59:43.000Z">
+<meta property="og:description" content="gitlab的安装搭建">
+<meta property="og:updated_time" content="2017-09-08T09:02:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql主从配置文件内容">
-<meta name="twitter:description" content="mysql简要配置文件—master">
+<meta name="twitter:title" content="centos 7 部署 gitlab">
+<meta name="twitter:description" content="gitlab的安装搭建">
   
     <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
@@ -213,11 +213,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-mysql主从配置文件内容" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-gitlab安装" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/05/mysql主从配置文件内容/" class="article-date">
-      <time datetime="2016-09-05T04:00:00.000Z" itemprop="datePublished">2016-09-05</time>
+      <a href="/2017/09/08/gitlab安装/" class="article-date">
+      <time datetime="2017-09-08T04:00:00.000Z" itemprop="datePublished">2017-09-08</time>
 </a>
     </div>
   
@@ -230,7 +230,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      mysql主从配置文件内容
+      centos 7 部署 gitlab
     </h1>
   
 
@@ -247,30 +247,88 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>mysql简要配置文件—master<br><a id="more"></a><br>    [client]<br>    port = 3306<br>    default-character-set=utf8<br>    [mysqld]<br>    server-id=10<br>    log-bin=mysql-master-bin<br>    binlog_format = mixed<br>    expire_logs_days=15<br>    max_connections=10000<br>    innodb_flush_log_at_trx_commit=1<br>    sync_binlog=1<br>    binlog-ignore-db=mysql,test,information_schema<br>    skip-name-resolve<br>    port = 3306<br>    key_buffer_size = 16M<br>    max_allowed_packet = 16M<br>    join_buffer_size = 512M<br>    sort_buffer_size = 256M<br>    read_rnd_buffer_size = 128M<br>    innodb_buffer_pool_size = 4096M<br>    sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES<br>    [mysqld_safe]<br>    default-character-set=utf8mb4  </p>
-<p>mysql简要配置文件—slave<br>    [client]<br>    port = 3306<br>    default-character-set=utf8<br>    [mysqld]<br>    server-id=100  </p>
-<pre><code>#log-bin=mysql-slave-bin  
-relay-log=mysqld-relay-bin  
-max_binlog_size = 1000M  
-binlog_format = mixed  
-expire_logs_days=7  
-innodb_flush_log_at_trx_commit=1  
-sync_binlog=1  
-read_only=1  
-binlog-ignore-db=mysql,test,information_schema  
-skip-name-resolve  
-max_connections=10000  
-max_user_connections=490  
-max_connect_errors=2  
-key_buffer_size = 16M  
-max_allowed_packet = 16M  
-join_buffer_size = 512M  
-sort_buffer_size = 256M  
-read_rnd_buffer_size = 128M  
-innodb_buffer_pool_size = 4096M  
-sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES  
-[mysqld_safe]  
-default-character-set=utf8mb4  
+        <h2 id="gitlab的安装搭建"><a href="#gitlab的安装搭建" class="headerlink" title="gitlab的安装搭建"></a>gitlab的安装搭建</h2><a id="more"></a>
+<h3 id="安装基础环境包"><a href="#安装基础环境包" class="headerlink" title="安装基础环境包"></a>安装基础环境包</h3><pre><code>yum -y install curl policycoreutils openssh-server openssh-clients
+</code></pre><h3 id="启动sshd"><a href="#启动sshd" class="headerlink" title="启动sshd"></a>启动sshd</h3><pre><code>systemctl enable sshd
+systemctl start sshd
+</code></pre><h3 id="安装postfix"><a href="#安装postfix" class="headerlink" title="安装postfix"></a>安装postfix</h3><pre><code>yum -y install postfix
+systemctl enable postfix
+systemctl start postfix
+</code></pre><h3 id="添加防火墙规则"><a href="#添加防火墙规则" class="headerlink" title="添加防火墙规则"></a>添加防火墙规则</h3><pre><code>firewall-cmd --permanent --add-service=http
+systemctl reload firewalld
+</code></pre><p>or<br>    yum install firewalld<br>    systemctl unmadk firewalld</p>
+<h3 id="下载并安装软件包"><a href="#下载并安装软件包" class="headerlink" title="下载并安装软件包"></a>下载并安装软件包</h3><pre><code>curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+yum install gitlab-ce
+</code></pre><p>如遇到time out，请更换成国内源<br>    vim /etc/yum.repos.d/gitlab-ce.repo</p>
+<blockquote>
+<p>[gitlab-ce]<br>name=gitlab-ce<br>baseurl=<a href="http://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7" target="_blank" rel="external">http://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7</a><br>repo_gpgcheck=0<br>gp0gcheck=0<br>enabled=1<br>gpgkey=<a href="https://packages.gitlab.com/gpg.key" target="_blank" rel="external">https://packages.gitlab.com/gpg.key</a></p>
+</blockquote>
+<pre><code>yum makecache
+yum install gitlab-ce -y
+</code></pre><p>or 下载相应版本gitlab的rpm包</p>
+<pre><code>https://packages.gitlab.com/gitlab/gitlab-ce/    
+</code></pre><p>安装完毕后</p>
+<pre><code>gitlab-ctl reconfigure 
+</code></pre><blockquote>
+<p>gitlab: GitLab should be reachable at <a href="http://iZ2851te7e5Z" target="_blank" rel="external">http://iZ2851te7e5Z</a><br>gitlab: Otherwise configure GitLab for your system by editing /etc/gitlab/gitlab.rb file<br>gitlab: And running reconfigure again.<br>gitlab:<br>gitlab: For a comprehensive list of configuration options please see the Omnibus GitLab readme<br>gitlab: <a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md" target="_blank" rel="external">https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md</a><br>gitlab:<br>It looks like GitLab has not been configured yet; skipping the upgrade script.<br>  验证中      : gitlab-ce-8.7.6-ce.0.el7.x86_64                                                                                             1/1<br>已安装:<br>  gitlab-ce.x86_64 0:8.7.6-ce.0.el7<br>完毕！</p>
+</blockquote>
+<h3 id="配置并启动gitlab"><a href="#配置并启动gitlab" class="headerlink" title="配置并启动gitlab"></a>配置并启动gitlab</h3><pre><code>gitlab-ctl reconfigure
+</code></pre><h3 id="默认账号密码是"><a href="#默认账号密码是" class="headerlink" title="默认账号密码是"></a>默认账号密码是</h3><pre><code>Username: root
+Password: 5iveL!fe
+</code></pre><p>测试地址（默认80端口）<br>    <a href="http://127.0.0.1/" target="_blank" rel="external">http://127.0.0.1/</a></p>
+<h2 id="gitlab的备份"><a href="#gitlab的备份" class="headerlink" title="gitlab的备份"></a>gitlab的备份</h2><h3 id="备份命令"><a href="#备份命令" class="headerlink" title="备份命令"></a>备份命令</h3><pre><code>gitlab-rake gitlab:backup:create
+</code></pre><p>默认的备份目录为： /var/opt/gitlab/backups  备份文件名类似： 时间戳_gitlab_backup.tar</p>
+<p>如要修改备份目录：<br>    vim /etc/gitlab/gitlab.rd<br>    gitlab_rails[‘backup_path’] = ‘/mnt/gitlab_backups’</p>
+<h3 id="gitlab数据的恢复或还原"><a href="#gitlab数据的恢复或还原" class="headerlink" title="gitlab数据的恢复或还原"></a>gitlab数据的恢复或还原</h3><p>提示：gitlab数据的恢复或者迁移成功的前提–两台服务器的gitlab的版本必须相同，若不同侧可能迁移或者恢复失败  </p>
+<blockquote>
+<p>将备份文件放在gitlab的默认备份目录<br>比如/var/opt/gitlab/backups下的1504693308_gitlab_backup.tar     </p>
+</blockquote>
+<p>设置自动备份</p>
+<pre><code>0 2 * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create
+</code></pre><p>恢复或者还原  </p>
+<p>停服务</p>
+<pre><code>gitlab-ctl stop unicorn
+gitlab-ctl stop sidekiq
+</code></pre><p>恢复数据</p>
+<pre><code>gitlab-rab-rake gitlab:backup:restore BACKUP=1504693308
+</code></pre><p>BACKUP后面跟的是备份文件的时间戳，比如恢复备份文件1504693308_gitlab_backup.tar</p>
+<p>恢复完启动服务</p>
+<pre><code>gitlab-ctl start
+</code></pre><h2 id="gitlab-nginx的修改"><a href="#gitlab-nginx的修改" class="headerlink" title="gitlab nginx的修改"></a>gitlab nginx的修改</h2><p>配置文件 /var/opt/gitlab/nginx/conf/gitlab-http.conf。这个文件是gitlab内置的nginx的配置文件，里面可以影响到nginx真实监听端口。</p>
+<pre><code>server {
+    listen *:80;
+    server_name ip
+    server_tokens off; ##Don&apos;t show the nginx version number, a security best practice         
+}
+</code></pre><p>修改完成后，重启下就可以了<br>    gitlab-ctl restart</p>
+<h2 id="汉化"><a href="#汉化" class="headerlink" title="汉化"></a>汉化</h2><h3 id="查看自己gitlab的版本号"><a href="#查看自己gitlab的版本号" class="headerlink" title="查看自己gitlab的版本号"></a>查看自己gitlab的版本号</h3><pre><code>cat /opt/gitlab/embedded/service/gitlab-rails/VERSION
+9.3.5
+</code></pre><p>当前版本为v9.3.5,并确认汉化版本库是否包含该版本的汉化标签(-zh结尾),也就是是否包含 v9.3.5-zh</p>
+<h3 id="下载汉化包并汉化"><a href="#下载汉化包并汉化" class="headerlink" title="下载汉化包并汉化"></a>下载汉化包并汉化</h3><p>克隆汉化版本库，此处用了好久的时间，拉取这个分支，没有更好的办法，可以自行百度一下Git慢的解决方式</p>
+<pre><code>git clone https://gitlab.com/xhang/gitlab.git
+</code></pre><p>如果已经克隆过，则进行更新</p>
+<pre><code>git fetch
+</code></pre><p>比较汉化标签和原标签，导出 patch 用的 diff 文件.进入刚才的目录git clone 的目录</p>
+<pre><code>cd gitlab
+git diff v9.3.5 v9.3.5-zh &gt; ../9.3.5-zh.diff
+</code></pre><p>上传9.3.5-zh.diff文件到服务器停止 gitlab</p>
+<pre><code>gitlab-ctl stop
+patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 &lt; ../9.3.6-zh.diff
+</code></pre><blockquote>
+<p>这里path 如果也出现 command not found 说明path安装包没有安装，然后在运行前边的代码就可以了<br>yum -y install patch </p>
+</blockquote>
+<p>重启gitlab即可.</p>
+<pre><code>gitlab-ctl start
+</code></pre><p>执行重新配置命令</p>
+<pre><code>gitlab-ctl reconfigure
+</code></pre><h2 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h2><p>前提：必须在Gitlab运行状态下才能卸载</p>
+<pre><code>gitlab-ctl uninstall
+rpm -e gitlab-ce
+</code></pre><p>在卸载gitlab然后再次安装执行gitlab-ctl reconfigure的时候往往会出现:ruby_block[supervise_redis_sleep] action run,会一直卡无法往下进行！<br>解决方案：  </p>
+<p>按住CTRL+C强制结束  </p>
+<p>运行:  </p>
+<pre><code>systemctl restart gitlab-runsvdir
+gitlab-ctl reconfigure
 </code></pre>
       
     </div>
@@ -279,13 +337,13 @@ default-character-set=utf8mb4
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></p>
+        <p><span>本文标题:</span><a href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
-        <p><span>发布时间:</span>2016年09月05日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年03月01日 - 00时59分</p>
+        <p><span>发布时间:</span>2017年09月08日 - 00时00分</p>
+        <p><span>最后更新:</span>2017年09月08日 - 05时02分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/09/05/mysql主从配置文件内容/" title="mysql主从配置文件内容">http://datura.me/2016/09/05/mysql主从配置文件内容/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2016/09/05/mysql主从配置文件内容/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/09/08/gitlab安装/" title="centos 7 部署 gitlab">http://datura.me/2017/09/08/gitlab安装/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/09/08/gitlab安装/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -298,18 +356,9 @@ default-character-set=utf8mb4
 
 <nav id="article-nav">
   
-    <a href="/2016/09/06/htop使用说明/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          htop使用说明
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/09/02/keepalive+nginx实现高可用/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">keepalive+nginx实现高可用</div>
+    <a href="/2017/08/31/open-falcon安装/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">centos 7 部署 open-falcon 0.2.1</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -321,7 +370,7 @@ default-character-set=utf8mb4
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gitlab的安装搭建"><span class="toc-number">1.</span> <span class="toc-text">gitlab的安装搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装基础环境包"><span class="toc-number">1.1.</span> <span class="toc-text">安装基础环境包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动sshd"><span class="toc-number">1.2.</span> <span class="toc-text">启动sshd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装postfix"><span class="toc-number">1.3.</span> <span class="toc-text">安装postfix</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加防火墙规则"><span class="toc-number">1.4.</span> <span class="toc-text">添加防火墙规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载并安装软件包"><span class="toc-number">1.5.</span> <span class="toc-text">下载并安装软件包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置并启动gitlab"><span class="toc-number">1.6.</span> <span class="toc-text">配置并启动gitlab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#默认账号密码是"><span class="toc-number">1.7.</span> <span class="toc-text">默认账号密码是</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitlab的备份"><span class="toc-number">2.</span> <span class="toc-text">gitlab的备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#备份命令"><span class="toc-number">2.1.</span> <span class="toc-text">备份命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gitlab数据的恢复或还原"><span class="toc-number">2.2.</span> <span class="toc-text">gitlab数据的恢复或还原</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitlab-nginx的修改"><span class="toc-number">3.</span> <span class="toc-text">gitlab nginx的修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#汉化"><span class="toc-number">4.</span> <span class="toc-text">汉化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看自己gitlab的版本号"><span class="toc-number">4.1.</span> <span class="toc-text">查看自己gitlab的版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载汉化包并汉化"><span class="toc-number">4.2.</span> <span class="toc-text">下载汉化包并汉化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卸载"><span class="toc-number">5.</span> <span class="toc-text">卸载</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -369,7 +418,7 @@ default-character-set=utf8mb4
     
       <div class="duoshuo" id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2016/09/05/mysql主从配置文件内容/" data-title="mysql主从配置文件内容" data-url="http://datura.me/2016/09/05/mysql主从配置文件内容/"></div>
+    <div class="ds-thread" data-thread-key="2017/09/08/gitlab安装/" data-title="centos 7 部署 gitlab" data-url="http://datura.me/2017/09/08/gitlab安装/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
@@ -392,13 +441,11 @@ default-character-set=utf8mb4
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/09/06/htop使用说明/" title="上一篇: htop使用说明">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2016/09/02/keepalive+nginx实现高可用/" title="下一篇: keepalive+nginx实现高可用">
+            <a href="/2017/08/31/open-falcon安装/" title="下一篇: centos 7 部署 open-falcon 0.2.1">
                 <i class="fa fa-angle-right"></i>
             </a>
         
