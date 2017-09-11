@@ -70,6 +70,12 @@ It looks like GitLab has not been configured yet; skipping the upgrade script.
 
 ### 配置并启动gitlab
 
+如果遇到
+>安装GitLab出现ruby_block[supervise_redis_sleep] action run
+
+那么需要运行
+
+	systemctl restart gitlab-runsvdir
     gitlab-ctl reconfigure
 
 ### 默认账号密码是
