@@ -114,7 +114,7 @@ It looks like GitLab has not been configured yet; skipping the upgrade script.
 
 恢复数据
 
-    gitlab-rab-rake gitlab:backup:restore BACKUP=1504693308
+    gitlab-rake gitlab:backup:restore BACKUP=1504693308
 
 BACKUP后面跟的是备份文件的时间戳，比如恢复备份文件1504693308_gitlab_backup.tar
 
