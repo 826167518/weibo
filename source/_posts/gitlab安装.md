@@ -193,7 +193,7 @@ yum -y install patch
 
 
 ## 报错解决
-
+### 迁移后页面500错误
 如果遇到迁移项目后web页面点击项目报500错误，查看相关日志如下
 
 	==> /var/log/gitlab/gitlab-rails/production.log <==  
@@ -214,7 +214,7 @@ yum -y install patch
 这个是gitlab数据迁移的时候一个缺陷
 
 
-## 解决方案
+### 解决方案
 1.覆盖原来gitlab的db_key_base到新的gitlab
 
 db_key_base位置在/etc/gitlab/gitlab-secrets.json
@@ -227,5 +227,19 @@ db_key_base位置在/etc/gitlab/gitlab-secrets.json
 
 	sudo gitlab-rails runner "Project.where.not(import_url: nil).each { |p| p.import_data.destroy if p.import_data }"
 
+
+
+### 备机web界面项目地址显示主机名问题
+
+	vim /var/opt/gitlab/gitlab-rails/etc/gitlab.yml
+
+修改host项
+
+>由host: localhost改成  
+>host: ******
+
+gitlab重启即可
+	
+	gitlab-ctl restart
 
 
