@@ -190,3 +190,42 @@ yum -y install patch
 
     systemctl restart gitlab-runsvdir
     gitlab-ctl reconfigure
+
+
+## 报错解决
+
+如果遇到迁移项目后web页面点击项目报500错误，查看相关日志如下
+
+>==> /var/log/gitlab/gitlab-rails/production.log <==  
+>Started GET "/ops/install_php" for 127.0.0.1 at   2017-09-13 10:32:45 +0800  
+>Processing by ProjectsController#show as HTML    
+>  Parameters: {"namespace_id"=>"ops",      >"id"=>"install_php"}  
+>Completed 500 Internal Server Error in 36ms (ActiveRecord: 2.2ms)  
+
+>OpenSSL::Cipher::CipherError (bad decrypt):  
+>  app/models/project.rb:383:in `import_url'
+>  app/models/project.rb:413:in `external_import?'
+>  app/models/project.rb:405:in `import?'
+>  app/models/project.rb:421:in `import_in_progress?'
+>  app/controllers/projects_controller.rb:93:in `show'
+>  lib/gitlab/middleware/go.rb:16:in `call'
+
+可得知是OpenSSL解密出现了问题，经调查后发现
+这个是gitlab数据迁移的时候一个缺陷
+
+
+## 解决方案
+1.覆盖原来gitlab的db_key_base到新的gitlab
+
+db_key_base位置在/etc/gitlab/gitlab-secrets.json
+
+2.EE版本执行
+
+	sudo gitlab-rails runner "Project.where(mirror: false).where.not(import_url: nil).each { |p| p.import_data.destroy if p.import_data }"
+
+3.CE版本执行
+
+	sudo gitlab-rails runner "Project.where.not(import_url: nil).each { |p| p.import_data.destroy if p.import_data }"
+
+
+
