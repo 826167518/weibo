@@ -174,6 +174,57 @@ yum -y install patch
 
     gitlab-ctl reconfigure
 
+
+
+## 升级
+
+### 关闭gitlab服务
+
+	gitlab-ctl stop unicorn
+	gitlab-ctl stop sidekiq
+	gitlab-ctl stop nginx
+
+
+### 备份gitlab
+
+	gitlab-rake gitlab:backup:create
+
+### 下载gitlab的RPM包并进行升级
+
+	curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+	yum update gitlab-ce
+或者直接上官网下载相应gitlab的版本所对应的软件包（[https://packages.gitlab.com/gitlab/gitlab-ce/](https://packages.gitlab.com/gitlab/gitlab-ce/)）
+
+	yum install gitlab-ce-8.8.3-ce.0.el7.x86_64
+
+### 启动并查看gitlab的版本信息
+
+	gitlab-ctl reconfigure
+	gitlab-ctl restart
+	head -1 /opt/gitlab/version-manifest.txt
+	cat /opt/gitlab/embedded/service/gitlab-rails/VERSION
+
+### 可以更换gitlab自带的nginx，使用自行编译好的nginx来管理gitlab服务
+
+	vim /etc/gitlab/gitlab.rd
+
+>设置nginx为dalse，关闭自带nginx  
+>nginx['enable'] = false  
+>检查默认nginx配置文件，并迁移至新nginx服务。  
+>/var/opt/gitlab/nginx/conf/nginx.conf  #nginx配置文件，包含gitlab-http.conf文件  
+>/var/ope/gitlab/nginx/conf/gitlab-http.conf #gitlab核心nginx配置文件
+ 
+重启nginx、gitlab服务
+
+	gitlab-ctl reconfigure
+	systemctl restart nginx
+
+访问报502。原因是nginx用户无法访问gitlab用户的socket文件。重启gitlab需要重新授权
+
+	chmod -R o+x /var/opt/gitlab/gitlab-rails
+	gitlab-ctl restart
+
+
 ##  卸载
 
 前提：必须在Gitlab运行状态下才能卸载
