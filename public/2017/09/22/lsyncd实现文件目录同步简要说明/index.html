@@ -3,22 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Glances | Datura</title>
+  <title>centos 7 lsyncd实时同步 | Datura</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="top 命令是 Linux 下的一个实时任务管理器， 同时也是用于在 GNU/Linux 发行版中寻找系统性能方面的瓶颈，并帮助我们作出正确操作的常用系统监视工具。 她有着一个极为简洁的界面，并自带少量的可以帮助我们快速了解系统性能的实用选项。">
+  <meta name="description" content="lsyncd实时同步lsyncd简介">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Glances">
-<meta property="og:url" content="http://datura.me/2017/02/28/Glances/index.html">
+<meta property="og:title" content="centos 7 lsyncd实时同步">
+<meta property="og:url" content="http://datura.me/2017/09/22/lsyncd实现文件目录同步简要说明/index.html">
 <meta property="og:site_name" content="Datura">
-<meta property="og:description" content="top 命令是 Linux 下的一个实时任务管理器， 同时也是用于在 GNU/Linux 发行版中寻找系统性能方面的瓶颈，并帮助我们作出正确操作的常用系统监视工具。 她有着一个极为简洁的界面，并自带少量的可以帮助我们快速了解系统性能的实用选项。">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214404gen07qvynyj3vjzn.jpeg">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214413hgrs2ozqwarrwypo.jpeg">
-<meta property="og:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214419xaiwmtwwaawo2oya.jpeg">
-<meta property="og:updated_time" content="2017-09-19T08:46:01.000Z">
+<meta property="og:description" content="lsyncd实时同步lsyncd简介">
+<meta property="og:updated_time" content="2017-09-22T06:25:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Glances">
-<meta name="twitter:description" content="top 命令是 Linux 下的一个实时任务管理器， 同时也是用于在 GNU/Linux 发行版中寻找系统性能方面的瓶颈，并帮助我们作出正确操作的常用系统监视工具。 她有着一个极为简洁的界面，并自带少量的可以帮助我们快速了解系统性能的实用选项。">
-<meta name="twitter:image" content="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214404gen07qvynyj3vjzn.jpeg">
+<meta name="twitter:title" content="centos 7 lsyncd实时同步">
+<meta name="twitter:description" content="lsyncd实时同步lsyncd简介">
   
     <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
@@ -217,11 +213,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Glances" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-lsyncd实现文件目录同步简要说明" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/02/28/Glances/" class="article-date">
-      <time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished">2017-02-28</time>
+      <a href="/2017/09/22/lsyncd实现文件目录同步简要说明/" class="article-date">
+      <time datetime="2017-09-21T16:00:00.000Z" itemprop="datePublished">2017-09-22</time>
 </a>
     </div>
   
@@ -234,7 +230,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Glances
+      centos 7 lsyncd实时同步
     </h1>
   
 
@@ -251,38 +247,55 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>top 命令是 Linux 下的一个实时任务管理器， 同时也是用于在 GNU/Linux 发行版中寻找系统性能方面的瓶颈，并帮助我们作出正确操作的常用系统监视工具。 她有着一个极为简洁的界面，并自带少量的可以帮助我们快速了解系统性能的实用选项。<br><a id="more"></a><br>但是，有些时候想要通过她寻找一个占用系统资源比较大的应用或进程可能会比较困难。 因为 top 命令本身并不会帮助我们高亮那些吃太多 CPU，内存，或者其他资源的程序。</p>
-<p>为了达到这个目标，这里我们将介绍一款超牛逼的系统监视程序 —— Glances。 她可以自动高亮利用最高系统资源的程序，并为 Linux/Unix 服务器提供尽可能多的信息。</p>
-<p>什么是 Glances？<br>Glances 是一个由 Python 编写，使用 psutil 库来从系统抓取信息的基于 curses 开发的跨平台命令行系统监视工具。 通过 Glances，我们可以监视 CPU，平均负载，内存，网络流量，磁盘 I/O，其他处理器 和 文件系统 空间的利用情况。</p>
-<p>Glances 是一个用来监视 GNU/Linux 和 FreeBSD 操作系统的 GPL 授权的自由软件。</p>
-<p>Glances 同时也提供了很多实用的选项。 其中我们能够在配置文件见到的一项主要的功能就是设置关键值及相应的标签 （careful[小心], warning[警告] 和 critical[严重]）， 然后她会自动帮我们用不同颜色标出系统达到某个瓶颈的信息。</p>
-<p>Glances 主要功能<br>CPU 信息 （用户的相关应用, 系统核心程序和空闲程序）<br>总内存信息，包括了物理内存，交换空间和空闲内存等等<br>之前的 1 分钟、5 分钟和 15 分钟平均的 CPU 负载<br>网络链接的下行和上行速度<br>处理器总数，以及其活动状态<br>硬盘 I/O 相关（读写）速度详情<br>当前挂载设备的磁盘使用情况<br>高 CPU 和内存使用的进程名，和相关应用的位置<br>在底部显示当前日期和时间<br>将消耗最高系统资源的进程用红色标出<br>下面是一个 Glances 的使用截图：<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214404gen07qvynyj3vjzn.jpeg" alt=""><br>在 Linux/Unix 系统中安装 Glances<br>虽然这个工具的发布比较晚，但你仍然可以在 Red Hat 系的系统中通过 EPEL 软件源安装。在终端用下面的命令安装：</p>
-<p>对于 RHEL/CentOS/Fedora 发行版  </p>
-<pre><code># yum install -y glances  
-</code></pre><p>对于 Debian/Ubuntu/Linux Mint 发行版<br>    $ sudo apt-add-repository ppa:arnaud-hartmann/glances-stable<br>    $ sudo apt-get update<br>    $ sudo apt-get install glances<br>如何使用 Glances<br>首先，你需要在终端中输入以下命令  </p>
-<pre><code># glances  
-</code></pre><p><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214413hgrs2ozqwarrwypo.jpeg" alt=""></p>
-<p>按下 ‘q‘ （‘ESC‘ 和 ‘Ctrl-C‘ 也可以） 退出 Glances 终端。 这里是从 CentOS 6.5 截取的另一张截图：<br><img src="https://dn-linuxcn.qbox.me/data/attachment/album/201403/31/214419xaiwmtwwaawo2oya.jpeg" alt=""><br>Glances 的默认刷新频率是 1 （秒），但是你可以通过在终端指定参数来手动定义其刷新频率  </p>
-<pre><code># glances -t 2   
-</code></pre><p>Glances 中颜色的含义<br>Glances 会用一下几种颜色来代表状态：</p>
-<p>绿色：OK（一切正常）<br>蓝色：CAREFUL（需要注意）<br>紫色：WARNING（警告）<br>红色：CRITICAL（严重）<br>阀值可以在配置文件中设置，一般阀值被默认设置为（careful=50、warning=70、critical=90）。</p>
-<p>我们可以按照自己的需求在配置文件（默认在 /etc/glances/glances.conf）中自定义。</p>
-<p>Glances 的选项<br>除了很多命令行选项之外，Glances 还提供了更多的可在其运行时开关输出信息选项的快捷键，下面是一些例子：</p>
-<p>a – 对进程自动排序<br>c – 按 CPU 百分比对进程排序<br>m – 按内存百分比对进程排序<br>p – 按进程名字母顺序对进程排序<br>i – 按读写频率（I/O）对进程排序<br>d – 显示/隐藏磁盘 I/O 统计信息<br>f – 显示/隐藏文件系统统计信息<br>n – 显示/隐藏网络接口统计信息<br>s – 显示/隐藏传感器统计信息<br>y – 显示/隐藏硬盘温度统计信息<br>l – 显示/隐藏日志（log）<br>b – 切换网络 I/O 单位（Bytes/bits）<br>w – 删除警告日志<br>x – 删除警告和严重日志<br>1 – 切换全局 CPU 使用情况和每个 CPU 的使用情况<br>h – 显示/隐藏这个帮助画面<br>t – 以组合形式浏览网络 I/O<br>u – 以累计形式浏览网络 I/O<br>q – 退出（‘ESC‘ 和 ‘Ctrl&amp;C‘ 也可以）<br>远程使用 Glances<br>你甚至也可以通过 Glances 来监视远程系统。 要在远程系统使用 ‘glances’，需要在服务器运行 ‘glances -s’（-s 启动服务器/客户端模式）命令。  </p>
-<pre><code># glances -s
-</code></pre><p>Define the password for the Glances server<br>Password:<br>Password (confirm):<br>Glances server is running on 0.0.0.0:61209<br>注意：当你执行了‘glances’命令后，她会让你为 Glances 服务器设置密码。</p>
-<p>当你设置完毕，你将看到 “Glances server is running on 0.0.0.0:61209” （Glances 服务器正在 0.0.0.0 的 61209 端口运行）的消息。</p>
-<p>当 Glances 服务器启动后，到本地执行下面的命令来指定服务器IP地址或主机名以链接。</p>
-<p>注：这里的 ‘172.16.27.56’ 是我 Glances 服务器的 IP 地址。  </p>
-<pre><code># glances -c -P 172.16.27.56    
-</code></pre><p>  下面是一些在使用服务器/客户端模式时必须知道的事情：  </p>
-<ul>
-<li>在服务器模式，你可以通过 <code>-B 地址</code> 来设置绑定地址，也可以通过 <code>-p 端口</code> 来绑定监听的 TCP 端口  </li>
-<li>在客户端模式，你可以通过同样的 <code>-p 端口</code> 来指定服务器端口  </li>
-<li>默认的绑定地址是 0.0.0.0，但这么做会监听所有网络接口的指定端口  </li>
-<li>在服务器/客户端模式下，限制的阀值将由服务器的设置决定  </li>
-<li>你也可以在命令行下用过 <code>-P 密码</code> 的方式来为服务器端设置一个密码<br>总结<br>Glances 对于大多用户而言是个在系统资源上提供过多信息的工具。但是如果你是一个想要仅从命令行就能快速获取系统整体状况的系统管理员，那这个工具绝对是你的必备利器。<br>请不要将 glances（本文中的工具）和 glance（一个 OpenStack 的工具）这两个包搞混了<br>Ubuntu 官方 Extra 源中的 glances 因为 python 库移动的问题导致无法正常使用 但可以通过建立软链接的方式临时修复：sudo ln -s /usr/lib/python2.7/dist-packages/glances /usr/share/pyshared/glances</li>
-</ul>
+        <h2 id="lsyncd实时同步"><a href="#lsyncd实时同步" class="headerlink" title="lsyncd实时同步"></a>lsyncd实时同步</h2><h3 id="lsyncd简介"><a href="#lsyncd简介" class="headerlink" title="lsyncd简介"></a>lsyncd简介</h3><a id="more"></a>
+<p>Lysncd 实际上是lua语言封装了 inotify 和 rsync 工具，采用了 Linux 内核（2.6.13 及以后）里的 inotify 触发机制，然后通过rsync去差异同步，达到实时的效果。我认为它最令人称道的特性是，完美解决了 inotify + rsync海量文件同步带来的文件频繁发送文件列表的问题 —— 通过时间延迟或累计触发事件次数实现。另外，它的配置方式很简单，lua本身就是一种配置语言，可读性非常强。lsyncd也有多种工作模式可以选择，本地目录cp，本地目录rsync，远程目录rsyncssh。<br>实现简单高效的本地目录同步备份（网络存储挂载也当作本地目录），一个命令搞定。</p>
+<h3 id="首先客户端和服务端都需要安装rsync"><a href="#首先客户端和服务端都需要安装rsync" class="headerlink" title="首先客户端和服务端都需要安装rsync"></a>首先客户端和服务端都需要安装rsync</h3><pre><code>yum -y install rsync
+</code></pre><h3 id="lsyncd的安装"><a href="#lsyncd的安装" class="headerlink" title="lsyncd的安装"></a>lsyncd的安装</h3><pre><code>rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+yum install lsyncd
+</code></pre><h3 id="创建lsyncd的工作目录"><a href="#创建lsyncd的工作目录" class="headerlink" title="创建lsyncd的工作目录"></a>创建lsyncd的工作目录</h3><pre><code>mkdir -p /usr/local/lsyncd-2.1.5/etc/
+mkdir -p /usr/local/lsyncd-2.1.5/var/
+</code></pre><h3 id="创建lsyncd的配置文件"><a href="#创建lsyncd的配置文件" class="headerlink" title="创建lsyncd的配置文件"></a>创建lsyncd的配置文件</h3><pre><code>vim /usr/local/lsyncd-2.1.5/etc/lsyncd.conf
+settings {
+    logfile      = &quot;/usr/local/lsyncd-2.1.5/var/lsyncd.log&quot;,
+    statusFile   = &quot;/usr/local/lsyncd-2.1.5/var/lsyncd.status&quot;,
+    inotifyMode  = &quot;CloseWrite&quot;,
+    maxProcesses = 7,
+}
+
+
+sync {
+    default.rsync,  
+    source    = &quot;/var/opt/gitlab/backups&quot;,  
+    target    = &quot;root@10.1.10.101:/var/opt/gitlab/  backups-BF&quot;,  
+    maxDelays = 5,  
+    delay = 30,  
+    rsync     = {  
+        binary = &quot;/bin/rsync&quot;,  
+        archive = true,
+         compress = true,
+         bwlimit   = 2000
+    }
+}
+</code></pre><h3 id="lsyncd-conf配置文件说明"><a href="#lsyncd-conf配置文件说明" class="headerlink" title="lsyncd.conf配置文件说明"></a>lsyncd.conf配置文件说明</h3><h4 id="settings"><a href="#settings" class="headerlink" title="settings"></a>settings</h4><p>里面是全局配置，-开头表示注释</p>
+<pre><code>&gt;logfile 定义日志文件
+&gt;stausFile 定义状态文件
+&gt;inotifyMode 指定inotify监控的事件，默认是CloseWrite，还可以是Modify或CloseWrite or Modify
+&gt;maxProcesses 同步进程的最大个数。假如同时有20个文件需要同步，而&gt;maxProcesses = 7，则最大能看到有7个rysnc进程
+</code></pre><h4 id="sync"><a href="#sync" class="headerlink" title="sync"></a>sync</h4><p>里面是定义同步参数，可以继续使用maxDelays来重写settings的全局变量。一般第一个参数指定lsyncd以什么模式运行：rsync、rsyncssh、direct三种模式：</p>
+<pre><code>&gt;default.rsync ：本地目录间同步，使用rsync，也可以达到使用ssh形式的远程rsync效果，或daemon方式连接远程rsyncd进程；
+&gt;default.direct ：本地目录间同步，使用cp、rm等命令完成差异文件备份；
+&gt;default.rsyncssh ：同步到远程主机目录，rsync的ssh模式，需要使用key来认证
+
+source 同步的源目录，使用绝对路径。
+arget 定义目的地址
+</code></pre><h4 id="rsync"><a href="#rsync" class="headerlink" title="rsync"></a>rsync</h4><pre><code>binary 定义rsync位置，位置有可能不一样
+</code></pre><h3 id="做公私钥认证"><a href="#做公私钥认证" class="headerlink" title="做公私钥认证"></a>做公私钥认证</h3><p>将服务的的公钥写到客户端的<code>root/.ssh/authorized_keys</code>文件中</p>
+<p>使用ssh验证ssh访问是否正常</p>
+<h3 id="在服务端启动lsyncd服务"><a href="#在服务端启动lsyncd服务" class="headerlink" title="在服务端启动lsyncd服务"></a>在服务端启动lsyncd服务</h3><pre><code>lsyncd -log Exec /usr/local/lsyncd-2.1.5/etc/lsyncd.conf
+</code></pre><h3 id="观察客户端同步目录是否正确"><a href="#观察客户端同步目录是否正确" class="headerlink" title="观察客户端同步目录是否正确"></a>观察客户端同步目录是否正确</h3><h3 id="在服务端写入定时任务备份文件"><a href="#在服务端写入定时任务备份文件" class="headerlink" title="在服务端写入定时任务备份文件"></a>在服务端写入定时任务备份文件</h3><pre><code>crontab -e
+0 0 * * *  /bin/gitlab-rake gitlab:backup:create
+0 1 */2 * * find /var/opt/gitlab/backups -mtime +7 -name &quot;*_gitlab_backup.tar&quot;|xargs rm -rf
+</code></pre><p>我这里写的是每周二会清理<code>/var/opt/gitlab/backups</code>文件中gitlab的备份文件，该时间可以由自己需求进行更改</p>
 
       
     </div>
@@ -291,13 +304,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/02/28/Glances/">Glances</a></p>
+        <p><span>本文标题:</span><a href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
-        <p><span>发布时间:</span>2017年02月28日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年09月19日 - 16时46分</p>
+        <p><span>发布时间:</span>2017年09月22日 - 00时00分</p>
+        <p><span>最后更新:</span>2017年09月22日 - 14时25分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/02/28/Glances/" title="Glances">http://datura.me/2017/02/28/Glances/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/02/28/Glances/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/09/22/lsyncd实现文件目录同步简要说明/" title="centos 7 lsyncd实时同步">http://datura.me/2017/09/22/lsyncd实现文件目录同步简要说明/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/09/22/lsyncd实现文件目录同步简要说明/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -310,18 +323,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          tcpdump：理论、自动抓包及业务架构树的生成
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/01/08/tsung说明文档/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">tsung使用说明</div>
+    <a href="/2017/09/13/lsyncd实时同步/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">centos 7 部署 lsyncd 实时同步</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -333,7 +337,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#lsyncd实时同步"><span class="toc-number">1.</span> <span class="toc-text">lsyncd实时同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lsyncd简介"><span class="toc-number">1.1.</span> <span class="toc-text">lsyncd简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#首先客户端和服务端都需要安装rsync"><span class="toc-number">1.2.</span> <span class="toc-text">首先客户端和服务端都需要安装rsync</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lsyncd的安装"><span class="toc-number">1.3.</span> <span class="toc-text">lsyncd的安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建lsyncd的工作目录"><span class="toc-number">1.4.</span> <span class="toc-text">创建lsyncd的工作目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建lsyncd的配置文件"><span class="toc-number">1.5.</span> <span class="toc-text">创建lsyncd的配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lsyncd-conf配置文件说明"><span class="toc-number">1.6.</span> <span class="toc-text">lsyncd.conf配置文件说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#settings"><span class="toc-number">1.6.1.</span> <span class="toc-text">settings</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sync"><span class="toc-number">1.6.2.</span> <span class="toc-text">sync</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rsync"><span class="toc-number">1.6.3.</span> <span class="toc-text">rsync</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#做公私钥认证"><span class="toc-number">1.7.</span> <span class="toc-text">做公私钥认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在服务端启动lsyncd服务"><span class="toc-number">1.8.</span> <span class="toc-text">在服务端启动lsyncd服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#观察客户端同步目录是否正确"><span class="toc-number">1.9.</span> <span class="toc-text">观察客户端同步目录是否正确</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在服务端写入定时任务备份文件"><span class="toc-number">1.10.</span> <span class="toc-text">在服务端写入定时任务备份文件</span></a></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -381,7 +385,7 @@
     
       <div class="duoshuo" id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2017/02/28/Glances/" data-title="Glances" data-url="http://datura.me/2017/02/28/Glances/"></div>
+    <div class="ds-thread" data-thread-key="2017/09/22/lsyncd实现文件目录同步简要说明/" data-title="centos 7 lsyncd实时同步" data-url="http://datura.me/2017/09/22/lsyncd实现文件目录同步简要说明/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
@@ -404,13 +408,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/" title="上一篇: tcpdump：理论、自动抓包及业务架构树的生成">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/01/08/tsung说明文档/" title="下一篇: tsung使用说明">
+            <a href="/2017/09/13/lsyncd实时同步/" title="下一篇: centos 7 部署 lsyncd 实时同步">
                 <i class="fa fa-angle-right"></i>
             </a>
         
