@@ -1,7 +1,8 @@
 ---
 title: tsung使用说明
 date: 2017-01-08
-tags:
+tags: tsung
+categories: tsung
 ---
 
 1、tsung安装

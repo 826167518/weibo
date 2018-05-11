@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>用Kibana和logstash快速搭建实时日志查询、收集与分析系统 | Datura</title>
+  <title>用Kibana和logstash快速搭建实时日志查询、收集与分析系统 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Logstash是一个完全开源的工具，他可以对你的日志进行收集、分析，并将其存储供以后使用（如，搜索），您可以使用它。说到搜索，logstash带有一个web界面，搜索和展示所有日志。kibana 也是一个开源和免费的工具，他可以帮助您汇总、分析和搜索重要数据日志并提供友好的web界面。他可以为 Logstash 和 ElasticSearch 提供的日志分析的 Web 界面">
+<meta name="keywords" content="elk">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用Kibana和logstash快速搭建实时日志查询、收集与分析系统">
-<meta property="og:url" content="http://datura.me/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/index.html">
-<meta property="og:site_name" content="Datura">
+<meta property="og:url" content="http://yoursite.com/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/index.html">
+<meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Logstash是一个完全开源的工具，他可以对你的日志进行收集、分析，并将其存储供以后使用（如，搜索），您可以使用它。说到搜索，logstash带有一个web界面，搜索和展示所有日志。kibana 也是一个开源和免费的工具，他可以帮助您汇总、分析和搜索重要数据日志并提供友好的web界面。他可以为 Logstash 和 ElasticSearch 提供的日志分析的 Web 界面">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/131035239.png">
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/131135111.png">
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/133957451.jpg">
@@ -18,16 +20,14 @@
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/133019112.jpg">
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/202133777.jpg">
 <meta property="og:image" content="http://img1.51cto.com/attachment/201303/133220759.jpg">
-<meta property="og:updated_time" content="2017-09-19T08:46:01.000Z">
+<meta property="og:updated_time" content="2018-05-11T16:22:09.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用Kibana和logstash快速搭建实时日志查询、收集与分析系统">
 <meta name="twitter:description" content="Logstash是一个完全开源的工具，他可以对你的日志进行收集、分析，并将其存储供以后使用（如，搜索），您可以使用它。说到搜索，logstash带有一个web界面，搜索和展示所有日志。kibana 也是一个开源和免费的工具，他可以帮助您汇总、分析和搜索重要数据日志并提供友好的web界面。他可以为 Logstash 和 ElasticSearch 提供的日志分析的 Web 界面">
 <meta name="twitter:image" content="http://img1.51cto.com/attachment/201303/131035239.png">
   
-    <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
-  
-    <link rel="icon" href="/img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
   
   
   <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
@@ -63,7 +63,7 @@
     <header id="header" class="inner">
         <a href="/" class="profilepic">
             
-            <img lazy-src="/img/head.jpg" class="js-avatar">
+            <img lazy-src="img/head.jpg" class="js-avatar">
             
         </a>
 
@@ -121,7 +121,11 @@
                     <nav class="header-menu">
                         <ul>
                         
-                            <li><a href="/">博客首页</a></li>
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
                         
                         </ul>
                     </nav>
@@ -132,7 +136,17 @@
                             
                                 <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                             
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
                                 <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                             
                         </ul>
                     </nav>
@@ -141,7 +155,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 20px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
                     </div>
                 </section>
                 
@@ -150,21 +164,7 @@
                 <section class="switch-part switch-part3">
                     <div id="js-friends">
                     
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://arvon.top/">Arvon</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ccwebsite.com/">兮兮</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.dandyweng.com/">翁天信</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.plqblog.com/views/index.php">潘利强</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.hankin.cn/">hankin</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.waydrow.com/">waydrow</a>
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
                     
                     </div>
                 </section>
@@ -192,7 +192,7 @@
         <header id="header" class="inner">
             <a href="/" class="profilepic">
                 
-                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                    <img lazy-src="img/head.jpg" class="js-avatar">
                 
             </a>
             <hgroup>
@@ -202,7 +202,11 @@
             <nav class="header-menu">
                 <ul>
                 
-                    <li><a href="/">博客首页</a></li>
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
                 
                 <div class="clearfix"></div>
                 </ul>
@@ -214,7 +218,17 @@
                     
                         <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                     
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
                         <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                     
                 </div>
             </nav>
@@ -225,7 +239,7 @@
   
     <div class="article-meta">
       <a href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/" class="article-date">
-      <time datetime="2017-03-02T16:00:00.000Z" itemprop="datePublished">2017-03-03</time>
+      <time datetime="2017-03-03T05:00:00.000Z" itemprop="datePublished">2017-03-03</time>
 </a>
     </div>
   
@@ -246,8 +260,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/elk/">elk</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/elk/">elk</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -371,8 +393,8 @@ java5205 root  465u  IPv4 130805   TCP *:armtechdaemon (LISTEN)
 # lsof -i:9200 
 COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME 
 java5205 root  160u  IPv4 130682   TCP *:wap-wsp (LISTEN) 
-</code></pre><p>现在可以通过浏览器访问一下 <a href="http://192.168.233.128:9292" target="_blank" rel="external">http://192.168.233.128:9292</a> 看看logstash是的页面是个什么样子<br><img src="http://img1.51cto.com/attachment/201303/133957451.jpg" alt=""></p>
-<p>现在还不能搜索因为现在还没有数据，其实这个时候 <a href="http://192.168.233.128:9200" target="_blank" rel="external">http://192.168.233.128:9200</a> 也是可以访问的，<br>很多开发自己写代码来调用elasticsearch 来实现他们自己的需要，这里就不多说了<br>192.168.233.128 这台logstash index的操作暂时告一段落，下面开始配置logstash的agent<br>登录到 服务器 192.168.233.129 安装基本软件包和logstash</p>
+</code></pre><p>现在可以通过浏览器访问一下 <a href="http://192.168.233.128:9292" target="_blank" rel="noopener">http://192.168.233.128:9292</a> 看看logstash是的页面是个什么样子<br><img src="http://img1.51cto.com/attachment/201303/133957451.jpg" alt=""></p>
+<p>现在还不能搜索因为现在还没有数据，其实这个时候 <a href="http://192.168.233.128:9200" target="_blank" rel="noopener">http://192.168.233.128:9200</a> 也是可以访问的，<br>很多开发自己写代码来调用elasticsearch 来实现他们自己的需要，这里就不多说了<br>192.168.233.128 这台logstash index的操作暂时告一段落，下面开始配置logstash的agent<br>登录到 服务器 192.168.233.129 安装基本软件包和logstash</p>
 <pre><code>[192.168.233.129 root@noded:~] 
 # cd /soft/ 
 [192.168.233.129 root@noded:/soft] 
@@ -457,11 +479,11 @@ activerehashing yes
 # echo GET12313 &gt;&gt; apache.log 
 [192.168.233.129 root@noded:/soft] 
 # echo errorabcd &gt;&gt; apache.log 
-</code></pre><p>ok 到 <a href="http://192.168.233.128:9292" target="_blank" rel="external">http://192.168.233.128:9292</a> 去搜索一下 刚才的两个内容<br><img src="http://img1.51cto.com/attachment/201303/132952247.jpg" alt=""><br><img src="http://img1.51cto.com/attachment/201303/133019112.jpg" alt=""><br>嗯，就是这样了，我现在找个php的错误日志给他追加到php.log文件里 </p>
+</code></pre><p>ok 到 <a href="http://192.168.233.128:9292" target="_blank" rel="noopener">http://192.168.233.128:9292</a> 去搜索一下 刚才的两个内容<br><img src="http://img1.51cto.com/attachment/201303/132952247.jpg" alt=""><br><img src="http://img1.51cto.com/attachment/201303/133019112.jpg" alt=""><br>嗯，就是这样了，我现在找个php的错误日志给他追加到php.log文件里 </p>
 <pre><code>[192.168.233.129 root@noded:/soft]
 # cat php-error.log &gt;&gt; php.log
 </code></pre><p>在看看 logstash的页面 搜索一下 error</p>
-<p><img src="http://img1.51cto.com/attachment/201303/202133777.jpg" alt=""><br>OK，最后就是 Kibana了 ，我把Kibana装在了 logstash index上面<br>下载地址为 <a href="http://kibana.org/intro.html" target="_blank" rel="external">http://kibana.org/intro.html</a></p>
+<p><img src="http://img1.51cto.com/attachment/201303/202133777.jpg" alt=""><br>OK，最后就是 Kibana了 ，我把Kibana装在了 logstash index上面<br>下载地址为 <a href="http://kibana.org/intro.html" target="_blank" rel="noopener">http://kibana.org/intro.html</a></p>
 <pre><code>[192.168.233.128 root@nodec:/soft] 
 # tar xf Kibana-0.2.0.tar.gz 
 [192.168.233.128 root@nodec:/soft] 
@@ -491,7 +513,7 @@ activerehashing yes
 # lsof -i:5601 
 COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME 
 ruby3116 root5u  IPv4  28947   TCP *:esmagent (LISTEN) 
-</code></pre><p>访问一下 试试看 <a href="http://192.168.233.128:5601" target="_blank" rel="external">http://192.168.233.128:5601</a> 尝试搜索一下php的错误日志，比如mysql<br><img src="http://img1.51cto.com/attachment/201303/133220759.jpg" alt=""><br>呵呵，要的就是这个效果，日志会实时的汇总到 logstash index 上供我们查询，当然这只是开始使用logstash的第一步而已，更多的高级功能可以看看官方文档<br><a href="http://logstash.net/docs/1.1.9/" target="_blank" rel="external">http://logstash.net/docs/1.1.9/</a><br>如果有问题大家可以一起探讨，我也是刚开始接触这个东东，收集日志是相当方便啊，据说还能跟nagios结合. 呵呵</p>
+</code></pre><p>访问一下 试试看 <a href="http://192.168.233.128:5601" target="_blank" rel="noopener">http://192.168.233.128:5601</a> 尝试搜索一下php的错误日志，比如mysql<br><img src="http://img1.51cto.com/attachment/201303/133220759.jpg" alt=""><br>呵呵，要的就是这个效果，日志会实时的汇总到 logstash index 上供我们查询，当然这只是开始使用logstash的第一步而已，更多的高级功能可以看看官方文档<br><a href="http://logstash.net/docs/1.1.9/" target="_blank" rel="noopener">http://logstash.net/docs/1.1.9/</a><br>如果有问题大家可以一起探讨，我也是刚开始接触这个东东，收集日志是相当方便啊，据说还能跟nagios结合. 呵呵</p>
 
       
     </div>
@@ -503,10 +525,10 @@ ruby3116 root5u  IPv4  28947   TCP *:esmagent (LISTEN)
         <p><span>本文标题:</span><a href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2017年03月03日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年09月19日 - 16时46分</p>
+        <p><span>最后更新:</span>2018年05月11日 - 12时22分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/" title="用Kibana和logstash快速搭建实时日志查询、收集与分析系统">http://datura.me/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/" title="用Kibana和logstash快速搭建实时日志查询、收集与分析系统">http://yoursite.com/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -588,26 +610,6 @@ ruby3116 root5u  IPv4  28947   TCP *:esmagent (LISTEN)
 
 
     
-      <div class="duoshuo" id="comments">
-    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/" data-title="用Kibana和logstash快速搭建实时日志查询、收集与分析系统" data-url="http://datura.me/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/"></div>
-    <!-- 多说评论框 end -->
-    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-    <script type="text/javascript">
-    var duoshuoQuery = {short_name:"null"};
-    (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = '/js/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0] 
-         || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-    </script>
-    <!-- 多说公共JS代码 end -->
-</div>
-
-    
 
 
 
@@ -624,7 +626,7 @@ ruby3116 root5u  IPv4  28947   TCP *:esmagent (LISTEN)
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

@@ -1,7 +1,8 @@
 ---
 title: centos 7 部署 lsyncd 实时同步
 date: 2017-09-13
-tags:
+tags: lsync
+categories: lsync
 ---
 ## 几大实时同步工具比较
 <!--more-->

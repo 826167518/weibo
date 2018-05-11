@@ -1,7 +1,8 @@
 ---
 title: tcpdump抓包命令详解
 date: 2016-11-03
-tags:
+tags: tcpdum
+categories: linux
 ---
 TCPdump抓包命令 
 tcpdump是一个用于截取网络分组，并输出分组内容的工具。tcpdump凭借强大的功能和灵活的截取策略，使其成为类UNIX系统下用于网络分析和问题排查的首选工具。 

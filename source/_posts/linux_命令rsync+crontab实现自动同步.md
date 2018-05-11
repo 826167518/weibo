@@ -1,7 +1,8 @@
 ---
 title: linux 命令rsync+crontab实现自动同步
 date: 2016-10-05
-tags:
+tags: rsync
+categories: rsync
 ---
 linux 命令rsync+crontab实现自动同步,这个技术现在已经用得很广泛了,比起第三方的软件要可靠好使,所以得到系统管理员的广泛应用;在此,我给大伙来分享一下;请指教.
 

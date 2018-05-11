@@ -1,7 +1,8 @@
 ---
 title: tcpdump：理论、自动抓包及业务架构树的生成
 date: 2017-03-02
-tags:
+tags: tcpdump
+categories: linux
 ---
 ###一、tcpdump基础
 

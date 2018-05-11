@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Kubernetes如何使用kube-dns实现服务发现 | Datura</title>
+  <title>Kubernetes如何使用kube-dns实现服务发现 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Kubernetes中如何发现服务">
+<meta name="keywords" content="k8s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes如何使用kube-dns实现服务发现">
-<meta property="og:url" content="http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/index.html">
-<meta property="og:site_name" content="Datura">
+<meta property="og:url" content="http://yoursite.com/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/index.html">
+<meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Kubernetes中如何发现服务">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/1.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/2.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/3.png">
@@ -29,16 +31,14 @@
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/kube-dns%E6%9E%B6%E6%9E%84.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/16.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/17.png">
-<meta property="og:updated_time" content="2018-04-12T03:37:03.000Z">
+<meta property="og:updated_time" content="2018-05-11T16:07:34.864Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes如何使用kube-dns实现服务发现">
 <meta name="twitter:description" content="Kubernetes中如何发现服务">
 <meta name="twitter:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/1.png">
   
-    <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
-  
-    <link rel="icon" href="/img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
   
   
   <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
@@ -74,7 +74,7 @@
     <header id="header" class="inner">
         <a href="/" class="profilepic">
             
-            <img lazy-src="/img/head.jpg" class="js-avatar">
+            <img lazy-src="img/head.jpg" class="js-avatar">
             
         </a>
 
@@ -132,7 +132,11 @@
                     <nav class="header-menu">
                         <ul>
                         
-                            <li><a href="/">博客首页</a></li>
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
                         
                         </ul>
                     </nav>
@@ -143,7 +147,17 @@
                             
                                 <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                             
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
                                 <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                             
                         </ul>
                     </nav>
@@ -152,7 +166,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 20px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
                     </div>
                 </section>
                 
@@ -161,21 +175,7 @@
                 <section class="switch-part switch-part3">
                     <div id="js-friends">
                     
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://arvon.top/">Arvon</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ccwebsite.com/">兮兮</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.dandyweng.com/">翁天信</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.plqblog.com/views/index.php">潘利强</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.hankin.cn/">hankin</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.waydrow.com/">waydrow</a>
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
                     
                     </div>
                 </section>
@@ -203,7 +203,7 @@
         <header id="header" class="inner">
             <a href="/" class="profilepic">
                 
-                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                    <img lazy-src="img/head.jpg" class="js-avatar">
                 
             </a>
             <hgroup>
@@ -213,7 +213,11 @@
             <nav class="header-menu">
                 <ul>
                 
-                    <li><a href="/">博客首页</a></li>
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
                 
                 <div class="clearfix"></div>
                 </ul>
@@ -225,7 +229,17 @@
                     
                         <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                     
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
                         <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                     
                 </div>
             </nav>
@@ -236,7 +250,7 @@
   
     <div class="article-meta">
       <a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" class="article-date">
-      <time datetime="2018-04-09T16:00:00.000Z" itemprop="datePublished">2018-04-10</time>
+      <time datetime="2018-04-10T04:00:00.000Z" itemprop="datePublished">2018-04-10</time>
 </a>
     </div>
   
@@ -257,8 +271,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/k8s/">k8s</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/k8s/">k8s</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -269,7 +291,7 @@
         <h1 id="Kubernetes中如何发现服务"><a href="#Kubernetes中如何发现服务" class="headerlink" title="Kubernetes中如何发现服务"></a>Kubernetes中如何发现服务</h1><a id="more"></a>
 <h2 id="发现Pod提供的服务"><a href="#发现Pod提供的服务" class="headerlink" title="发现Pod提供的服务"></a>发现Pod提供的服务</h2><p>首先使用nginx-deployment.yaml文件创建一个Nginx Deployment，文件内容如图所示：<br>首先创建两个运行Nginx服务的Pod：<br><img src="http://blog.tenxcloud.com/wp-content/uploads/2016/10/1.png" alt="http://blog.tenxcloud.com/wp-content/uploads/2016/10/1.png"></p>
 <p>使用kubectl create -f nginx-deployment.yaml指令创建，这样便可以得到两个运行nginx服务的Pod。待Pod运行之后查看一下它们的IP，并在k8s集群内通过podIP和containerPort来访问Nginx服务：</p>
-<h3 id="获取Pod-IP："><a href="#获取Pod-IP：" class="headerlink" title="获取Pod IP："></a>获取Pod IP：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kubectl get pod -o yaml -l run=myy-nginx|grep podIP</div></pre></td></tr></table></figure>
+<h3 id="获取Pod-IP："><a href="#获取Pod-IP：" class="headerlink" title="获取Pod IP："></a>获取Pod IP：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -o yaml -l run=myy-nginx|grep podIP</span><br></pre></td></tr></table></figure>
 <p><img src="http://blog.tenxcloud.com/wp-content/uploads/2016/10/2.png" alt="http://blog.tenxcloud.com/wp-content/uploads/2016/10/2.png"></p>
 <h3 id="在集群内访问Nginx服务："><a href="#在集群内访问Nginx服务：" class="headerlink" title="在集群内访问Nginx服务："></a>在集群内访问Nginx服务：</h3><p><img src="http://blog.tenxcloud.com/wp-content/uploads/2016/10/3.png" alt="http://blog.tenxcloud.com/wp-content/uploads/2016/10/3.png"></p>
 <p>看到这里相信很多人会有以下疑问：</p>
@@ -306,10 +328,10 @@
 <p>虽然领略了使用kube-dns发现服务的便利性，但相信有很多人也是一头雾水：kube-dns到底怎么工作的？在集群中启用了kube-dns插件，怎么就能通过名称访问Service了呢？</p>
 <h1 id="kube-dns原理"><a href="#kube-dns原理" class="headerlink" title="kube-dns原理"></a>kube-dns原理</h1><h2 id="Kube-dns组成"><a href="#Kube-dns组成" class="headerlink" title="Kube-dns组成"></a>Kube-dns组成</h2><p>之前已经了解到kube-dns是由四个容器组成的，它们扮演的角色可以通过下面这张图来理解。<br><img src="http://blog.tenxcloud.com/wp-content/uploads/2016/10/kube-dns%E6%9E%B6%E6%9E%84.png" alt=""></p>
 <p>其中：</p>
-<p>●  SkyDNS是用于服务发现的开源框架，构建于etcd之上。作用是为k8s集群中的Pod提供DNS查询接口。项目托管于<a href="https://github.com/skynetservices/skydns" target="_blank" rel="external">https://github.com/skynetservices/skydns</a></p>
-<p>●  etcd是一种开源的分布式key-value存储，其功能与ZooKeeper类似。在kube-dns中的作用为存储SkyDNS需要的各种数据，写入方为kube2sky，读取方为SkyDNS。项目托管于<a href="https://github.com/coreos/etcd。" target="_blank" rel="external">https://github.com/coreos/etcd。</a></p>
+<p>●  SkyDNS是用于服务发现的开源框架，构建于etcd之上。作用是为k8s集群中的Pod提供DNS查询接口。项目托管于<a href="https://github.com/skynetservices/skydns" target="_blank" rel="noopener">https://github.com/skynetservices/skydns</a></p>
+<p>●  etcd是一种开源的分布式key-value存储，其功能与ZooKeeper类似。在kube-dns中的作用为存储SkyDNS需要的各种数据，写入方为kube2sky，读取方为SkyDNS。项目托管于<a href="https://github.com/coreos/etcd。" target="_blank" rel="noopener">https://github.com/coreos/etcd。</a></p>
 <p>●   kube2sky是k8s实现的一个适配程序，它通过名为kubernetes的Service（通过kubectl get svc可以查看到该Service，由集群自动创建）调用k8s的list和watch API来监听k8s Service资源的变更，从而修改etcd中的SkyDNS记录。代码可以在k8s源码（v1.2）的cluster/addons/dns/kube2sky/目录中找到。</p>
-<p>●   exec-healthz是k8s提供的一种辅助容器，多用于side car模式中。它的原理是定期执行指定的Linux指令，从而判断当前Pod中关键容器的健康状态。在kube-dns中的作用就是通过nslookup指令检查DNS查询服务的健康状态，k8s livenessProbe通过访问exec-healthz提供的Http API了解健康状态，并在出现故障时重启容器。其源码位于<a href="https://github.com/kubernetes/contrib/tree/master/exec-healthz。" target="_blank" rel="external">https://github.com/kubernetes/contrib/tree/master/exec-healthz。</a></p>
+<p>●   exec-healthz是k8s提供的一种辅助容器，多用于side car模式中。它的原理是定期执行指定的Linux指令，从而判断当前Pod中关键容器的健康状态。在kube-dns中的作用就是通过nslookup指令检查DNS查询服务的健康状态，k8s livenessProbe通过访问exec-healthz提供的Http API了解健康状态，并在出现故障时重启容器。其源码位于<a href="https://github.com/kubernetes/contrib/tree/master/exec-healthz。" target="_blank" rel="noopener">https://github.com/kubernetes/contrib/tree/master/exec-healthz。</a></p>
 <p>●  从图中可以发现，Pod查询DNS是通过ServiceName.Namespace子域名来查询的，但在之前的示例中只用了Service名称，什么原理呢？其实当我们只使用Service名称时会默认Namespace为default，而上面示例中的my-nginx Service就是在default Namespace中，因此是可以正常运行的。关于这一点，后续再深入介绍。</p>
 <p>●  skydns-rc.yaml中可以发现livenessProbe是设置在kube2sky容器中的，其意图应该是希望通过重启kube2sky来重新写入DNS规则</p>
 <h2 id="域名格式"><a href="#域名格式" class="headerlink" title="域名格式"></a>域名格式</h2><p>接下来了解一下kube-dns支持的域名格式，具体为：..svc.。</p>
@@ -338,10 +360,10 @@
         <p><span>本文标题:</span><a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2018年04月10日 - 00时00分</p>
-        <p><span>最后更新:</span>2018年04月12日 - 11时37分</p>
+        <p><span>最后更新:</span>2018年05月11日 - 12时07分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" title="Kubernetes如何使用kube-dns实现服务发现">http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" title="Kubernetes如何使用kube-dns实现服务发现">http://yoursite.com/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -414,26 +436,6 @@
 
 
     
-      <div class="duoshuo" id="comments">
-    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" data-title="Kubernetes如何使用kube-dns实现服务发现" data-url="http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/"></div>
-    <!-- 多说评论框 end -->
-    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-    <script type="text/javascript">
-    var duoshuoQuery = {short_name:"null"};
-    (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = '/js/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0] 
-         || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-    </script>
-    <!-- 多说公共JS代码 end -->
-</div>
-
-    
 
 
 
@@ -448,7 +450,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

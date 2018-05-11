@@ -1,7 +1,8 @@
 ---
 title: yum仓库搭建之RPM包制作
 date: 2016-11-05
-tags:
+tags: rpm
+categories: rpm
 ---
  常见的软件安装方式有以下几种  
 1.yum安装，可自动解决依赖，但不能自定义软件安装位置  

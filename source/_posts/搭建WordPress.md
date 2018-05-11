@@ -1,7 +1,8 @@
 ---
 title: 搭建WordPress
 date: 2016-09-02
-tags:
+tags: wordpress
+categories: woedpress
 ---
 
 1.搭建LAMP环境

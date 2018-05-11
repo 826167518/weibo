@@ -3,18 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>htop使用说明 | Datura</title>
+  <title>htop使用说明 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、htop 简介
-This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses.
-Comparison between htop and top">
+  <meta name="description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
+<meta name="keywords" content="linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="htop使用说明">
-<meta property="og:url" content="http://datura.me/2016/09/06/htop使用说明/index.html">
-<meta property="og:site_name" content="Datura">
-<meta property="og:description" content="一、htop 简介
-This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses.
-Comparison between htop and top">
+<meta property="og:url" content="http://yoursite.com/2016/09/06/htop使用说明/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224043-10fbaaa4ef2d49ba844de4ff1df2cea2.jpg">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224044-8e70dd81c3594f14bf334dbf7ae12cda.jpg">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224047-b6fd5270cea14cee87544ff3ca193b34.jpg">
@@ -30,18 +28,14 @@ Comparison between htop and top">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224107-6a091d2523cd4829b243f635b1c32a0a.jpg">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224112-9dc1706a8dbd4972b78a78af34f75ec7.jpg">
 <meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224115-289b4cf95c344dada4aa048c25f821ce.jpg">
-<meta property="og:updated_time" content="2017-09-19T08:46:01.000Z">
+<meta property="og:updated_time" content="2018-05-11T16:23:30.258Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="htop使用说明">
-<meta name="twitter:description" content="一、htop 简介
-This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses.
-Comparison between htop and top">
+<meta name="twitter:description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
 <meta name="twitter:image" content="http://images.cnitblog.com/blog/370046/201301/12224043-10fbaaa4ef2d49ba844de4ff1df2cea2.jpg">
   
-    <link rel="alternative" href="/atom.xml" title="Datura" type="application/atom+xml">
   
-  
-    <link rel="icon" href="/img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
   
   
   <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
@@ -77,7 +71,7 @@ Comparison between htop and top">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
             
-            <img lazy-src="/img/head.jpg" class="js-avatar">
+            <img lazy-src="img/head.jpg" class="js-avatar">
             
         </a>
 
@@ -135,7 +129,11 @@ Comparison between htop and top">
                     <nav class="header-menu">
                         <ul>
                         
-                            <li><a href="/">博客首页</a></li>
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
                         
                         </ul>
                     </nav>
@@ -146,7 +144,17 @@ Comparison between htop and top">
                             
                                 <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                             
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
                                 <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                             
                         </ul>
                     </nav>
@@ -155,7 +163,7 @@ Comparison between htop and top">
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 20px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
                     </div>
                 </section>
                 
@@ -164,21 +172,7 @@ Comparison between htop and top">
                 <section class="switch-part switch-part3">
                     <div id="js-friends">
                     
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://MOxFIVE.github.io/">MOxFIVE</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://arvon.top/">Arvon</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.vsay.cn/">DoubleV</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ccwebsite.com/">兮兮</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.dandyweng.com/">翁天信</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.plqblog.com/views/index.php">潘利强</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.hankin.cn/">hankin</a>
-                    
-                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.waydrow.com/">waydrow</a>
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
                     
                     </div>
                 </section>
@@ -206,7 +200,7 @@ Comparison between htop and top">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
                 
-                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                    <img lazy-src="img/head.jpg" class="js-avatar">
                 
             </a>
             <hgroup>
@@ -216,7 +210,11 @@ Comparison between htop and top">
             <nav class="header-menu">
                 <ul>
                 
-                    <li><a href="/">博客首页</a></li>
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
                 
                 <div class="clearfix"></div>
                 </ul>
@@ -228,7 +226,17 @@ Comparison between htop and top">
                     
                         <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
                     
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
                         <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
                     
                 </div>
             </nav>
@@ -239,7 +247,7 @@ Comparison between htop and top">
   
     <div class="article-meta">
       <a href="/2016/09/06/htop使用说明/" class="article-date">
-      <time datetime="2016-09-05T16:00:00.000Z" itemprop="datePublished">2016-09-06</time>
+      <time datetime="2016-09-06T04:00:00.000Z" itemprop="datePublished">2016-09-06</time>
 </a>
     </div>
   
@@ -260,8 +268,16 @@ Comparison between htop and top">
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -274,7 +290,7 @@ Comparison between htop and top">
 <p>Comparison between htop and top<br><a id="more"></a><br>In ‘htop’ you can scroll the list vertically and horizontally to see all processes and complete command lines.<br>In ‘top’ you are subject to a delay for each unassigned key you press (especially annoying when multi-key escape sequences are triggered by accident).<br>‘htop’ starts faster (‘top’ seems to collect data for a while before displaying anything).<br>In ‘htop’ you don’t need to type the process number to kill a process, in ‘top’ you do.<br>In ‘htop’ you don’t need to type the process number or the priority value to renice a process, in ‘top’ you do.<br>‘htop’ supports mouse operation, ‘top’ doesn’t<br>‘top’ is older, hence, more used and tested.<br>htop 是Linux系统中的一个互动的进程查看器，一个文本模式的应用程序(在控制台或者X终端中)，需要ncurses。</p>
 <p>与Linux传统的top相比，htop更加人性化。它可让用户交互式操作，支持颜色主题，可横向或纵向滚动浏览进程列表，并支持鼠标操作。</p>
 <p>与top相比，htop有以下优点：</p>
-<p>可以横向或纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行。<br>在启动上，比top 更快。<br>杀进程时不需要输入进程号。<br>htop 支持鼠标操作。<br>top 已经很老了。<br>htop 官网：<a href="http://htop.sourceforge.net/" target="_blank" rel="external">http://htop.sourceforge.net/</a></p>
+<p>可以横向或纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行。<br>在启动上，比top 更快。<br>杀进程时不需要输入进程号。<br>htop 支持鼠标操作。<br>top 已经很老了。<br>htop 官网：<a href="http://htop.sourceforge.net/" target="_blank" rel="noopener">http://htop.sourceforge.net/</a></p>
 <p>二、htop 安装</p>
 <p>a. 源码包安装</p>
 <pre><code># tar zxvf htop-1.0.2.tar.gz
@@ -382,10 +398,10 @@ fi
         <p><span>本文标题:</span><a href="/2016/09/06/htop使用说明/">htop使用说明</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2016年09月06日 - 00时00分</p>
-        <p><span>最后更新:</span>2017年09月19日 - 16时46分</p>
+        <p><span>最后更新:</span>2018年05月11日 - 12时23分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/09/06/htop使用说明/" title="htop使用说明">http://datura.me/2016/09/06/htop使用说明/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2016/09/06/htop使用说明/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/09/06/htop使用说明/" title="htop使用说明">http://yoursite.com/2016/09/06/htop使用说明/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2016/09/06/htop使用说明/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -467,26 +483,6 @@ fi
 
 
     
-      <div class="duoshuo" id="comments">
-    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2016/09/06/htop使用说明/" data-title="htop使用说明" data-url="http://datura.me/2016/09/06/htop使用说明/"></div>
-    <!-- 多说评论框 end -->
-    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-    <script type="text/javascript">
-    var duoshuoQuery = {short_name:"null"};
-    (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = '/js/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0] 
-         || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-    </script>
-    <!-- 多说公共JS代码 end -->
-</div>
-
-    
 
 
 
@@ -503,7 +499,7 @@ fi
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

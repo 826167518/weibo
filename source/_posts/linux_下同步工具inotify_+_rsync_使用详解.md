@@ -1,7 +1,8 @@
 ---
 title: linux 下同步工具inotify + rsync 使用详解
 date: 2017-09-13
-tags:
+tags: linux
+categories: linux
 ---
 ## rsynv
 <!--more-->

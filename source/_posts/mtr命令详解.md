@@ -1,7 +1,8 @@
 ---
 title: mtr命令详解
 date: 2016-11-03
-tags:
+tags: mtr
+categories: mtr
 ---
 一般在windows 来判断网络连通性用ping 和tracert,ping的话可以来判断丢包率，tracert可以用来跟踪路由，在Linux中有一个更好的网络连通性判断工具，它可以结合ping nslookup tracert 来判断网络的相关特性,这个命令就是mtr
 <!--more-->

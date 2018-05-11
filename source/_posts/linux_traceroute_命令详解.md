@@ -1,7 +1,8 @@
 ---
 title: 路由跟踪指令traceroute
 date: 2016-11-03
-tags:
+tags: traceroute
+categories: linux
 ---
 通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的
 <!--more-->

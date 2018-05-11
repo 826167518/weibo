@@ -1,7 +1,8 @@
 ---
 title: zabbix2.6安装
 date: 2016-09-02
-tags:
+tags: zabbix
+categories: zabbix
 ---
 
 

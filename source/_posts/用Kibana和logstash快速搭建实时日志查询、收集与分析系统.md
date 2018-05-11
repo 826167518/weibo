@@ -1,7 +1,8 @@
 ---
 title: 用Kibana和logstash快速搭建实时日志查询、收集与分析系统
 date: 2017-03-03
-tags:
+tags: elk
+categories: elk
 ---
  Logstash是一个完全开源的工具，他可以对你的日志进行收集、分析，并将其存储供以后使用（如，搜索），您可以使用它。说到搜索，logstash带有一个web界面，搜索和展示所有日志。
 kibana 也是一个开源和免费的工具，他可以帮助您汇总、分析和搜索重要数据日志并提供友好的web界面。他可以为 Logstash 和 ElasticSearch 提供的日志分析的 Web 界面

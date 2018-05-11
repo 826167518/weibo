@@ -1,7 +1,8 @@
 ---
 title: Python笔记
 date: 2017-07-05
-tags:
+tags: python
+categories: python
 toc: true
 ---
 ## str类   ##

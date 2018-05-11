@@ -1,7 +1,8 @@
 ---
 title: git使用说明详解
 date: 2017-06-16
-tags:
+tags: git
+categories: git
 ---
 1.下载geekery.repo文件，具体操作如下：
 <!--more-->

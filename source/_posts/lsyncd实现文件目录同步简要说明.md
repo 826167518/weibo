@@ -1,7 +1,8 @@
 ---
 title: centos 7 lsyncd实时同步
 date: 2017-09-22
-tags:
+tags: lsync
+categories: lsync
 ---
 ## lsyncd实时同步
 ### lsyncd简介

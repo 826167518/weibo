@@ -1,7 +1,8 @@
 ---
 title: centos 7 部署 open-falcon 0.2.1
 date: 2017-08-31
-tags:
+tags: open-falcon
+categories: open-falcon
 ---
 ## 环境准备
 

@@ -1,7 +1,8 @@
 ---
 title: linux—SSH（二）Rsync备份
 date: 2016-09-02
-tags:
+tags: ssh
+categories: linux
 ---
 一、Rsync软件介绍
 

@@ -1,7 +1,8 @@
 ---
 title: keepalive+nginx实现高可用
 date: 2016-09-02
-tags:
+tags: nginx
+categories: nginx
 ---
 1安装相应基础服务
 

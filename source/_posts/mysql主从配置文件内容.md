@@ -1,7 +1,8 @@
 ---
 title: mysql主从配置文件内容
 date: 2016-09-05
-tags:
+tags: mysql
+categories: mysql
 ---
 
 mysql简要配置文件---master

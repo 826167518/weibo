@@ -1,7 +1,8 @@
 ---
 title: Kubernetes如何使用kube-dns实现服务发现
 date: 2018-04-10
-tags:
+tags: k8s
+categories: k8s
 ---
 # Kubernetes中如何发现服务
 <!--more-->

@@ -1,7 +1,8 @@
 ---
 title: Glances
 date: 2017-02-28
-tags:
+tags: Glances
+categories: Glances
 ---
 top 命令是 Linux 下的一个实时任务管理器， 同时也是用于在 GNU/Linux 发行版中寻找系统性能方面的瓶颈，并帮助我们作出正确操作的常用系统监视工具。 她有着一个极为简洁的界面，并自带少量的可以帮助我们快速了解系统性能的实用选项。
 <!--more-->

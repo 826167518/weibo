@@ -1,7 +1,8 @@
 ---
 title: htop使用说明
 date: 2016-09-06
-tags:
+tags: linux
+categories: linux
 ---
 一、htop 简介
 

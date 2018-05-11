@@ -1,7 +1,8 @@
 ---
 title: git使用说明
 date: 2016-09-02
-tags:
+tags: git
+categories: git
 ---
 在linux下搭建git环境
 ###1、创建Github账号，https://github.com

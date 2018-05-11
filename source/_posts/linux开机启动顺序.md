@@ -1,7 +1,8 @@
 ---
 title: linux开机启动顺序
 date: 2017-06-28
-tags:
+tags: linux
+categories: linux
 ---
 
 

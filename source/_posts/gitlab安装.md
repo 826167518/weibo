@@ -1,7 +1,8 @@
 ---
 title: centos 7 部署 gitlab
 date: 2017-09-08
-tags:
+tags: git
+categories: git
 ---
 ## gitlab的安装搭建
 <!--more-->
