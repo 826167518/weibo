@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>linux 下同步工具inotify + rsync 使用详解 | Datura</title>
@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Datura">
 <meta property="og:description" content="rsynv">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-30T12:58:57.055Z">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux 下同步工具inotify + rsync 使用详解">
 <meta name="twitter:description" content="rsynv">
@@ -33,7 +33,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           fancybox: true,
@@ -46,7 +46,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -228,7 +228,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-linux_下同步工具inotify_+_rsync_使用详解" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-linux_下同步工具inotify_+_rsync_使用详解" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/" class="article-date">
@@ -238,7 +238,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -438,7 +438,7 @@ inotify_fun &gt;&gt; ${log_file} 2&gt;&amp;1 &amp;
         <p><span>本文标题:</span><a href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2017年09月13日 - 00时00分</p>
-        <p><span>最后更新:</span>2018年07月30日 - 08时58分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/" title="linux 下同步工具inotify + rsync 使用详解">http://datura.me/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/</a>
             <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -446,7 +446,7 @@ inotify_fun &gt;&gt; ${log_file} 2&gt;&amp;1 &amp;
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"Datura"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -479,7 +479,7 @@ inotify_fun &gt;&gt; ${log_file} 2&gt;&amp;1 &amp;
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#rsynv"><span class="toc-number">1.</span> <span class="toc-text">rsynv</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是rsync"><span class="toc-number">1.1.</span> <span class="toc-text">什么是rsync</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#基本特点："><span class="toc-number">1.1.1.</span> <span class="toc-text">基本特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#命令语法："><span class="toc-number">1.1.2.</span> <span class="toc-text">命令语法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装"><span class="toc-number">1.1.3.</span> <span class="toc-text">安装</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步测试"><span class="toc-number">2.</span> <span class="toc-text">同步测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#本机文件夹同步"><span class="toc-number">2.1.</span> <span class="toc-text">本机文件夹同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步到远程服务器"><span class="toc-number">2.2.</span> <span class="toc-text">同步到远程服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#服务端的配置文件"><span class="toc-number">2.2.1.</span> <span class="toc-text">服务端的配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务器启动rsync后台服务"><span class="toc-number">2.2.2.</span> <span class="toc-text">服务器启动rsync后台服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#客户端测试同步"><span class="toc-number">2.2.3.</span> <span class="toc-text">客户端测试同步</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rsync不足"><span class="toc-number">2.3.</span> <span class="toc-text">rsync不足</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inotify-tools"><span class="toc-number">3.</span> <span class="toc-text">inotify-tools</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是inotify"><span class="toc-number">3.1.</span> <span class="toc-text">什么是inotify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#inotifywait使用示例"><span class="toc-number">3.2.</span> <span class="toc-text">inotifywait使用示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rsync组合inotify-tools完成实时同步"><span class="toc-number">4.</span> <span class="toc-text">rsync组合inotify-tools完成实时同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建排除在外不同步的文件列表"><span class="toc-number">4.1.</span> <span class="toc-text">创建排除在外不同步的文件列表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#inotifywait排除"><span class="toc-number">4.1.1.</span> <span class="toc-text">inotifywait排除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rsync排除"><span class="toc-number">4.1.2.</span> <span class="toc-text">rsync排除</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端同步到远程的脚本rsync-sh"><span class="toc-number">4.2.</span> <span class="toc-text">客户端同步到远程的脚本rsync.sh</span></a></li></ol></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -578,8 +578,8 @@ inotify_fun &gt;&gt; ${log_file} 2&gt;&amp;1 &amp;
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -588,7 +588,7 @@ inotify_fun &gt;&gt; ${log_file} 2&gt;&amp;1 &amp;
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>

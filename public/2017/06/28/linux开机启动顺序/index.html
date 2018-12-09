@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>linux开机启动顺序 | Datura</title>
@@ -14,7 +14,7 @@
 <meta property="og:description" content="启动第一步－－加载BIOS当你打开计算机电源，计算机会首先加载BIOS信息，BIOS信息是如此的重要，以至于计算机必须在最开始就找到它。这是因为BIOS中包含了CPU的相关信息、设备启动顺序信息、硬盘信息、内存信息、时钟信息、PnP特性等等。在此之后，计算机心里就有谱了，知道应该去读取哪个硬件设备了。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://blog.chinaunix.net/attachment/201209/23/26495963_1348382510SRUx.png">
-<meta property="og:updated_time" content="2018-11-08T03:53:57.188Z">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux开机启动顺序">
 <meta name="twitter:description" content="启动第一步－－加载BIOS当你打开计算机电源，计算机会首先加载BIOS信息，BIOS信息是如此的重要，以至于计算机必须在最开始就找到它。这是因为BIOS中包含了CPU的相关信息、设备启动顺序信息、硬盘信息、内存信息、时钟信息、PnP特性等等。在此之后，计算机心里就有谱了，知道应该去读取哪个硬件设备了。">
@@ -35,7 +35,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           fancybox: true,
@@ -48,7 +48,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -230,7 +230,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-linux开机启动顺序" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-linux开机启动顺序" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2017/06/28/linux开机启动顺序/" class="article-date">
@@ -240,7 +240,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -296,7 +296,7 @@
         <p><span>本文标题:</span><a href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2017年06月28日 - 00时00分</p>
-        <p><span>最后更新:</span>2018年11月07日 - 22时53分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/06/28/linux开机启动顺序/" title="linux开机启动顺序">http://datura.me/2017/06/28/linux开机启动顺序/</a>
             <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/06/28/linux开机启动顺序/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -304,7 +304,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"Datura"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -335,9 +335,9 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第一步－－加载BIOS"><span class="toc-number">1.</span> <span class="toc-text">启动第一步－－加载BIOS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第二步－－读取MBR"><span class="toc-number">2.</span> <span class="toc-text">启动第二步－－读取MBR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第三步－－Boot-Loader"><span class="toc-number">3.</span> <span class="toc-text">启动第三步－－Boot Loader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第四步－－加载内核"><span class="toc-number">4.</span> <span class="toc-text">启动第四步－－加载内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第五步－－用户层init依据inittab文件来设定运行等级"><span class="toc-number">5.</span> <span class="toc-text">启动第五步－－用户层init依据inittab文件来设定运行等级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第六步－－init进程执行rc-sysinit"><span class="toc-number">6.</span> <span class="toc-text">启动第六步－－init进程执行rc.sysinit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第七步－－启动内核模块"><span class="toc-number">7.</span> <span class="toc-text">启动第七步－－启动内核模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第八步－－执行不同运行级别的脚本程序"><span class="toc-number">8.</span> <span class="toc-text">启动第八步－－执行不同运行级别的脚本程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第九步－－执行-etc-rc-d-rc-local"><span class="toc-number">9.</span> <span class="toc-text">启动第九步－－执行/etc/rc.d/rc.local</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This-script-will-be-executed-after-all-the-other-init-scripts"><span class="toc-number"></span> <span class="toc-text">This script will be executed after all the other init scripts.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#You-can-put-your-own-initialization-stuff-in-here-if-you-don’t"><span class="toc-number"></span> <span class="toc-text">You can put your own initialization stuff in here if you don’t</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#want-to-do-the-full-Sys-V-style-init-stuff"><span class="toc-number"></span> <span class="toc-text">want to do the full Sys V style init stuff.</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第十步－－执行-bin-login程序，进入登录状态"><span class="toc-number">1.</span> <span class="toc-text">启动第十步－－执行/bin/login程序，进入登录状态</span></a></li></ol>
-</div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第一步－－加载BIOS"><span class="toc-number">1.</span> <span class="toc-text">启动第一步－－加载BIOS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第二步－－读取MBR"><span class="toc-number">2.</span> <span class="toc-text">启动第二步－－读取MBR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第三步－－Boot-Loader"><span class="toc-number">3.</span> <span class="toc-text">启动第三步－－Boot Loader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第四步－－加载内核"><span class="toc-number">4.</span> <span class="toc-text">启动第四步－－加载内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第五步－－用户层init依据inittab文件来设定运行等级"><span class="toc-number">5.</span> <span class="toc-text">启动第五步－－用户层init依据inittab文件来设定运行等级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第六步－－init进程执行rc-sysinit"><span class="toc-number">6.</span> <span class="toc-text">启动第六步－－init进程执行rc.sysinit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第七步－－启动内核模块"><span class="toc-number">7.</span> <span class="toc-text">启动第七步－－启动内核模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第八步－－执行不同运行级别的脚本程序"><span class="toc-number">8.</span> <span class="toc-text">启动第八步－－执行不同运行级别的脚本程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第九步－－执行-etc-rc-d-rc-local"><span class="toc-number">9.</span> <span class="toc-text">启动第九步－－执行/etc/rc.d/rc.local</span></a></li></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#This-script-will-be-executed-after-all-the-other-init-scripts"><span class="toc-number"></span> <span class="toc-text">This script will be executed after all the other init scripts.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#You-can-put-your-own-initialization-stuff-in-here-if-you-don’t"><span class="toc-number"></span> <span class="toc-text">You can put your own initialization stuff in here if you don’t</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#want-to-do-the-full-Sys-V-style-init-stuff"><span class="toc-number"></span> <span class="toc-text">want to do the full Sys V style init stuff.</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#启动第十步－－执行-bin-login程序，进入登录状态"><span class="toc-number">1.</span> <span class="toc-text">启动第十步－－执行/bin/login程序，进入登录状态</span></a></li></ol>
+</li></div>
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -436,8 +436,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -446,7 +446,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
