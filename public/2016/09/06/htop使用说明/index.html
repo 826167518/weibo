@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>htop使用说明 | Datura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="htop使用说明">
+<meta property="og:url" content="http://datura.me/2016/09/06/htop使用说明/index.html">
+<meta property="og:site_name" content="Datura">
+<meta property="og:description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224043-10fbaaa4ef2d49ba844de4ff1df2cea2.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224044-8e70dd81c3594f14bf334dbf7ae12cda.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224047-b6fd5270cea14cee87544ff3ca193b34.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224049-575f66ab3d964c5cb419959aee9032b1.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224051-9b4d728776d1499190c9d21ab3615f5a.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224052-befc1e283e4c4576a59f89e6f72a4337.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224054-b8d7722ac20b421299bd0c72b3394198.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224055-b6a13eb2abaa45fab167e61a8db12356.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224058-1ef4f726ccd64dfbaab68142dc9a95be.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224100-dab0040192b24614b44d1e28d1b4badb.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224102-6339cac4da0b482097e1a5b218b523c4.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224104-f5d4a8c905cd4a83b262ad2e5944f3fe.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224107-6a091d2523cd4829b243f635b1c32a0a.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224112-9dc1706a8dbd4972b78a78af34f75ec7.jpg">
+<meta property="og:image" content="http://images.cnitblog.com/blog/370046/201301/12224115-289b4cf95c344dada4aa048c25f821ce.jpg">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.046Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="htop使用说明">
+<meta name="twitter:description" content="一、htop 简介 This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses. Comparison between htop and top">
+<meta name="twitter:image" content="http://images.cnitblog.com/blog/370046/201301/12224043-10fbaaa4ef2d49ba844de4ff1df2cea2.jpg">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Datura</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 15px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">纯海迷、爱运动、爱交友、爱旅行、喜欢接触新鲜事物、迎接新的挑站</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Datura</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Datura</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-htop使用说明" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/06/htop使用说明/" class="article-date">
+      <time datetime="2016-09-06T04:00:00.000Z" itemprop="datePublished">2016-09-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      htop使用说明
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>一、htop 简介</p>
+<p>This is htop, an interactive process viewer for Linux. It is a text-mode application (for console or X terminals) and requires ncurses.</p>
+<p>Comparison between htop and top<br><a id="more"></a><br>In ‘htop’ you can scroll the list vertically and horizontally to see all processes and complete command lines.<br>In ‘top’ you are subject to a delay for each unassigned key you press (especially annoying when multi-key escape sequences are triggered by accident).<br>‘htop’ starts faster (‘top’ seems to collect data for a while before displaying anything).<br>In ‘htop’ you don’t need to type the process number to kill a process, in ‘top’ you do.<br>In ‘htop’ you don’t need to type the process number or the priority value to renice a process, in ‘top’ you do.<br>‘htop’ supports mouse operation, ‘top’ doesn’t<br>‘top’ is older, hence, more used and tested.<br>htop 是Linux系统中的一个互动的进程查看器，一个文本模式的应用程序(在控制台或者X终端中)，需要ncurses。</p>
+<p>与Linux传统的top相比，htop更加人性化。它可让用户交互式操作，支持颜色主题，可横向或纵向滚动浏览进程列表，并支持鼠标操作。</p>
+<p>与top相比，htop有以下优点：</p>
+<p>可以横向或纵向滚动浏览进程列表，以便看到所有的进程和完整的命令行。<br>在启动上，比top 更快。<br>杀进程时不需要输入进程号。<br>htop 支持鼠标操作。<br>top 已经很老了。<br>htop 官网：<a href="http://htop.sourceforge.net/" target="_blank" rel="noopener">http://htop.sourceforge.net/</a></p>
+<p>二、htop 安装</p>
+<p>a. 源码包安装</p>
+<pre><code># tar zxvf htop-1.0.2.tar.gz
+
+# cd htop-1.0.2
+
+# ./configure
+</code></pre><p><img src="http://images.cnitblog.com/blog/370046/201301/12224043-10fbaaa4ef2d49ba844de4ff1df2cea2.jpg" alt=""></p>
+<pre><code># make &amp;&amp; make install
+</code></pre><p><img src="http://images.cnitblog.com/blog/370046/201301/12224044-8e70dd81c3594f14bf334dbf7ae12cda.jpg" alt=""></p>
+<p>若出现错误：</p>
+<pre><code>configure: error: You may want to use --disable-unicode or install libncursesw.
+</code></pre><p>则需安装 ncurses-devel</p>
+<pre><code># yum install ncurses-devel
+</code></pre><p>b. RHEL/CentOS 安装</p>
+<p>可以通过 yum install htop 来安装它，但前提是要添加epel 的yum源，具体请参考 CentOS yum 源的配置与使用。</p>
+<pre><code># rpm -ivh http://download.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm 
+# rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL//导入key 
+# yum install htop
+</code></pre><p>三、htop 参数</p>
+<p>键入htop 命令，打开htop。</p>
+<pre><code># htop
+</code></pre><p> <img src="http://images.cnitblog.com/blog/370046/201301/12224047-b6fd5270cea14cee87544ff3ca193b34.jpg" alt=""></p>
+<p>上面左上角显示CPU、内存、交换区的使用情况，右边显示任务、负载、开机时间，下面就是进程实时状况。</p>
+<p>下面是 F1~F10 的功能和对应的字母快捷键。</p>
+<hr>
+<p>Shortcut Key　　　　　　  　　 Function Ke　　　　　　  　　 Description　　　　　　 　　　　　　  　　  中文说明  </p>
+<p>h,?　　　　　　  　　　　　　　  　　   F1    　　　　　　  　　 Invoke htop Help　　　　　　  　　     　　　　　　查看htop使用说明<br>S    　　　　　　  　　 　　　　　　  　　F2　　　　　　  　　     Htop Setup Menu    htop　　　　　　  　　 　　　 设定<br>/    　　　　　　  　　 　　　　　　   　　  F3    　　　　　　  　　 Search for a Process    　　　　　　  　　　　　　 搜索进程<br>\    　　　　　　  　　 　　　　　　  　　 F4    　　　　　　  　　 Incremental process filtering    　　　　　　  　　 增量进程过滤器<br>t    　　　　　　  　　 　　　　　　  　　 F5　　　　　　  　　     Tree View    　　　　　　  　　 　　　　　　  　　　 显示树形结构<br>&lt;, &gt;    　　　　　　  　　 　　　　　　  　F6    　　　　　　  　　 Sort by a column    　　　　　　  　　　　　　　　   选择排序方式<br>[    　　　　　　  　　 　　　　　　  　　 F7    　　　　　　  　　 Nice - (change priority)    　　　可减少nice值，这样就可以提高对应进程的优先级<br>]    　　　　　　  　　 　　　　　　  　　 F8    　　　　　　  　　 Nice + (change priority)    　　　可增加nice值，这样就可以降低对应进程的优先级<br>k    　　　　　　  　　 　　　　　　  　　 F9    　　　　　　  　　 Kill a Process    　　　　　　  　　 　　　　　　  　可对进程传递信号<br>q    　　　　　　  　　 　　　　　　  　　 F10    　　　　　　  　　 Quit htop    　　　　　　  　　 　　　　　　  　　 结束htop  </p>
+<hr>
+<p>命令行选项（COMMAND-LINE OPTIONS）</p>
+<p>-C –no-color　　　　 　　 使用一个单色的配色方案</p>
+<p>-d –delay=DELAY　　　　 设置延迟更新时间，单位秒</p>
+<p>-h –help　　　　　　  　　 显示htop 命令帮助信息</p>
+<p>-u –user=USERNAME　　  只显示一个给定的用户的过程</p>
+<p>-p –pid=PID,PID…　　　    只显示给定的PIDs</p>
+<p>-s –sort-key COLUMN　    依此列来排序</p>
+<p>-v –version　　　　　　　   显示版本信息</p>
+<p>交互式命令（INTERACTIVE COMMANDS）</p>
+<hr>
+<p>上下键或PgUP, PgDn 选定想要的进程，左右键或Home, End 移动字段，当然也可以直接用鼠标选定进程；</p>
+<p>Space    标记/取消标记一个进程。命令可以作用于多个进程，例如 “kill”，将应用于所有已标记的进程</p>
+<p>U    取消标记所有进程</p>
+<p>s    选择某一进程，按s:用strace追踪进程的系统调用</p>
+<p>l    显示进程打开的文件: 如果安装了lsof，按此键可以显示进程所打开的文件</p>
+<p>I    倒转排序顺序，如果排序是正序的，则反转成倒序的，反之亦然</p>
+<p>+, -    When in tree view mode, expand or collapse subtree. When a subtree is collapsed a “+” sign shows to the left of the process name.</p>
+<p>a (在有多处理器的机器上)    设置 CPU affinity: 标记一个进程允许使用哪些CPU</p>
+<p>u    显示特定用户进程</p>
+<p>M    按Memory 使用排序</p>
+<p>P    按CPU 使用排序</p>
+<p>T    按Time+ 使用排序</p>
+<p>F    跟踪进程: 如果排序顺序引起选定的进程在列表上到处移动，让选定条跟随该进程。这对监视一个进程非常有用：通过这种方式，你可以让一个进程在屏幕上一直可见。使用方向键会停止该功能。</p>
+<p>K    显示/隐藏内核线程</p>
+<p>H    显示/隐藏用户线程</p>
+<p>Ctrl-L    刷新</p>
+<p>Numbers    PID 查找: 输入PID，光标将移动到相应的进程上</p>
+<hr>
+<p>四、htop 使用</p>
+<p>4.1. 显示自带帮助</p>
+<p>鼠标点击Help或者按F1 显示自带帮助<br><img src="http://images.cnitblog.com/blog/370046/201301/12224049-575f66ab3d964c5cb419959aee9032b1.jpg" alt=""></p>
+<p>4.2. htop 设定</p>
+<p>鼠标点击Setup或者按下F2 之后进入htop 设定的页面，Meters 页面设定了顶端的一些信息显示，顶端的显示又分为左右两侧，到底能显示些什么可以在最右侧那栏新增，要新增到上方左侧（F5）或是右侧（F6）都可以，这就是个人设定的范围了。这里多加了一个时钟。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224051-9b4d728776d1499190c9d21ab3615f5a.jpg" alt=""></p>
+<p>上方左右两栏的显示方式分为Text Bar Graph Led 四种，下图我就把 cpu memory swap 改成文本模式显示，然后右栏的改成Bar 显示，clock 用LED方式显示。数据显示都差不多，只是这样看有点不习惯了。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224052-befc1e283e4c4576a59f89e6f72a4337.jpg" alt=""></p>
+<p>关于Display options 的设定，可要根据管理者自己的需要来设定。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224054-b8d7722ac20b421299bd0c72b3394198.jpg" alt=""></p>
+<p>颜色选择，除了基本的颜色显示之外，htop 还提供了换面板的功能，其实也只是改变一些色彩显示的设定，虽然说不能自定义到细部的颜色显示，但是至少提供了几种风格可以选择。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224055-b6a13eb2abaa45fab167e61a8db12356.jpg" alt=""></p>
+<p>最后一项的设定是调整 Columns 的显示，就是在一般htop 指令进来希望可以看到的什么样的数据及信息，字段的调整可以在这边做个人化的设定，一般使用系统默认值就好了。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224058-1ef4f726ccd64dfbaab68142dc9a95be.jpg" alt=""></p>
+<p>4.3. 搜索进程</p>
+<p>鼠标点击Search 或者按下F3 或者输入”/“， 输入进程名进行搜索，例如搜索ssh</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224100-dab0040192b24614b44d1e28d1b4badb.jpg" alt=""></p>
+<p>4.4. 过滤器</p>
+<p>按下F4，进入过滤器，相当于关键字搜索，不区分大小写，例如过滤dev</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224102-6339cac4da0b482097e1a5b218b523c4.jpg" alt=""></p>
+<p>4.5. 显示树形结构</p>
+<p>输入”t”或按下F5，显示树形结构，意思跟pstree 差不多，能看到所有程序树状执行的结构，这对于系统管理来说相当方便，理清程序是如何产生的，当然树状结构的浏览也可以依照其他数据来排序。</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224104-f5d4a8c905cd4a83b262ad2e5944f3fe.jpg" alt=""></p>
+<p>4.6. 选择排序方式</p>
+<p>按下F6 就可以选择依照什么来排序，最常排序的内容就是cpu 和memory 吧！</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224107-6a091d2523cd4829b243f635b1c32a0a.jpg" alt=""></p>
+<p>4.7 操作进程</p>
+<p>F7、F8分别对应nice-和nice+，F9对应kill给进程发信号，选好信号回车就OK了</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224112-9dc1706a8dbd4972b78a78af34f75ec7.jpg" alt=""></p>
+<p>4.8. 显示某个用户的进程，在左侧选择用户</p>
+<p>输入”u”，在左侧选择用户</p>
+<p><img src="http://images.cnitblog.com/blog/370046/201301/12224115-289b4cf95c344dada4aa048c25f821ce.jpg" alt=""></p>
+<p>五、Alias top</p>
+<p>也许你用惯了top，我们也可以用top来打开htop。</p>
+<p>编辑/root/.bashrc文件，添加如下代码</p>
+<pre><code>if [ -f /usr/local/bin/htop ]; then
+alias top=’/usr/local/bin/htop’
+fi
+# source /root/.bashrc
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/09/06/htop使用说明/">htop使用说明</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
+        <p><span>发布时间:</span>2016年09月06日 - 00时00分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/09/06/htop使用说明/" title="htop使用说明">http://datura.me/2016/09/06/htop使用说明/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2016/09/06/htop使用说明/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2016/10/05/linux_命令rsync+crontab实现自动同步/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          linux 命令rsync+crontab实现自动同步
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/09/05/mysql主从配置文件内容/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">mysql主从配置文件内容</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+</div>
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/05/linux_命令rsync+crontab实现自动同步/" title="上一篇: linux 命令rsync+crontab实现自动同步">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2016/09/05/mysql主从配置文件内容/" title="下一篇: mysql主从配置文件内容">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/07/mysql使用binlog日志恢复/">mysql使用binlog日志恢复</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 Datura
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Blong</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

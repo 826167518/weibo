@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>centos 7 部署 open-falcon 0.2.1 | Datura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="环境准备更换阿里yum">
+<meta name="keywords" content="open-falcon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos 7 部署 open-falcon 0.2.1">
+<meta property="og:url" content="http://datura.me/2017/08/31/open-falcon安装/index.html">
+<meta property="og:site_name" content="Datura">
+<meta property="og:description" content="环境准备更换阿里yum">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="centos 7 部署 open-falcon 0.2.1">
+<meta name="twitter:description" content="环境准备更换阿里yum">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Datura</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 15px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">纯海迷、爱运动、爱交友、爱旅行、喜欢接触新鲜事物、迎接新的挑站</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Datura</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Datura</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-open-falcon安装" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/08/31/open-falcon安装/" class="article-date">
+      <time datetime="2017-08-31T04:00:00.000Z" itemprop="datePublished">2017-08-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      centos 7 部署 open-falcon 0.2.1
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/open-falcon/">open-falcon</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/open-falcon/">open-falcon</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="更换阿里yum"><a href="#更换阿里yum" class="headerlink" title="更换阿里yum"></a>更换阿里yum</h3><a id="more"></a>
+<p> 步骤：<br>1）下载wget  </p>
+<pre><code>yum install -y wget
+</code></pre><p>2）备份默认的yum  </p>
+<pre><code>mv /etc/yum.repos.d /etc/yum.repos.d.backup
+</code></pre><p>3）设置新的yum目录  </p>
+<pre><code>mkdir /etc/yum.repos.d  
+</code></pre><p>4）下载阿里yum配置到该目录中   </p>
+<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+</code></pre><p>5）重建缓存  </p>
+<pre><code>yum clean all  
+yum makecache  
+</code></pre><p>6）升级所有包（改变软件设置和系统设置，系统版本内核都升级，故需要几分钟耐心等待）  </p>
+<pre><code>yum update -y  
+</code></pre><h3 id="安装vim"><a href="#安装vim" class="headerlink" title="安装vim"></a>安装vim</h3><pre><code>yum install -y vim  
+</code></pre><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><pre><code>yum install -y git  
+</code></pre><p>安装结束后安全起见，确认是否满足官方要求的Git &gt;= 1.7.5  </p>
+<pre><code>git version
+</code></pre><h3 id="安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）"><a href="#安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）" class="headerlink" title="安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）"></a>安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）</h3><pre><code>yum install -y epel-release
+yum install golang -y
+</code></pre><p>安装结束后安全起见，确认是否满足官方要求的Go &gt;= 1.6  </p>
+<pre><code>go version
+</code></pre><h3 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h3><p>由于部署go时已经安装了epel，故直接执行下面的安装命令（如果没有装epel，会提示No package redis available，也就是没有安装包可用，因为官方yum和阿里yum都没有redis，故只能通过fedora的epel仓库来安装）  </p>
+<pre><code>yum install redis -y
+</code></pre><p>启动redis  </p>
+<pre><code>systemctl start redis  
+</code></pre><p>设置redis开机启动   </p>
+<pre><code>systemctl enable redis
+</code></pre><p>可以用下面的语句查看redis是否开启  </p>
+<pre><code>systemctl status redis  
+</code></pre><h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><p> 步骤：  </p>
+<p>1）下载repo源</p>
+<pre><code>wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm  
+</code></pre><p>2）安装该rpm包（安装这个包后，会获得两个mysql的yum repo源：/etc/yum.repos.d/mysql-community.repo，/etc/yum.repos.d/mysql-community-source.repo）  </p>
+<pre><code>rpm -ivh mysql-community-release-el7-5.noarch.rpm  
+</code></pre><p>3）安装mysql  </p>
+<pre><code>yum install mysql-server -y  
+</code></pre><p>4）启动mysql  </p>
+<pre><code>systemctl start mysql  
+</code></pre><p>可以用下面的语句查看mysql是否开启  </p>
+<pre><code>systemctl status mysql  
+</code></pre><h3 id="设置环境变量GOROOT和GOPATH"><a href="#设置环境变量GOROOT和GOPATH" class="headerlink" title="设置环境变量GOROOT和GOPATH"></a>设置环境变量GOROOT和GOPATH</h3><pre><code>export GOROOT=/usr/lib/golang
+export GOPATH=/home  
+</code></pre><h3 id="将open-falcon的源码从github上get下来"><a href="#将open-falcon的源码从github上get下来" class="headerlink" title="将open-falcon的源码从github上get下来"></a>将open-falcon的源码从github上get下来</h3><p>步骤：</p>
+<p>1）创建GOPATH下的一个本地的路径  </p>
+<pre><code>mkdir -p $GOPATH/src/github.com/open-falcon  
+</code></pre><p>2）进入该路径  </p>
+<pre><code>cd $GOPATH/src/github.com/open-falcon  
+</code></pre><p>3）将源码get到本地  </p>
+<pre><code>git clone https://github.com/open-falcon/falcon-plus.git
+</code></pre><h3 id="初始化数据库"><a href="#初始化数据库" class="headerlink" title="初始化数据库"></a>初始化数据库</h3><pre><code>cd $GOPATH/src/github.com/open-falcon/falcon-plus/scripts/mysql/db_schema/
+mysql -h 127.0.0.1 -u root -p &lt; 1_uic-db-schema.sql
+mysql -h 127.0.0.1 -u root -p &lt; 2_portal-db-schema.sql
+mysql -h 127.0.0.1 -u root -p &lt; 3_dashboard-db-schema.sql
+mysql -h 127.0.0.1 -u root -p &lt; 4_graph-db-schema.sql
+mysql -h 127.0.0.1 -u root -p &lt; 5_alarms-db-schema.sql
+</code></pre><p>再运行“mysql -h………………”时会提示“Enter password”，如果mysql的root没有设置密码，回车即可。</p>
+<h3 id="编译源码并打包"><a href="#编译源码并打包" class="headerlink" title="编译源码并打包"></a>编译源码并打包</h3><p>步骤：  </p>
+<p>1）进入本地源码路径下  </p>
+<pre><code>cd $GOPATH/src/github.com/open-falcon/falcon-plus/
+</code></pre><p>2）使用go get获取rrdtool工具包（make过程卡壳的一个点）  </p>
+<pre><code>go get github.com/open-falcon/rrdlite
+</code></pre><p>这一步是官方教程没有提到的内容，如果不获取该工具包make的时候会报错  </p>
+<p>3）编译所有模块  </p>
+<pre><code>make all
+</code></pre><p> 4）打包</p>
+<pre><code>make pack  
+</code></pre><p>在$GOPATH/src/github.com/open-falcon/falcon-plus/目录下就多了刚才的压缩包“open-falcon-v0.2.0.tar.gz”。</p>
+<h3 id="官方提供的安装包"><a href="#官方提供的安装包" class="headerlink" title="官方提供的安装包"></a>官方提供的安装包</h3><p><a href="https://book.open-falcon.org/zh_0_2/quick_install/prepare.html中官方有提供编译包，如果编译过程不顺利可以直接下载编译包。" target="_blank" rel="noopener">https://book.open-falcon.org/zh_0_2/quick_install/prepare.html中官方有提供编译包，如果编译过程不顺利可以直接下载编译包。</a></p>
+<h2 id="部署后端"><a href="#部署后端" class="headerlink" title="部署后端"></a>部署后端</h2><h3 id="创建工作目录"><a href="#创建工作目录" class="headerlink" title="创建工作目录"></a>创建工作目录</h3><pre><code>export WORKSPACE=/home/work
+mkdir -p $WORKSPACE
+</code></pre><h3 id="解压二进制包（包名根据实际进行修改）"><a href="#解压二进制包（包名根据实际进行修改）" class="headerlink" title="解压二进制包（包名根据实际进行修改）"></a>解压二进制包（包名根据实际进行修改）</h3><p>由于我是根据本教程编译源码获得的压缩包，故需要切换到“$GOPATH/src/github.com/open-falcon/falcon-plus/”路径下。</p>
+<p>包名由于make pack的时候就是open-falcon-v0.2.0.tar.gz，具体根据实际情况。</p>
+<pre><code>cd $GOPATH/src/github.com/open-falcon/falcon-plus/
+tar -xzvf open-falcon-v0.2.0.tar.gz -C $WORKSPACE
+</code></pre><h3 id="修改配置文件cfg-json"><a href="#修改配置文件cfg-json" class="headerlink" title="修改配置文件cfg.json"></a>修改配置文件cfg.json</h3><p>猜测部分模块依赖连接数据库，因为如果不修改配置文件，aggregator模块会出现无法启动，graph、hbs、nodata、api、alarm模块会出现开启不报错但是状态为开启失败的情况。（个人认为这块的设计值得作为open-falcon优化的一个点，连接本机mysql如果失败是可以收到错误提示的，第一时间有报错提示总比什么都不显示或显示开启但实际开启失败强，如果别人服务都不知道怎么开起来，系统功能再强大有多少人硬着头皮部署下去而不是选择换个系统试试呢）    </p>
+<p>如果需要每个模块都能正常启动，需要将上面模块的cfg.json的数据库信息进行修改。根据本教程的配置，需要修改配置文件所在的目录：   </p>
+<p>模块    配置文件所在路径  </p>
+<p>aggregator        /home/work/aggregator/config/cfg.json<br>graph             /home/work/graph/config/cfg.json<br>hbs                /home/work/hbs/config/cfg.json<br>nodata          /home/work/nodata/config/cfg.json<br>api                /home/work/api/config/cfg.json<br>alarm           /home/work/alarm/config/cfg.json  </p>
+<p>1）修改aggregator的配置文件  </p>
+<pre><code>vim /home/work/aggregator/config/cfg.json
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。   </p>
+<p>2）修改graph的配置文件  </p>
+<pre><code>vim /home/work/graph/config/cfg.json    
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。  </p>
+<p>3）修改hbs的配置文件</p>
+<pre><code>vim /home/work/hbs/config/cfg.json  
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。  </p>
+<p>4）修改nodata的配置文件  </p>
+<pre><code>vim /home/work/nodata/config/cfg.json  
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。  </p>
+<p>5）修改api的配置文件  </p>
+<pre><code>vim /home/work/api/config/cfg.json  
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。</p>
+<p>6）修改alarm的配置文件  </p>
+<pre><code>vim /home/work/alarm/config/cfg.json  
+</code></pre><p>mysql的root密码为空，则去掉“password”，若不为空，则用root密码替换“password”。   </p>
+<h3 id="启动后端模块"><a href="#启动后端模块" class="headerlink" title="启动后端模块"></a>启动后端模块</h3><pre><code>cd $WORKSPACE
+./open-falcon start  
+</code></pre><p>可以用下面的命令检查各个模块的启动情况  </p>
+<pre><code>./open-falcon check  
+</code></pre><p>更多命令的用法（命令的例子是启动agent模块）</p>
+<pre><code>./open-falcon [start|stop|restart|check|monitor|reload] module
+./open-falcon start agent
+./open-falcon check
+
+
+    falcon-graph         UP           53007
+      falcon-hbs         UP           53014
+    falcon-judge         UP           53020
+ falcon-transfer         UP           53026
+   falcon-nodata         UP           53032
+falcon-aggregator         UP           53038
+    falcon-agent         UP           53044
+  falcon-gateway         UP           53050
+      falcon-api         UP           53056
+    falcon-alarm         UP           53063
+
+For debugging , You can check $WorkDir/$moduleName/log/logs/xxx.log  
+</code></pre><h2 id="部署前端"><a href="#部署前端" class="headerlink" title="部署前端"></a>部署前端</h2><h3 id="创建工作目录-1"><a href="#创建工作目录-1" class="headerlink" title="创建工作目录"></a>创建工作目录</h3><pre><code>export FRONTSPACE=/home/front/open-falcon
+mkdir -p $FRONTSPACE
+</code></pre><h3 id="获取前端代码"><a href="#获取前端代码" class="headerlink" title="获取前端代码"></a>获取前端代码</h3><pre><code>cd $FRONTSPACE
+git clone https://github.com/open-falcon/dashboard.git
+</code></pre><h3 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h3><pre><code>yum install -y python-virtualenv
+yum install -y python-devel
+yum install -y openldap-devel
+yum install -y mysql-devel
+yum groupinstall &quot;Development tools&quot; -y
+
+cd $FRONTSPACE/dashboard/
+virtualenv ./env
+
+./env/bin/pip install -r pip_requirements.txt
+</code></pre><h3 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h3><p>根据本次记录的配置，dashboard的配置文件在/home/front/open-falcon/dashboard/rrd/config.py，需要根据实际情况对内部配置进行修改。  </p>
+<p>由于前端后台搭在一台虚拟机里，且暂时不接入LDAP，且数据库root的密码为空，故先不修改配置文件。</p>
+<h3 id="开启8081端口"><a href="#开启8081端口" class="headerlink" title="开启8081端口"></a>开启8081端口</h3><p>1）防火墙添加8081端口永久开放</p>
+<pre><code>firewall-cmd --add-port=8081/tcp --permanent    
+</code></pre><p>2）重新载入防火墙配置 </p>
+<pre><code>firewall-cmd --reload
+</code></pre><h3 id="在生产环境启动"><a href="#在生产环境启动" class="headerlink" title="在生产环境启动"></a>在生产环境启动</h3><pre><code>bash control start
+</code></pre><p>由于虚拟机ip配置为192.168.3.1，故在浏览器中输入192.168.3.1:8081后跳转。</p>
+<h3 id="以开发者模式启动"><a href="#以开发者模式启动" class="headerlink" title="以开发者模式启动"></a>以开发者模式启动</h3><pre><code>./env/bin/python wsgi.py
+</code></pre><h2 id="安装agent端"><a href="#安装agent端" class="headerlink" title="安装agent端"></a>安装agent端</h2><h3 id="创建agent安装目录"><a href="#创建agent安装目录" class="headerlink" title="创建agent安装目录"></a>创建agent安装目录</h3><pre><code>mkdir -p $GOPATH/src/github.com/open-falcon
+cd $GOPATH/src/github.com/open-falcon
+</code></pre><h3 id="从git上下载agent分支"><a href="#从git上下载agent分支" class="headerlink" title="从git上下载agent分支"></a>从git上下载agent分支</h3><pre><code>git clone https://github.com/open-falcon/agent.git
+</code></pre><h3 id="源码编译安装启动"><a href="#源码编译安装启动" class="headerlink" title="源码编译安装启动"></a>源码编译安装启动</h3><pre><code>cd agent
+go get ./...
+./control build
+./control start
+./control pack
+</code></pre><p>最后一步会pack出一个tar.gz的安装包，拿着这个包去部署服务即可。需要注意的是在源码编译时：</p>
+<p>1、需要主机配置GOPATH环境变量（一般可以配置为用户家家目录）；</p>
+<p>2、需要主机可以连接外网，通过go get下载相关源码包。</p>
+<p>3、编译pack 出的包，在其他agent主机上部署时，无需连接外网 ，pack出的包，可以类似的理解为由c源代码编译后得出的二进制文件。</p>
+<h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>配置文件必须叫cfg.json，可以基于cfg.example.json修改，默认该文件并不存在，通过./control start时自动会从cfg.example.json复制一份为cfg.json 。</p>
+<blockquote>
+<p>{<br>    “debug”: true,<br>    “hostname”: “”,<br>    “ip”: “”,<br>    “plugin”: {<br>        “enabled”: false, # 默认不开启插件机制<br>        “dir”: “./plugin”,<br>        “git”: “<a href="https://coding.net/ulricqin/plugin.git&quot;" target="_blank" rel="noopener">https://coding.net/ulricqin/plugin.git&quot;</a>,<br>        “logs”: “./logs”<br>    },<br>    “heartbeat”: {<br>        “enabled”: true, # 此处enabled要设置为true<br>        “addr”: “127.0.0.1:6030”, # hbs的地址，端口是hbs的rpc端口<br>        “interval”: 60,<br>        “timeout”: 1000<br>    },<br>    “transfer”: {<br>        “enabled”: true, # 此处enabled要设置为true<br>        “addr”: “127.0.0.1:8433”, # transfer的地址，端口是transfer的rpc端口<br>        “interval”: 60,<br>        “timeout”: 1000<br>    },<br>    “http”: {<br>        “enabled”: true,<br>        “listen”: “:1988”<br>    },<br>    “collector”: {<br>        “ifacePrefix”: [“eth”, “em”] # 默认配置只会采集网卡名称前缀是eth、em的网卡流量，配置为空就会采集所有的，lo的也会采集。可以从/proc/net/dev看到各个网卡的流量信息<br>    },<br>    “ignore”: { # 默认采集了200多个metric，可以通过ignore设置为不采集<br>        “cpu.busy”: true,<br>        “mem.swapfree”: true<br>    }<br>}  </p>
+</blockquote>
+<h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><pre><code>./control start 启动进程
+./control stop 停止进程
+./control restart 重启进程
+./control status 查看进程状态
+./control tail 用tail -f的方式查看var/app.log
+</code></pre><p>验证 </p>
+<p>看var目录下的log是否正常，或者浏览器访问其1988端口。另外agent提供了一个–check参数，可以检查agent是否可以正常跑在当前机器上。  </p>
+<pre><code>./falcon-agent --check
+</code></pre><p>打url  <a href="http://IP:1988可以查看相关监控信息。" target="_blank" rel="noopener">http://IP:1988可以查看相关监控信息。</a>  </p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
+        <p><span>发布时间:</span>2017年08月31日 - 00时00分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/08/31/open-falcon安装/" title="centos 7 部署 open-falcon 0.2.1">http://datura.me/2017/08/31/open-falcon安装/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2017/08/31/open-falcon安装/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2017/09/08/gitlab安装/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          centos 7 部署 gitlab
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/05/Python(基础数据类型)详解/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Python笔记</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境准备"><span class="toc-number">1.</span> <span class="toc-text">环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#更换阿里yum"><span class="toc-number">1.1.</span> <span class="toc-text">更换阿里yum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装vim"><span class="toc-number">1.2.</span> <span class="toc-text">安装vim</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装git"><span class="toc-number">1.3.</span> <span class="toc-text">安装git</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）"><span class="toc-number">1.4.</span> <span class="toc-text">安装go语言环境（因为官方yum和阿里yum都没有go的安装包，故只能通过fedora的epel仓库来安装）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装redis"><span class="toc-number">1.5.</span> <span class="toc-text">安装redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装mysql"><span class="toc-number">1.6.</span> <span class="toc-text">安装mysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置环境变量GOROOT和GOPATH"><span class="toc-number">1.7.</span> <span class="toc-text">设置环境变量GOROOT和GOPATH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将open-falcon的源码从github上get下来"><span class="toc-number">1.8.</span> <span class="toc-text">将open-falcon的源码从github上get下来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化数据库"><span class="toc-number">1.9.</span> <span class="toc-text">初始化数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译源码并打包"><span class="toc-number">1.10.</span> <span class="toc-text">编译源码并打包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#官方提供的安装包"><span class="toc-number">1.11.</span> <span class="toc-text">官方提供的安装包</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署后端"><span class="toc-number">2.</span> <span class="toc-text">部署后端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建工作目录"><span class="toc-number">2.1.</span> <span class="toc-text">创建工作目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解压二进制包（包名根据实际进行修改）"><span class="toc-number">2.2.</span> <span class="toc-text">解压二进制包（包名根据实际进行修改）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改配置文件cfg-json"><span class="toc-number">2.3.</span> <span class="toc-text">修改配置文件cfg.json</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动后端模块"><span class="toc-number">2.4.</span> <span class="toc-text">启动后端模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署前端"><span class="toc-number">3.</span> <span class="toc-text">部署前端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建工作目录-1"><span class="toc-number">3.1.</span> <span class="toc-text">创建工作目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取前端代码"><span class="toc-number">3.2.</span> <span class="toc-text">获取前端代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖包"><span class="toc-number">3.3.</span> <span class="toc-text">安装依赖包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改配置"><span class="toc-number">3.4.</span> <span class="toc-text">修改配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启8081端口"><span class="toc-number">3.5.</span> <span class="toc-text">开启8081端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在生产环境启动"><span class="toc-number">3.6.</span> <span class="toc-text">在生产环境启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#以开发者模式启动"><span class="toc-number">3.7.</span> <span class="toc-text">以开发者模式启动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装agent端"><span class="toc-number">4.</span> <span class="toc-text">安装agent端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建agent安装目录"><span class="toc-number">4.1.</span> <span class="toc-text">创建agent安装目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从git上下载agent分支"><span class="toc-number">4.2.</span> <span class="toc-text">从git上下载agent分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源码编译安装启动"><span class="toc-number">4.3.</span> <span class="toc-text">源码编译安装启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置说明"><span class="toc-number">4.4.</span> <span class="toc-text">配置说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程管理"><span class="toc-number">4.5.</span> <span class="toc-text">进程管理</span></a></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/09/08/gitlab安装/" title="上一篇: centos 7 部署 gitlab">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/07/05/Python(基础数据类型)详解/" title="下一篇: Python笔记">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/07/mysql使用binlog日志恢复/">mysql使用binlog日志恢复</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 Datura
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Blong</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
