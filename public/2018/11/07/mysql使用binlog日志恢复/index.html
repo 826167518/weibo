@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>mysql使用binlog日志恢复 | Datura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="众所周知，binlog日志对于mysql数据库来说是十分重要的。在数据丢失的紧急情况下，我们往往会想到用binlog日志功能进行数据恢复（定时全备份+binlog日志恢复增量数据部分），化险为夷！">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql使用binlog日志恢复">
+<meta property="og:url" content="http://datura.me/2018/11/07/mysql使用binlog日志恢复/index.html">
+<meta property="og:site_name" content="Datura">
+<meta property="og:description" content="众所周知，binlog日志对于mysql数据库来说是十分重要的。在数据丢失的紧急情况下，我们往往会想到用binlog日志功能进行数据恢复（定时全备份+binlog日志恢复增量数据部分），化险为夷！">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.048Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql使用binlog日志恢复">
+<meta name="twitter:description" content="众所周知，binlog日志对于mysql数据库来说是十分重要的。在数据丢失的紧急情况下，我们往往会想到用binlog日志功能进行数据恢复（定时全备份+binlog日志恢复增量数据部分），化险为夷！">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Datura</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/tags">静心阅读</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                                <a class="fl rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Glances/" style="font-size: 10px;">Glances</a> <a href="/tags/elk/" style="font-size: 10px;">elk</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/k8s/" style="font-size: 10px;">k8s</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/lsync/" style="font-size: 15px;">lsync</a> <a href="/tags/mtr/" style="font-size: 10px;">mtr</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/open-falcon/" style="font-size: 10px;">open-falcon</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/tags/rsync/" style="font-size: 15px;">rsync</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/tcpdum/" style="font-size: 10px;">tcpdum</a> <a href="/tags/tcpdump/" style="font-size: 10px;">tcpdump</a> <a href="/tags/traceroute/" style="font-size: 10px;">traceroute</a> <a href="/tags/tsung/" style="font-size: 10px;">tsung</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/tags/zabbix/" style="font-size: 10px;">zabbix</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://luuman.github.io/">name</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">纯海迷、爱运动、爱交友、爱旅行、喜欢接触新鲜事物、迎接新的挑站</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Datura</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Datura</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/tags">静心阅读</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=UGhiZmFmZ2VhaBAhIX4zPz0" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/826167518" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/3176154297" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-mysql使用binlog日志恢复" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/11/07/mysql使用binlog日志恢复/" class="article-date">
+      <time datetime="2018-11-07T05:00:00.000Z" itemprop="datePublished">2018-11-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mysql使用binlog日志恢复
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>众所周知，binlog日志对于mysql数据库来说是十分重要的。在数据丢失的紧急情况下，我们往往会想到用binlog日志功能进行数据恢复（定时全备份+binlog日志恢复增量数据部分），化险为夷！<br><a id="more"></a><br>废话不多说，下面是梳理的binlog日志操作解说：</p>
+<h2 id="一、初步了解binlog"><a href="#一、初步了解binlog" class="headerlink" title="一、初步了解binlog"></a>一、初步了解binlog</h2><p>MySQL的二进制日志binlog可以说是MySQL最重要的日志，它记录了所有的DDL和DML语句（除了数据查询语句select），以事件形式记录，还包含语句所执行的消耗的时间，MySQL的二进制日志是事务安全型的。</p>
+<hr>
+<p>DDL</p>
+<p>—-Data Definition Language 数据库定义语言 </p>
+<p>主要的命令有CREATE、ALTER、DROP等，DDL主要是用在定义或改变表（TABLE）的结构，数据类型，表之间的链接和约束等初始化工作上，他们大多在建立表时使用。</p>
+<p>DML</p>
+<p>—-Data Manipulation Language 数据操纵语言</p>
+<p>主要的命令是SELECT、UPDATE、INSERT、DELETE，就象它的名字一样，这4条命令是用来对数据库里的数据进行操作的语言</p>
+<hr>
+<p>mysqlbinlog常见的选项有以下几个：<br>–start-datetime：从二进制日志中读取指定等于时间戳或者晚于本地计算机的时间<br>–stop-datetime：从二进制日志中读取指定小于时间戳或者等于本地计算机的时间 取值和上述一样<br>–start-position：从二进制日志中读取指定position 事件位置作为开始。<br>–stop-position：从二进制日志中读取指定position 事件位置作为事件截至</p>
+<hr>
+<p>一般来说开启binlog日志大概会有1%的性能损耗。</p>
+<h3 id="binlog日志有两个最重要的使用场景"><a href="#binlog日志有两个最重要的使用场景" class="headerlink" title="binlog日志有两个最重要的使用场景:"></a>binlog日志有两个最重要的使用场景:</h3><p> 1）MySQL主从复制：MySQL Replication在Master端开启binlog，Master把它的二进制日志传递给slaves来达到<br>master-slave数据一致的目的。<br> 2）自然就是数据恢复了，通过使用mysqlbinlog工具来使恢复数据。</p>
+<h3 id="binlog日志包括两类文件："><a href="#binlog日志包括两类文件：" class="headerlink" title="binlog日志包括两类文件："></a>binlog日志包括两类文件：</h3><p> 1）二进制日志索引文件（文件名后缀为.index）用于记录所有的二进制文件<br> 2）二进制日志文件（文件名后缀为.00000*）记录数据库所有的DDL和DML(除了数据查询语句select)语句事件。</p>
+<h2 id="二、开启binlog日志："><a href="#二、开启binlog日志：" class="headerlink" title="二、开启binlog日志："></a>二、开启binlog日志：</h2><p> 1）编辑打开mysql配置文件/etc/mys.cnf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# vim /etc/my.cnf</span><br><span class="line"></span><br><span class="line">在[mysqld] 区块添加 </span><br><span class="line">log-bin=mysql-bin 确认是打开状态(mysql-bin 是日志的基本名或前缀名)；</span><br></pre></td></tr></table></figure>
+<p> 2）重启mysqld服务使配置生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# /etc/init.d/mysqld stop</span><br><span class="line">[root@vm-002 ~]# /etc/init.d/mysqld restart</span><br><span class="line">Stopping mysqld: [ OK ]</span><br><span class="line">Starting mysqld: [ OK ]</span><br></pre></td></tr></table></figure>
+<p> 3）查看binlog日志是否开启<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &apos;log_%&apos;; </span><br><span class="line">+---------------------------------+---------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------------------------+---------------------+</span><br><span class="line">| log_bin | ON |</span><br><span class="line">| log_bin_trust_function_creators | OFF |</span><br><span class="line">| log_bin_trust_routine_creators | OFF |</span><br><span class="line">| log_error | /var/log/mysqld.log |</span><br><span class="line">| log_output | FILE |</span><br><span class="line">| log_queries_not_using_indexes | OFF |</span><br><span class="line">| log_slave_updates | OFF |</span><br><span class="line">| log_slow_queries | OFF |</span><br><span class="line">| log_warnings | 1 |</span><br><span class="line">+---------------------------------+---------------------+</span><br><span class="line">9 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<h2 id="三、常用的binlog日志操作命令"><a href="#三、常用的binlog日志操作命令" class="headerlink" title="三、常用的binlog日志操作命令"></a>三、常用的binlog日志操作命令</h2><p> 1）查看所有binlog日志列表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master logs;</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql-bin.000001 | 149 |</span><br><span class="line">| mysql-bin.000002 | 4102 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p> 2）查看master状态，即最后(最新)一个binlog日志的编号名称，及其最后一个操作事件pos结束点(Position)值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| File | Position | Binlog_Do_DB | Binlog_Ignore_DB |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| mysql-bin.000002 | 4102 | | |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p> 3）flush刷新log日志，自此刻开始产生一个新编号的binlog日志文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; flush logs; </span><br><span class="line">Query OK, 0 rows affected (0.13 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show master logs; </span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql-bin.000001 | 149 |</span><br><span class="line">| mysql-bin.000002 | 4145 |</span><br><span class="line">| mysql-bin.000003 | 106 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>注意：<br>每当mysqld服务重启时，会自动执行此命令，刷新binlog日志；在mysqldump备份数据时加 -F 选项也会刷新binlog日志；</p>
+<p> 4）重置(清空)所有binlog日志<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; reset master;</span><br><span class="line">Query OK, 0 rows affected (0.12 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show master logs; </span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql-bin.000001 | 106 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<h2 id="四、查看binlog日志内容，常用有两种方式："><a href="#四、查看binlog日志内容，常用有两种方式：" class="headerlink" title="四、查看binlog日志内容，常用有两种方式："></a>四、查看binlog日志内容，常用有两种方式：</h2><p> 1）使用mysqlbinlog自带查看命令法：<br>注意：<br>–&gt;binlog是二进制文件，普通文件查看器cat、more、vim等都无法打开，必须使用自带的mysqlbinlog命令查看<br>–&gt;binlog日志与数据库文件在同目录中<br>–&gt;在MySQL5.5以下版本使用mysqlbinlog命令时如果报错，就加上 “–no-defaults”选项</p>
+<p>查看mysql的数据存放目录，从下面结果可知是/var/lib//mysql<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# ps -ef|grep mysql</span><br><span class="line">root 9791 1 0 21:18 pts/0 00:00:00 /bin/sh /usr/bin/mysqld_safe --datadir=/var/lib/mysql --socket=/var/lib/mysql/mysql.sock --pid-file=/var/run/mysqld/mysqld.pid --basedir=/usr --user=mysql</span><br><span class="line">mysql 9896 9791 0 21:18 pts/0 00:00:00 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --user=mysql --log-error=/var/log/mysqld.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/lib/mysql/mysql.sock</span><br><span class="line">root 9916 9699 0 21:18 pts/0 00:00:00 mysql -px xxxx</span><br><span class="line">root 9919 9715 0 21:23 pts/1 00:00:00 grep --color mysql</span><br><span class="line"></span><br><span class="line">[root@vm-002 ~]# cd /var/lib/mysql/</span><br><span class="line">[root@vm-002 mysql]# ls</span><br><span class="line">ibdata1 ib_logfile0 ib_logfile1 mysql mysql-bin.000001 mysql-bin.000002 mysql-bin.index mysql.sock ops test</span><br><span class="line"></span><br><span class="line">使用mysqlbinlog命令查看binlog日志内容，下面截取其中的一个片段分析：</span><br><span class="line">[root@vm-002 mysql]# mysqlbinlog mysql-bin.000002</span><br><span class="line">..............</span><br><span class="line"># at 624</span><br><span class="line">#160925 21:29:53 server id 1 end_log_pos 796 Query	thread_id=3	exec_time=0	error_code=0</span><br><span class="line">SET TIMESTAMP=1474810193/*!*/;</span><br><span class="line">insert into member(`name`,`sex`,`age`,`classid`) values(&apos;wangshibo&apos;,&apos;m&apos;,27,&apos;cls1&apos;),(&apos;guohuihui&apos;,&apos;w&apos;,27,&apos;cls2&apos;)        #执行的sql语句</span><br><span class="line">/*!*/;</span><br><span class="line">#at 796</span><br><span class="line">#160925 21:29:53 server id 1 end_log_pos 823 Xid = 17                  #执行的时间</span><br><span class="line">.............</span><br></pre></td></tr></table></figure></p>
+<p>解释：<br>server id 1 ： 数据库主机的服务号；<br>end_log_pos 796： sql结束时的pos节点<br>thread_id=11： 线程号</p>
+<p> 2）上面这种办法读取出binlog日志的全文内容比较多，不容易分辨查看到pos点信息<br>下面介绍一种更为方便的查询命令：<br>命令格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events [IN &apos;log_name&apos;] [FROM pos] [LIMIT [offset,] row_count];</span><br></pre></td></tr></table></figure></p>
+<p>参数解释：<br>IN ‘log_name’ ：指定要查询的binlog文件名(不指定就是第一个binlog文件)<br>FROM pos ：指定从哪个pos起始点开始查起(不指定就是从整个文件首个pos点开始算)<br>LIMIT [offset,] ：偏移量(不指定就是0)<br>row_count ：查询总条数(不指定就是所有行)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master logs;</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql-bin.000001 | 125 |</span><br><span class="line">| mysql-bin.000002 | 823 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000002&apos;\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 4</span><br><span class="line">Event_type: Format_desc</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 106</span><br><span class="line">Info: Server ver: 5.1.73-log, Binlog ver: 4</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 106</span><br><span class="line">Event_type: Query</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 188</span><br><span class="line">Info: use `ops`; drop table customers</span><br><span class="line">*************************** 3. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 188</span><br><span class="line">Event_type: Query</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 529</span><br><span class="line">Info: use `ops`; CREATE TABLE IF NOT EXISTS `member` (</span><br><span class="line">`id` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">`name` varchar(16) NOT NULL,</span><br><span class="line">`sex` enum(&apos;m&apos;,&apos;w&apos;) NOT NULL DEFAULT &apos;m&apos;,</span><br><span class="line">`age` tinyint(3) unsigned NOT NULL,</span><br><span class="line">`classid` char(6) DEFAULT NULL,</span><br><span class="line">PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8</span><br><span class="line">*************************** 4. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 529</span><br><span class="line">Event_type: Query</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 596</span><br><span class="line">Info: BEGIN</span><br><span class="line">*************************** 5. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 596</span><br><span class="line">Event_type: Intvar</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 624</span><br><span class="line">Info: INSERT_ID=1</span><br><span class="line">*************************** 6. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 624</span><br><span class="line">Event_type: Query</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 796</span><br><span class="line">Info: use `ops`; insert into member(`name`,`sex`,`age`,`classid`) values(&apos;wangshibo&apos;,&apos;m&apos;,27,&apos;cls1&apos;),(&apos;guohuihui&apos;,&apos;w&apos;,27,&apos;cls2&apos;)</span><br><span class="line">*************************** 7. row ***************************</span><br><span class="line">Log_name: mysql-bin.000002</span><br><span class="line">Pos: 796</span><br><span class="line">Event_type: Xid</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 823</span><br><span class="line">Info: COMMIT /* xid=17 */</span><br><span class="line">7 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR: </span><br><span class="line">No query specified</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure></p>
+<p>上面这条语句可以将指定的binlog日志文件，分成有效事件行的方式返回，并可使用limit指定pos点的起始偏移，查询条数！<br>如下操作示例：<br> a）查询第一个(最早)的binlog日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events\G;</span><br></pre></td></tr></table></figure></p>
+<p> b）指定查询 mysql-bin.000002这个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000002&apos;\G;</span><br></pre></td></tr></table></figure></p>
+<p>c）指定查询 mysql-bin.000002这个文件，从pos点:624开始查起：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000002&apos; from 624\G;</span><br></pre></td></tr></table></figure></p>
+<p>d）指定查询 mysql-bin.000002这个文件，从pos点:624开始查起，查询10条（即10条语句）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000002&apos; from 624 limit 10\G;</span><br></pre></td></tr></table></figure></p>
+<p>e）指定查询 mysql-bin.000002这个文件，从pos点:624开始查起，偏移2行（即中间跳过2个），查询10条<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000002&apos; from 624 limit 2,10\G;</span><br></pre></td></tr></table></figure></p>
+<h2 id="五、利用binlog日志恢复mysql数据"><a href="#五、利用binlog日志恢复mysql数据" class="headerlink" title="五、利用binlog日志恢复mysql数据"></a>五、利用binlog日志恢复mysql数据</h2><p>以下对ops库的member表进行操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use ops；</span><br><span class="line">mysql&gt; CREATE TABLE IF NOT EXISTS `member` (</span><br><span class="line">-&gt; `id` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">-&gt; `name` varchar(16) NOT NULL,</span><br><span class="line">-&gt; `sex` enum(&apos;m&apos;,&apos;w&apos;) NOT NULL DEFAULT &apos;m&apos;,</span><br><span class="line">-&gt; `age` tinyint(3) unsigned NOT NULL,</span><br><span class="line">-&gt; `classid` char(6) DEFAULT NULL,</span><br><span class="line">-&gt; PRIMARY KEY (`id`)</span><br><span class="line">-&gt; ) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br><span class="line">Query OK, 0 rows affected (0.10 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show tables;</span><br><span class="line">+---------------+</span><br><span class="line">| Tables_in_ops |</span><br><span class="line">+---------------+</span><br><span class="line">| member |</span><br><span class="line">+---------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; desc member;</span><br><span class="line">+---------+---------------------+------+-----+---------+----------------+</span><br><span class="line">| Field | Type | Null | Key | Default | Extra |</span><br><span class="line">+---------+---------------------+------+-----+---------+----------------+</span><br><span class="line">| id | int(10) unsigned | NO | PRI | NULL | auto_increment |</span><br><span class="line">| name | varchar(16) | NO | | NULL | |</span><br><span class="line">| sex | enum(&apos;m&apos;,&apos;w&apos;) | NO | | m | |</span><br><span class="line">| age | tinyint(3) unsigned | NO | | NULL | |</span><br><span class="line">| classid | char(6) | YES | | NULL | |</span><br><span class="line">+---------+---------------------+------+-----+---------+----------------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>事先插入两条数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into member(`name`,`sex`,`age`,`classid`) values(&apos;wangshibo&apos;,&apos;m&apos;,27,&apos;cls1&apos;),(&apos;guohuihui&apos;,&apos;w&apos;,27,&apos;cls2&apos;);</span><br><span class="line">Query OK, 2 rows affected (0.08 sec)</span><br><span class="line">Records: 2 Duplicates: 0 Warnings: 0</span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>下面开始进行场景模拟：<br>1）<br>ops库会在每天凌晨4点进行一次完全备份的定时计划任务，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# crontab -l</span><br><span class="line">0 4 * * * /usr/bin/mysqldump -uroot -p -B -F -R -x --master-data=2 ops|gzip &gt;/opt/backup/ops_$(date +%F).sql.gz</span><br></pre></td></tr></table></figure></p>
+<p>这里手动执行下，将ops数据库备份到/opt/backup/ops_$(date +%F).sql.gz文件中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# mysqldump -uroot -p -B -F -R -x --master-data=2 ops|gzip &gt;/opt/backup/ops_$(date +%F).sql.gz</span><br><span class="line">Enter password: </span><br><span class="line">[root@vm-002 ~]# ls /opt/backup/</span><br><span class="line">ops_2016-09-25.sql.gz</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>参数说明：<br>-B：指定数据库<br>-F：刷新日志<br>-R：备份存储过程等<br>-x：锁表<br>–master-data：在备份语句里添加CHANGE MASTER语句以及binlog文件及位置点信息</p>
+<hr>
+<p>待到数据库备份完成，就不用担心数据丢失了，因为有完全备份数据在！！</p>
+<p>由于上面在全备份的时候使用了-F选项，那么当数据备份操作刚开始的时候系统就会自动刷新log，这样就会自动产生<br>一个新的binlog日志，这个新的binlog日志就会用来记录备份之后的数据库“增删改”操作<br>查看一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| File | Position | Binlog_Do_DB | Binlog_Ignore_DB |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| mysql-bin.000003 | 106 | | |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>也就是说， mysql-bin.000003 是用来记录4:00之后对数据库的所有“增删改”操作。</p>
+<p>2）<br>早上9点上班了，由于业务的需求会对数据库进行各种“增删改”操作。<br>比如：在ops库下member表内插入、修改了数据等等：</p>
+<p>先是早上进行插入数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into ops.member(`name`,`sex`,`age`,`classid`) values(&apos;yiyi&apos;,&apos;w&apos;,20,&apos;cls1&apos;),(&apos;xiaoer&apos;,&apos;m&apos;,22,&apos;cls3&apos;),(&apos;zhangsan&apos;,&apos;w&apos;,21,&apos;cls5&apos;),(&apos;lisi&apos;,&apos;m&apos;,20,&apos;cls4&apos;),(&apos;wangwu&apos;,&apos;w&apos;,26,&apos;cls6&apos;);</span><br><span class="line">Query OK, 5 rows affected (0.08 sec)</span><br><span class="line">Records: 5 Duplicates: 0 Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | xiaoer | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>3）<br>中午又执行了修改数据操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; update ops.member set name=&apos;李四&apos; where id=4;</span><br><span class="line">Query OK, 1 row affected (0.07 sec)</span><br><span class="line">Rows matched: 1 Changed: 1 Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; update ops.member set name=&apos;小二&apos; where id=2;</span><br><span class="line">Query OK, 1 row affected (0.06 sec)</span><br><span class="line">Rows matched: 1 Changed: 1 Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | 小二 | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | 李四 | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>4）<br>在下午18:00的时候，悲剧莫名其妙的出现了！<br>手贱执行了drop语句，直接删除了ops库！吓尿！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; drop database ops;</span><br><span class="line">Query OK, 1 row affected (0.02 sec)</span><br></pre></td></tr></table></figure></p>
+<p>5）<br>这种时候，一定不要慌张！！！<br>先仔细查看最后一个binlog日志，并记录下关键的pos点，到底是哪个pos点的操作导致了数据库的破坏(通常在最后几步)；</p>
+<p>先备份一下最后一个binlog日志文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# cd /var/lib/mysql/</span><br><span class="line">[root@vm-002 mysql]# cp -v mysql-bin.000003 /opt/backup/</span><br><span class="line">`mysql-bin.000003&apos; -&gt; `/opt/backup/mysql-bin.000003&apos;</span><br><span class="line">[root@vm-002 mysql]# ls /opt/backup/</span><br><span class="line">mysql-bin.000003 ops_2016-09-25.sql.gz</span><br></pre></td></tr></table></figure></p>
+<p>接着执行一次刷新日志索引操作，重新开始新的binlog日志记录文件。按理说mysql-bin.000003<br>这个文件不会再有后续写入了，因为便于我们分析原因及查找ops节点，以后所有数据库操作都会写入到下一个日志文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; flush logs;</span><br><span class="line">Query OK, 0 rows affected (0.13 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| File | Position | Binlog_Do_DB | Binlog_Ignore_DB |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">| mysql-bin.000004 | 106 | | |</span><br><span class="line">+------------------+----------+--------------+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>6）<br>读取binlog日志，分析问题。<br>读取binlog日志的方法上面已经说到。<br>方法一：使用mysqlbinlog读取binlog日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# cd /var/lib/mysql/</span><br><span class="line">[root@vm-002 mysql]# mysqlbinlog mysql-bin.000003</span><br></pre></td></tr></table></figure></p>
+<p>方法二：登录服务器，并查看(推荐此种方法)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000003&apos;;</span><br><span class="line"></span><br><span class="line">+------------------+-----+-------------+-----------+-------------+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">| Log_name | Pos | Event_type | Server_id | End_log_pos | Info |</span><br><span class="line">+------------------+-----+-------------+-----------+-------------+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">| mysql-bin.000003 | 4 | Format_desc | 1 | 106 | Server ver: 5.1.73-log, Binlog ver: 4 |</span><br><span class="line">| mysql-bin.000003 | 106 | Query | 1 | 173 | BEGIN |</span><br><span class="line">| mysql-bin.000003 | 173 | Intvar | 1 | 201 | INSERT_ID=3 |</span><br><span class="line">| mysql-bin.000003 | 201 | Query | 1 | 444 | use `ops`; insert into ops.member(`name`,`sex`,`age`,`gsan&apos;,&apos;w&apos;,21,&apos;cls5&apos;),(&apos;lisi&apos;,&apos;m&apos;,20,&apos;cls4&apos;),(&apos;wangwu&apos;,&apos;w&apos;,26,&apos;cls6&apos;) |</span><br><span class="line">| mysql-bin.000003 | 444 | Xid | 1 | 471 | COMMIT /* xid=66 */ |</span><br><span class="line">| mysql-bin.000003 | 471 | Query | 1 | 538 | BEGIN |</span><br><span class="line">| mysql-bin.000003 | 538 | Query | 1 | 646 | use `ops`; update ops.member set name=&apos;李四&apos; where id= |</span><br><span class="line">| mysql-bin.000003 | 646 | Xid | 1 | 673 | COMMIT /* xid=68 */ |</span><br><span class="line">| mysql-bin.000003 | 673 | Query | 1 | 740 | BEGIN |</span><br><span class="line">| mysql-bin.000003 | 740 | Query | 1 | 848 | use `ops`; update ops.member set name=&apos;小二&apos; where id= |</span><br><span class="line">| mysql-bin.000003 | 848 | Xid | 1 | 875 | COMMIT /* xid=69 */ |</span><br><span class="line">| mysql-bin.000003 | 875 | Query | 1 | 954 | drop database ops |</span><br><span class="line">| mysql-bin.000003 | 954 | Rotate | 1 | 997 | mysql-bin.000004;pos=4 |</span><br><span class="line">+------------------+-----+-------------+-----------+-------------+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">13 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">或者：</span><br><span class="line"></span><br><span class="line">mysql&gt; show binlog events in &apos;mysql-bin.000003&apos;\G;</span><br><span class="line">.........</span><br><span class="line">.........</span><br><span class="line">*************************** 12. row ***************************</span><br><span class="line">Log_name: mysql-bin.000003</span><br><span class="line">Pos: 875</span><br><span class="line">Event_type: Query</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 954</span><br><span class="line">Info: drop database ops</span><br><span class="line">*************************** 13. row ***************************</span><br><span class="line">Log_name: mysql-bin.000003</span><br><span class="line">Pos: 954</span><br><span class="line">Event_type: Rotate</span><br><span class="line">Server_id: 1</span><br><span class="line">End_log_pos: 997</span><br><span class="line">Info: mysql-bin.000004;pos=4</span><br><span class="line">13 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>通过分析，造成数据库破坏的pos点区间是介于 875–954 之间（这是按照日志区间的pos节点算的），只要恢复到875前就可。</p>
+<p>7）<br>先把凌晨4点全备份的数据恢复：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# cd /opt/backup/</span><br><span class="line">[root@vm-002 backup]# ls</span><br><span class="line">mysql-bin.000003 ops_2016-09-25.sql.gz</span><br><span class="line">[root@vm-002 backup]# gzip -d ops_2016-09-25.sql.gz </span><br><span class="line">[root@vm-002 backup]# mysql -uroot -p -v &lt; ops_2016-09-25.sql </span><br><span class="line">Enter password: </span><br><span class="line">--------------</span><br><span class="line">/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */</span><br><span class="line">--------------</span><br><span class="line"></span><br><span class="line">--------------</span><br><span class="line">/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */</span><br><span class="line">--------------</span><br><span class="line"></span><br><span class="line">.............</span><br><span class="line">.............</span><br><span class="line"></span><br><span class="line">--------------</span><br><span class="line">/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */</span><br><span class="line">--------------</span><br><span class="line"></span><br><span class="line">这样就恢复了截至当日凌晨(4:00)前的备份数据都恢复了。</span><br><span class="line"></span><br><span class="line">mysql&gt; show databases;                        #发现ops库已经恢复回来了</span><br><span class="line">mysql&gt; use ops;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; show tables;</span><br><span class="line">+---------------+</span><br><span class="line">| Tables_in_ops |</span><br><span class="line">+---------------+</span><br><span class="line">| member |</span><br><span class="line">+---------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure></p>
+<p>但是这仅仅只是恢复了当天凌晨4点之前的数据，在4:00–18:00之间的数据还没有恢复回来！！<br>怎么办呢？<br>莫慌！这可以根据前面提到的mysql-bin.000003的新binlog日志进行恢复。</p>
+<p>8）<br>从binlog日志恢复数据<br>恢复命令的语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqlbinlog mysql-bin.0000xx | mysql -u用户名 -p密码 数据库名</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>常用参数选项解释：<br>–start-position=875 起始pos点<br>–stop-position=954 结束pos点<br>–start-datetime=”2016-9-25 22:01:08” 起始时间点<br>–stop-datetime=”2019-9-25 22:09:46” 结束时间点<br>–database=zyyshop 指定只恢复zyyshop数据库(一台主机上往往有多个数据库，只限本地log日志)</p>
+<hr>
+<p>不常用选项：<br>-u –user=name 连接到远程主机的用户名<br>-p –password[=name] 连接到远程主机的密码<br>-h –host=name 从远程主机上获取binlog日志<br>–read-from-remote-server 从某个MySQL服务器上读取binlog日志</p>
+<hr>
+<p>小结：实际是将读出的binlog日志内容，通过管道符传递给mysql命令。这些命令、文件尽量写成绝对路径；</p>
+<p>a）完全恢复(需要手动vim编辑mysql-bin.000003，将那条drop语句剔除掉)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 backup]# /usr/bin/mysqlbinlog /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br></pre></td></tr></table></figure></p>
+<p>b）指定pos结束点恢复(部分恢复)：<br>–stop-position=471 pos结束节点（按照事务区间算，是471）</p>
+<p>注意：<br>此pos结束节点介于“member表原始数据”与更新“name=’李四’”之前的数据，这样就可以恢复到更改“name=’李四’”之前的数据了。<br>操作如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --stop-position=471 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | xiaoer | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">恢复截止到更改“name=&apos;李四&apos;”之间的数据（按照事务区间算，是673）</span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --stop-position=673 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | 李四 | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>c）指定pso点区间恢复(部分恢复)：<br>更新 name=’李四’ 这条数据，日志区间是Pos[538] –&gt; End_log_pos[646]，按事务区间是：Pos[471] –&gt; End_log_pos[673]</p>
+<p>更新 name=’小二’ 这条数据，日志区间是Pos[740] –&gt; End_log_pos[848]，按事务区间是：Pos[673] –&gt; End_log_pos[875]</p>
+<p>c1）<br>单独恢复 name=’李四’ 这步操作，可这样：<br>按照binlog日志区间单独恢复：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-position=538 --stop-position=646 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">按照事务区间单独恢复</span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-position=471 --stop-position=673 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br></pre></td></tr></table></figure></p>
+<p>c2）<br>单独恢复 name=’小二’ 这步操作，可这样：<br>按照binlog日志区间单独恢复：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-position=740 --stop-position=848 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">按照事务区间单独恢复</span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-position=673 --stop-position=875 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br></pre></td></tr></table></figure></p>
+<p>c3）<br>将 name=’李四’、name=’小二’ 多步操作一起恢复，需要按事务区间，可这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-position=471 --stop-position=875 --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">查看数据库：</span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | 小二 | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | 李四 | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>这样，就恢复了删除前的数据状态了！！</p>
+<hr>
+<p>另外：<br>也可指定时间节点区间恢复(部分恢复)：<br>除了用pos节点的办法进行恢复，也可以通过指定时间节点区间进行恢复，按时间恢复需要用mysqlbinlog命令读取binlog日志内容，找时间节点。</p>
+<p>如上，误删除ops库后：<br>先进行全备份恢复<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@vm-002 backup]# mysql -uroot -p -v &lt; ops_2016-09-25.sql</span><br></pre></td></tr></table></figure></p>
+<p>查看ops数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br><span class="line"></span><br><span class="line">查看mysq-bin00003日志，找出时间节点</span><br><span class="line">[root@vm-002 ~]# cd /var/lib/mysql</span><br><span class="line">[root@vm-002 mysql]# mysqlbinlog mysql-bin.000003 </span><br><span class="line">.............</span><br><span class="line">.............</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"># at 173</span><br><span class="line">#160925 21:57:19 server id 1 end_log_pos 201 Intvar</span><br><span class="line">SET INSERT_ID=3/*!*/;</span><br><span class="line"># at 201</span><br><span class="line">#160925 21:57:19 server id 1 end_log_pos 444 Query thread_id=3 exec_time=0 error_code=0</span><br><span class="line">use `ops`/*!*/;</span><br><span class="line">SET TIMESTAMP=1474811839/*!*/;</span><br><span class="line">insert into ops.member(`name`,`sex`,`age`,`classid`) values(&apos;yiyi&apos;,&apos;w&apos;,20,&apos;cls1&apos;),(&apos;xiaoer&apos;,&apos;m&apos;,22,&apos;cls3&apos;),(&apos;zhangsan&apos;,&apos;w&apos;,21,&apos;cls5&apos;),(&apos;lisi&apos;,&apos;m&apos;,20,&apos;cls4&apos;),(&apos;wangwu&apos;,&apos;w&apos;,26,&apos;cls6&apos;)                               #执行的sql语句</span><br><span class="line">/*!*/;</span><br><span class="line"># at 444</span><br><span class="line">#160925 21:57:19 server id 1 end_log_pos 471 Xid = 66    #开始执行的时间</span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"># at 471</span><br><span class="line">#160925 21:58:41 server id 1 end_log_pos 538 Query thread_id=3 exec_time=0 error_code=0    #结束时间</span><br><span class="line">SET TIMESTAMP=1474811921/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"># at 538</span><br><span class="line">#160925 21:58:41 server id 1 end_log_pos 646 Query thread_id=3 exec_time=0 error_code=0</span><br><span class="line">SET TIMESTAMP=1474811921/*!*/;</span><br><span class="line">update ops.member set name=&apos;李四&apos; where id=4     #执行的sql语句</span><br><span class="line">/*!*/;</span><br><span class="line"># at 646</span><br><span class="line">#160925 21:58:41 server id 1 end_log_pos 673 Xid = 68    #开始执行的时间</span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"># at 673</span><br><span class="line">#160925 21:58:56 server id 1 end_log_pos 740 Query thread_id=3 exec_time=0 error_code=0   #结束时间</span><br><span class="line">SET TIMESTAMP=1474811936/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"># at 740</span><br><span class="line">#160925 21:58:56 server id 1 end_log_pos 848 Query thread_id=3 exec_time=0 error_code=0</span><br><span class="line">SET TIMESTAMP=1474811936/*!*/;</span><br><span class="line">update ops.member set name=&apos;小二&apos; where id=2      #执行的sql语句</span><br><span class="line">/*!*/;</span><br><span class="line"># at 848</span><br><span class="line">#160925 21:58:56 server id 1 end_log_pos 875 Xid = 69   #开始执行的时间</span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"># at 875</span><br><span class="line">#160925 22:01:08 server id 1 end_log_pos 954 Query thread_id=3 exec_time=0 error_code=0    #结束时间</span><br><span class="line">SET TIMESTAMP=1474812068/*!*/;</span><br><span class="line">drop database ops</span><br><span class="line">/*!*/;</span><br><span class="line"># at 954</span><br><span class="line">#160925 22:09:46 server id 1 end_log_pos 997 Rotate to mysql-bin.000004 pos: 4</span><br><span class="line">DELIMITER ;</span><br><span class="line"># End of log file</span><br><span class="line">ROLLBACK /* added by mysqlbinlog */;</span><br><span class="line">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;</span><br><span class="line"></span><br><span class="line">恢复到更改“name=&apos;李四&apos;”之前的数据</span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-datetime=&quot;2016-09-25 21:57:19&quot; --stop-datetime=&quot;2016-09-25 21:58:41&quot; --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | xiaoer | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-datetime=&quot;2016-09-25 21:58:41&quot; --stop-datetime=&quot;2016-09-25 21:58:56&quot; --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | guohuihui | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | 李四 | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[root@vm-002 ~]# /usr/bin/mysqlbinlog --start-datetime=&quot;2016-09-25 21:58:56&quot; --stop-datetime=&quot;2016-09-25 22:01:08&quot; --database=ops /var/lib/mysql/mysql-bin.000003 | /usr/bin/mysql -uroot -p123456 -v ops</span><br><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| id | name | sex | age | classid |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">| 1 | wangshibo | m | 27 | cls1 |</span><br><span class="line">| 2 | 小二 | w | 27 | cls2 |</span><br><span class="line">| 3 | yiyi | w | 20 | cls1 |</span><br><span class="line">| 4 | 李四 | m | 22 | cls3 |</span><br><span class="line">| 5 | zhangsan | w | 21 | cls5 |</span><br><span class="line">| 6 | lisi | m | 20 | cls4 |</span><br><span class="line">| 7 | wangwu | w | 26 | cls6 |</span><br><span class="line">+----+-----------+-----+-----+---------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>这样，就恢复了删除前的状态了！</p>
+<p>总结：<br>所谓恢复，就是让mysql将保存在binlog日志中指定段落区间的sql语句逐个重新执行一次而已。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/11/07/mysql使用binlog日志恢复/">mysql使用binlog日志恢复</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
+        <p><span>发布时间:</span>2018年11月07日 - 00时00分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/11/07/mysql使用binlog日志恢复/" title="mysql使用binlog日志恢复">http://datura.me/2018/11/07/mysql使用binlog日志恢复/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://datura.me/2018/11/07/mysql使用binlog日志恢复/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Kubernetes如何使用kube-dns实现服务发现</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、初步了解binlog"><span class="toc-number">1.</span> <span class="toc-text">一、初步了解binlog</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#binlog日志有两个最重要的使用场景"><span class="toc-number">1.1.</span> <span class="toc-text">binlog日志有两个最重要的使用场景:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#binlog日志包括两类文件："><span class="toc-number">1.2.</span> <span class="toc-text">binlog日志包括两类文件：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、开启binlog日志："><span class="toc-number">2.</span> <span class="toc-text">二、开启binlog日志：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、常用的binlog日志操作命令"><span class="toc-number">3.</span> <span class="toc-text">三、常用的binlog日志操作命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、查看binlog日志内容，常用有两种方式："><span class="toc-number">4.</span> <span class="toc-text">四、查看binlog日志内容，常用有两种方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、利用binlog日志恢复mysql数据"><span class="toc-number">5.</span> <span class="toc-text">五、利用binlog日志恢复mysql数据</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" title="下一篇: Kubernetes如何使用kube-dns实现服务发现">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/07/mysql使用binlog日志恢复/">mysql使用binlog日志恢复</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/lsyncd实现文件目录同步简要说明/">centos 7 lsyncd实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/lsyncd实时同步/">centos 7 部署 lsyncd 实时同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/">linux 下同步工具inotify + rsync 使用详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/gitlab安装/">centos 7 部署 gitlab</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/31/open-falcon安装/">centos 7 部署 open-falcon 0.2.1</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/05/Python(基础数据类型)详解/">Python笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/28/linux开机启动顺序/">linux开机启动顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/16/git使用说明/">git使用说明详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/">用Kibana和logstash快速搭建实时日志查询、收集与分析系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/">tcpdump：理论、自动抓包及业务架构树的生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/28/Glances/">Glances</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/tsung说明文档/">tsung使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/yum仓库搭建之RPM包制作/">yum仓库搭建之RPM包制作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux_traceroute_命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/linux traceroute 命令详解/">路由跟踪指令traceroute</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/mtr命令详解/">mtr命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/03/tcpdump抓包命令详解/">tcpdump抓包命令详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/linux_命令rsync+crontab实现自动同步/">linux 命令rsync+crontab实现自动同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/06/htop使用说明/">htop使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/mysql主从配置文件内容/">mysql主从配置文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/搭建WordPress/">搭建WordPress</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/keepalive+nginx实现高可用/">keepalive+nginx实现高可用</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/git/">git使用说明</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH（二）Rsync备份/">linux—SSH（二）Rsync备份</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/linux—SSH1/">linux—SSH1</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/hexo/">搭建Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/09/02/hello-world/">Hello World</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 Datura
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Blong</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

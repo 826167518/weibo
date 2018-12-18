@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>Kubernetes如何使用kube-dns实现服务发现 | Datura</title>
@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/kube-dns%E6%9E%B6%E6%9E%84.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/16.png">
 <meta property="og:image" content="http://blog.tenxcloud.com/wp-content/uploads/2016/10/17.png">
-<meta property="og:updated_time" content="2018-07-30T12:58:57.054Z">
+<meta property="og:updated_time" content="2018-12-09T11:10:53.046Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes如何使用kube-dns实现服务发现">
 <meta name="twitter:description" content="Kubernetes中如何发现服务">
@@ -52,7 +52,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           fancybox: true,
@@ -65,7 +65,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -247,7 +247,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Kubernetes如何使用kube-dns实现服务发现" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Kubernetes如何使用kube-dns实现服务发现" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" class="article-date">
@@ -257,7 +257,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -361,7 +361,7 @@
         <p><span>本文标题:</span><a href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/">Kubernetes如何使用kube-dns实现服务发现</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Datura 的个人博客">Datura</a></p>
         <p><span>发布时间:</span>2018年04月10日 - 00时00分</p>
-        <p><span>最后更新:</span>2018年07月30日 - 08时58分</p>
+        <p><span>最后更新:</span>2018年12月09日 - 06时10分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/" title="Kubernetes如何使用kube-dns实现服务发现">http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/</a>
             <span class="copy-path" data-clipboard-text="原文: http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/　　作者: Datura" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -369,7 +369,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"Datura"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"Datura"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -402,7 +402,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kubernetes中如何发现服务"><span class="toc-number">1.</span> <span class="toc-text">Kubernetes中如何发现服务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#发现Pod提供的服务"><span class="toc-number">1.1.</span> <span class="toc-text">发现Pod提供的服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取Pod-IP："><span class="toc-number">1.1.1.</span> <span class="toc-text">获取Pod IP：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在集群内访问Nginx服务："><span class="toc-number">1.1.2.</span> <span class="toc-text">在集群内访问Nginx服务：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Service发现服务"><span class="toc-number">1.2.</span> <span class="toc-text">使用Service发现服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取IP："><span class="toc-number">1.2.1.</span> <span class="toc-text">获取IP：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在集群内访问Service："><span class="toc-number">1.2.2.</span> <span class="toc-text">在集群内访问Service：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用kube-dns发现服务"><span class="toc-number">1.3.</span> <span class="toc-text">使用kube-dns发现服务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#kube-dns原理"><span class="toc-number">2.</span> <span class="toc-text">kube-dns原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Kube-dns组成"><span class="toc-number">2.1.</span> <span class="toc-text">Kube-dns组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#域名格式"><span class="toc-number">2.2.</span> <span class="toc-text">域名格式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置"><span class="toc-number">3.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#域名解析配置"><span class="toc-number">3.1.</span> <span class="toc-text">域名解析配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NS-相关配置"><span class="toc-number">3.2.</span> <span class="toc-text">NS 相关配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -501,8 +501,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -511,7 +511,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
