@@ -362,72 +362,6 @@
 
 
   
-    <article id="post-搭建WordPress" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/02/搭建WordPress/" class="article-date">
-      <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/搭建WordPress/">搭建WordPress</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p>1.搭建LAMP环境<br>
-          
-      
-    </p></div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/woedpress/">woedpress</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wordpress/">wordpress</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a href="/2016/09/02/搭建WordPress/#more">大航海 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-keepalive+nginx实现高可用" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
@@ -497,10 +431,10 @@ yum install popt-devel
 
 
   
-    <article id="post-git" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-zabbix2.6安装" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/02/git/" class="article-date">
+      <a href="/2016/09/02/zabbix2.6安装/" class="article-date">
       <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
 </a>
     </div>
@@ -514,7 +448,7 @@ yum install popt-devel
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/git/">git使用说明</a>
+      <a class="article-title" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a>
     </h1>
   
 
@@ -524,28 +458,29 @@ yum install popt-devel
     <div class="article-entry" itemprop="articleBody">
       
           
-              <p>在linux下搭建git环境</p>
-<p>###1、创建Github账号，<a href="https://github.com" target="_blank" rel="noopener">https://github.com</a><br>
+              <ol>
+<li>安装lnmp架构<br><code>yum -y install gcc gcc-c++ autoconf httpd php mysql mysql-server php-mysql httpd-manual mod_ssl mod_perl mod_auth_mysql php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-bcmath mysql-connector-odbc mysql-devel libdbi-dbd-mysql net-snmp-devel curl-devel</code></li>
+<li><p>启动服务<br> service mysqld start<br> service httpd start</p>
           
       
-    </p></div>
+    </li></ol></div>
     
     <div class="article-info article-info-index">
       
       
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/git/">git</a>
+    <a class="article-category-link" href="/categories/zabbix/">zabbix</a>
     </div>
 
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zabbix/">zabbix</a></li></ul>
     </div>
 
       
         <p class="article-more-link">
-          <a href="/2016/09/02/git/#more">大航海 >></a>
+          <a href="/2016/09/02/zabbix2.6安装/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -613,6 +548,73 @@ yum install popt-devel
       
         <p class="article-more-link">
           <a href="/2016/09/02/linux—SSH（二）Rsync备份/#more">大航海 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-git" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/02/git/" class="article-date">
+      <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/02/git/">git使用说明</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>在linux下搭建git环境</p>
+<p>###1、创建Github账号，<a href="https://github.com" target="_blank" rel="noopener">https://github.com</a><br>
+          
+      
+    </p></div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/git/">git</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a href="/2016/09/02/git/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -699,10 +701,10 @@ yum install popt-devel
 
 
   
-    <article id="post-zabbix2.6安装" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-搭建WordPress" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/02/zabbix2.6安装/" class="article-date">
+      <a href="/2016/09/02/搭建WordPress/" class="article-date">
       <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
 </a>
     </div>
@@ -716,7 +718,7 @@ yum install popt-devel
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a>
+      <a class="article-title" href="/2016/09/02/搭建WordPress/">搭建WordPress</a>
     </h1>
   
 
@@ -726,29 +728,27 @@ yum install popt-devel
     <div class="article-entry" itemprop="articleBody">
       
           
-              <ol>
-<li>安装lnmp架构<br><code>yum -y install gcc gcc-c++ autoconf httpd php mysql mysql-server php-mysql httpd-manual mod_ssl mod_perl mod_auth_mysql php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-bcmath mysql-connector-odbc mysql-devel libdbi-dbd-mysql net-snmp-devel curl-devel</code></li>
-<li><p>启动服务<br> service mysqld start<br> service httpd start</p>
+              <p>1.搭建LAMP环境<br>
           
       
-    </li></ol></div>
+    </p></div>
     
     <div class="article-info article-info-index">
       
       
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/zabbix/">zabbix</a>
+    <a class="article-category-link" href="/categories/woedpress/">woedpress</a>
     </div>
 
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zabbix/">zabbix</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wordpress/">wordpress</a></li></ul>
     </div>
 
       
         <p class="article-more-link">
-          <a href="/2016/09/02/zabbix2.6安装/#more">大航海 >></a>
+          <a href="/2016/09/02/搭建WordPress/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
