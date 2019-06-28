@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://datura.me/"/>
-  <updated>2019-06-18T08:07:01.116Z</updated>
-  <id>http://datura.me/</id>
+  <link href="http://datura.top/"/>
+  <updated>2019-06-27T08:57:13.466Z</updated>
+  <id>http://datura.top/</id>
   
   <author>
     <name>Datura</name>
@@ -17,9 +17,32 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Traefik-kubernetes 初试</title>
+    <link href="http://datura.top/2019/06/27/Traefik-kubernetes%20%E5%88%9D%E8%AF%95/"/>
+    <id>http://datura.top/2019/06/27/Traefik-kubernetes 初试/</id>
+    <published>2019-06-27T04:00:00.000Z</published>
+    <updated>2019-06-27T08:57:13.466Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Traefik-kubernetes-初试"><a href="#Traefik-kubernetes-初试" class="headerlink" title="Traefik-kubernetes 初试"></a>Traefik-kubernetes 初试</h1><blockquote><p>traefik 是一个前端负载均衡器，对于微服务架构尤其是 kubernetes 等编排工具具有良好的支持；同 nginx 等相比，traefik 能够自动感知后端容器变化，从而实现自动服务发现；今天小试了一下，在此记录一下使用过程<br><a id="more"></a></p></blockquote><p>从 kubernetes 1.2 版本开始，kubernetes提供了 Ingress 对象来实现对外暴露服务；到目前为止 kubernetes 总共有三种暴露服务的方式:</p><ol><li>LoadBlancer Service</li><li>NodePort Service</li><li>Ingress</li></ol><h4 id="LoadBlancer-Service"><a href="#LoadBlancer-Service" class="headerlink" title="LoadBlancer Service"></a>LoadBlancer Service</h4><p>LoadBlancer Service 是 kubernetes 深度结合云平台的一个组件；当使用 LoadBlancer Service 暴露服务时，实际上是通过向底层云平台申请创建一个负载均衡器来向外暴露服务；目前 LoadBlancer Service 支持的云平台已经相对完善，比如国外的 GCE、DigitalOcean，国内的 阿里云，私有云 Openstack 等等，由于 LoadBlancer Service 深度结合了云平台，所以只能在一些云平台上来使用</p><h4 id="NodePort-Service"><a href="#NodePort-Service" class="headerlink" title="NodePort Service"></a>NodePort Service</h4><p>NodePort Service 顾名思义，实质上就是通过在集群的每个 node 上暴露一个端口，然后将这个端口映射到某个具体的 service 来实现的，虽然每个 node 的端口有很多(0~65535)，但是由于安全性和易用性(服务多了就乱了，还有端口冲突问题)实际使用可能并不多</p><h5 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h5><p>Ingress 这个东西是 1.2 后才出现的，通过 Ingress 用户可以实现使用 nginx 等开源的反向代理负载均衡器实现对外暴露服务，以下详细说一下 Ingress，毕竟 traefik 用的就是 Ingress</p><h5 id="使用-Ingress-时一般会有三个组件"><a href="#使用-Ingress-时一般会有三个组件" class="headerlink" title="使用 Ingress 时一般会有三个组件:"></a>使用 Ingress 时一般会有三个组件:</h5><ol><li>反向代理负载均衡器</li><li>Ingress Controller</li><li>Ingress</li></ol><h5 id="反向代理负载均衡器"><a href="#反向代理负载均衡器" class="headerlink" title="反向代理负载均衡器"></a>反向代理负载均衡器</h5><p>反向代理负载均衡器很简单，说白了就是 nginx、apache 什么的；在集群中反向代理负载均衡器可以自由部署，可以使用 Replication Controller、Deployment、DaemonSet 等等，不过个人喜欢以 DaemonSet 的方式部署，感觉比较方便</p><h4 id="Ingress-Controller"><a href="#Ingress-Controller" class="headerlink" title="Ingress Controller"></a>Ingress Controller</h4><p>Ingress Controller 实质上可以理解为是个监视器，Ingress Controller 通过不断地跟 kubernetes API 打交道，实时的感知后端 service、pod 等变化，比如新增和减少 pod，service 增加与减少等；当得到这些变化信息后，Ingress Controller 再结合下文的 Ingress 生成配置，然后更新反向代理负载均衡器，并刷新其配置，达到服务发现的作用</p><h5 id="Ingress-1"><a href="#Ingress-1" class="headerlink" title="Ingress"></a>Ingress</h5><p>Ingress 简单理解就是个规则定义；比如说某个域名对应某个 service，即当某个域名的请求进来时转发给某个 service;这个规则将与 Ingress Controller 结合，然后 Ingress Controller 将其动态写入到负载均衡器配置中，从而实现整体的服务发现和负载均衡</p><p><img src="http://www.liuhaihua.cn/wp-content/uploads/2016/12/IJJV3qV.jpg" alt=""><br>从上图中可以很清晰的看到，实际上请求进来还是被负载均衡器拦截，比如 nginx，然后 Ingress Controller 通过跟 Ingress 交互得知某个域名对应哪个 service，再通过跟 kubernetes API 交互得知 service 地址等信息；综合以后生成配置文件实时写入负载均衡器，然后负载均衡器 reload 该规则便可实现服务发现，即动态映射</p><p>了解了以上内容以后，这也就很好的说明了我为什么喜欢把负载均衡器部署为 Daemon Set；因为无论如何请求首先是被负载均衡器拦截的，所以在每个 node 上都部署一下，同时 hostport 方式监听 80 端口；那么就解决了其他方式部署不确定 负载均衡器在哪的问题，同时访问每个 node 的 80 都能正确解析请求；如果前端再 放个 nginx 就又实现了一层负载均衡</p><h1 id="Traefik-使用"><a href="#Traefik-使用" class="headerlink" title="Traefik 使用"></a>Traefik 使用</h1><p>由于微服务架构以及 Docker 技术和 kubernetes 编排工具最近几年才开始逐渐流行，所以一开始的反向代理服务器比如 nginx、apache 并未提供其支持，毕竟他们也不是先知；所以才会出现 Ingress Controller 这种东西来做 kubernetes 和前端负载均衡器如 nginx 之间做衔接；即 Ingress Controller 的存在就是为了能跟 kubernetes 交互，又能写 nginx 配置，还能 reload 它，这是一种折中方案；而最近开始出现的 traefik 天生就是提供了对 kubernetes 的支持，也就是说 traefik 本身就能跟 kubernetes API 交互，感知后端变化，因此可以得知: 在使用 traefik 时，Ingress Controller 已经无卵用了，所以整体架构如下<br><img src="http://www.liuhaihua.cn/wp-content/uploads/2016/12/Rfe67b3.jpg" alt=""></p><h4 id="部署-Traefik"><a href="#部署-Traefik" class="headerlink" title="部署 Traefik"></a>部署 Traefik</h4><p>已经从大体上搞懂了 Ingress 和 traefik，那么部署起来就很简单</p><h5 id="部署-Daemon-Set"><a href="#部署-Daemon-Set" class="headerlink" title="部署 Daemon Set"></a>部署 Daemon Set</h5><p>首先以 Daemon Set 的方式在每个 node 上启动一个 traefik，并使用 hostPort 的方式让其监听每个 node 的 80 端口(有没有感觉这就是个 NodePort? 不过区别就是这个 Port 后面有负载均衡器 –&gt;手动)</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f traefik.ds.yaml</span><br><span class="line"></span><br><span class="line"> # Daemon set 文件如下</span><br><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: DaemonSet</span><br><span class="line">metadata:</span><br><span class="line">  name: traefik-ingress-lb</span><br><span class="line">  namespace: kube-system</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: traefik-ingress-lb</span><br><span class="line">spec:</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        k8s-app: traefik-ingress-lb</span><br><span class="line">        name: traefik-ingress-lb</span><br><span class="line">    spec:</span><br><span class="line">      terminationGracePeriodSeconds: 60</span><br><span class="line">      hostNetwork: true</span><br><span class="line">      restartPolicy: Always</span><br><span class="line">      containers:</span><br><span class="line">      - image: traefik</span><br><span class="line">        name: traefik-ingress-lb</span><br><span class="line">        resources:</span><br><span class="line">          limits:</span><br><span class="line">            cpu: 200m</span><br><span class="line">            memory: 30Mi</span><br><span class="line">          requests:</span><br><span class="line">            cpu: 100m</span><br><span class="line">            memory: 20Mi</span><br><span class="line">        ports:</span><br><span class="line">        - name: http</span><br><span class="line">          containerPort: 80</span><br><span class="line">          hostPort: 80</span><br><span class="line">        - name: admin</span><br><span class="line">          containerPort: 8580</span><br><span class="line">        args:</span><br><span class="line">        - --web</span><br><span class="line">        - --web.address=:8580</span><br><span class="line">        - --kubernetes</span><br></pre></td></tr></table></figure><p>其中 traefik 监听 node 的 80 和 8580 端口，80 提供正常服务，8580 是其自带的 UI 界面，原本默认是 8080，因为环境里端口冲突了，所以这里临时改一下</p><h5 id="部署-Ingress"><a href="#部署-Ingress" class="headerlink" title="部署 Ingress"></a>部署 Ingress</h5><p>从上面的长篇大论已经得知了 Ingress Controller 是无需部署的，所以直接部署 Ingress 即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f traefik.ing.yaml</span><br><span class="line"></span><br><span class="line"># Ingress 文件如下</span><br><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: traefik-ingress</span><br><span class="line">spec:</span><br><span class="line">  rules:</span><br><span class="line">  - host: traefik.www.test.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: test-www</span><br><span class="line">          servicePort: 8080</span><br><span class="line">  - host: traefik.api.test.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: test-api</span><br><span class="line">          servicePort: 8080</span><br></pre></td></tr></table></figure></p><p>实际上事先集群中已经存在了相应的名为 test-www 和 test-api 的 service，对应的 service 后端也有很多 pod；所以这里就不在具体写部署实际业务容器(test-www、test-api)的过程了，各位测试时，只需要把这个 test 的 service 替换成自己业务的 service 即可</p><h5 id="部署-Traefik-UI"><a href="#部署-Traefik-UI" class="headerlink" title="部署 Traefik UI"></a>部署 Traefik UI</h5><p>traefik 本身还提供了一套 UI 供我们使用，其同样以 Ingress 方式暴露，只需要创建一下即可</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f ui.yaml</span><br><span class="line"></span><br><span class="line"># ui yaml 如下</span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: traefik-web-ui</span><br><span class="line">  namespace: kube-system</span><br><span class="line">spec:</span><br><span class="line">  selector:</span><br><span class="line">    k8s-app: traefik-ingress-lb</span><br><span class="line">  ports:</span><br><span class="line">  - name: web</span><br><span class="line">    port: 80</span><br><span class="line">    targetPort: 8580</span><br><span class="line">---</span><br><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: traefik-web-ui</span><br><span class="line">  namespace: kube-system</span><br><span class="line">spec:</span><br><span class="line">  rules:</span><br><span class="line">  - host: traefik-ui.local</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: traefik-web-ui</span><br><span class="line">          servicePort: web</span><br></pre></td></tr></table></figure><h5 id="访问测试"><a href="#访问测试" class="headerlink" title="访问测试"></a>访问测试</h5><p>都创建无误以后，只需要将待测试的域名解析到任意一台 node 上即可，页面就不截图了，截图就暴露了…..下面来两张 ui 的<br><img src="http://www.liuhaihua.cn/wp-content/uploads/2016/12/ErURbiu.jpg" alt=""><br><img src="http://www.liuhaihua.cn/wp-content/uploads/2016/12/qaMjqir.jpg" alt=""></p><h4 id="健康检查"><a href="#健康检查" class="headerlink" title="健康检查"></a>健康检查</h4><p>关于健康检查，测试可以使用 kubernetes 的 Liveness Probe 实现，如果 Liveness Probe检查失败，则 traefik 会自动移除该 pod，以下是一个 示例</p><p>test 的 deployment，健康检查方式是 cat /tmp/health，容器启动 2 分钟后会删掉这个文件，模拟健康检查失败<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Deployment</span><br><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">metadata:</span><br><span class="line">  name: test</span><br><span class="line">  namespace: default</span><br><span class="line">  labels:</span><br><span class="line">    test: alpine</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      test: alpine</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        test: alpine</span><br><span class="line">        name: test</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - image: mritd/alpine:3.4</span><br><span class="line">        name: alpine</span><br><span class="line">        resources:</span><br><span class="line">          limits:</span><br><span class="line">            cpu: 200m</span><br><span class="line">            memory: 30Mi</span><br><span class="line">          requests:</span><br><span class="line">            cpu: 100m</span><br><span class="line">            memory: 20Mi</span><br><span class="line">        ports:</span><br><span class="line">        - name: http</span><br><span class="line">          containerPort: 80</span><br><span class="line">        args:</span><br><span class="line">        command:</span><br><span class="line">        - &quot;bash&quot;</span><br><span class="line">        - &quot;-c&quot;</span><br><span class="line">        - &quot;echo ok &gt; /tmp/health;sleep 120;rm -f /tmp/health&quot;</span><br><span class="line">        livenessProbe:</span><br><span class="line">          exec:</span><br><span class="line">            command:</span><br><span class="line">            - cat</span><br><span class="line">            - /tmp/health</span><br><span class="line">          initialDelaySeconds: 20</span><br></pre></td></tr></table></figure></p><p>test 的 service</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: test </span><br><span class="line">  labels:</span><br><span class="line">    name: test</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - port: 8123</span><br><span class="line">    targetPort: 80</span><br><span class="line">  selector:</span><br><span class="line">    name: test</span><br></pre></td></tr></table></figure><p>test 的 Ingress</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: extensions/v1beta1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: test</span><br><span class="line">spec:</span><br><span class="line">  rules:</span><br><span class="line">  - host: test.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        backend:</span><br><span class="line">          serviceName: test</span><br><span class="line">          servicePort: 8123</span><br></pre></td></tr></table></figure><p>全部创建好以后，进入 traefik ui 界面，可以观察到每隔 2 分钟健康检查失败后，kubernetes 重建 pod，同时 traefik 会从后端列表中移除这个 pod</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Traefik-kubernetes-初试&quot;&gt;&lt;a href=&quot;#Traefik-kubernetes-初试&quot; class=&quot;headerlink&quot; title=&quot;Traefik-kubernetes 初试&quot;&gt;&lt;/a&gt;Traefik-kubernetes 初试&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;traefik 是一个前端负载均衡器，对于微服务架构尤其是 kubernetes 等编排工具具有良好的支持；同 nginx 等相比，traefik 能够自动感知后端容器变化，从而实现自动服务发现；今天小试了一下，在此记录一下使用过程&lt;br&gt;
+    
+    </summary>
+    
+      <category term="ingress" scheme="http://datura.top/categories/ingress/"/>
+    
+    
+      <category term="ingress" scheme="http://datura.top/tags/ingress/"/>
+    
+  </entry>
+  
+  <entry>
     <title>mysql使用binlog日志恢复</title>
-    <link href="http://datura.me/2018/11/07/mysql%E4%BD%BF%E7%94%A8binlog%E6%97%A5%E5%BF%97%E6%81%A2%E5%A4%8D/"/>
-    <id>http://datura.me/2018/11/07/mysql使用binlog日志恢复/</id>
+    <link href="http://datura.top/2018/11/07/mysql%E4%BD%BF%E7%94%A8binlog%E6%97%A5%E5%BF%97%E6%81%A2%E5%A4%8D/"/>
+    <id>http://datura.top/2018/11/07/mysql使用binlog日志恢复/</id>
     <published>2018-11-07T05:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.116Z</updated>
     
@@ -31,17 +54,17 @@
     
     </summary>
     
-      <category term="mysql" scheme="http://datura.me/categories/mysql/"/>
+      <category term="mysql" scheme="http://datura.top/categories/mysql/"/>
     
     
-      <category term="mysql" scheme="http://datura.me/tags/mysql/"/>
+      <category term="mysql" scheme="http://datura.top/tags/mysql/"/>
     
   </entry>
   
   <entry>
     <title>Kubernetes如何使用kube-dns实现服务发现</title>
-    <link href="http://datura.me/2018/04/10/Kubernetes%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8kube-dns%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/"/>
-    <id>http://datura.me/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/</id>
+    <link href="http://datura.top/2018/04/10/Kubernetes%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8kube-dns%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/"/>
+    <id>http://datura.top/2018/04/10/Kubernetes如何使用kube-dns实现服务发现/</id>
     <published>2018-04-10T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.113Z</updated>
     
@@ -53,17 +76,17 @@
     
     </summary>
     
-      <category term="k8s" scheme="http://datura.me/categories/k8s/"/>
+      <category term="k8s" scheme="http://datura.top/categories/k8s/"/>
     
     
-      <category term="k8s" scheme="http://datura.me/tags/k8s/"/>
+      <category term="k8s" scheme="http://datura.top/tags/k8s/"/>
     
   </entry>
   
   <entry>
     <title>centos 7 lsyncd实时同步</title>
-    <link href="http://datura.me/2017/09/22/lsyncd%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E5%90%8C%E6%AD%A5%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E/"/>
-    <id>http://datura.me/2017/09/22/lsyncd实现文件目录同步简要说明/</id>
+    <link href="http://datura.top/2017/09/22/lsyncd%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E5%90%8C%E6%AD%A5%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E/"/>
+    <id>http://datura.top/2017/09/22/lsyncd实现文件目录同步简要说明/</id>
     <published>2017-09-22T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.116Z</updated>
     
@@ -75,39 +98,17 @@
     
     </summary>
     
-      <category term="lsync" scheme="http://datura.me/categories/lsync/"/>
+      <category term="lsync" scheme="http://datura.top/categories/lsync/"/>
     
     
-      <category term="lsync" scheme="http://datura.me/tags/lsync/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>centos 7 部署 lsyncd 实时同步</title>
-    <link href="http://datura.me/2017/09/13/lsyncd%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5/"/>
-    <id>http://datura.me/2017/09/13/lsyncd实时同步/</id>
-    <published>2017-09-13T04:00:00.000Z</published>
-    <updated>2019-06-18T08:07:01.116Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="几大实时同步工具比较"><a href="#几大实时同步工具比较" class="headerlink" title="几大实时同步工具比较"></a>几大实时同步工具比较</h2><a id="more"></a><h3 id="inotify-rsync"><a href="#inotify-rsync" class="headerlink" title="inotify + rsync"></a>inotify + rsync</h3><p>最近一直在寻求生产服务服务器上的同步替代方案，原先使用的是inotify + rsync，但随着文件数量的增大到100W+，目录下的文件列表就达20M，在网络状况不佳或者限速的情况下，变更的文件可能10来个才几M，却因此要发送的文件列表就达20M，严重减低的带宽的使用效率以及同步效率；更为要紧的是，加入inotifywait在5s内监控到10个小文件发生变化，便会触发10个rsync同步操作，结果就是真正需要传输的才2-3M的文件，比对的文件列表就达200M。使用这两个组合的好处在于，它们都是最基本的软件，可以通过不同选项做到很精确的控制，比如排除同步的目录，同步多个模块或同步到多个主机。  </p><p>搭建过程参考<a href="http://www.datura.me/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/" target="_blank" rel="noopener">linux 下同步工具inotify + rsync 使用详解</a></p><h3 id="sersync"><a href="#sersync" class="headerlink" title="sersync"></a>sersync</h3><p>后来听同事说 sersync 这么个工具可以提高同步的性能，也解决了同步大文件时出现异常的问题，所以就尝试了一下。sersync是国内的一个开发者开源出来的，使用c++编写，采用多线程的方式进行同步，失败后还有重传机制，对临时文件过滤，自带crontab定时同步功能。网上看到有人说性能还不错，说一下我的观点：</p><blockquote><p>国产开源，文档不是很全，在2011年之后就没更新了（googlecode都要快关闭了，其实可以转交其他人维护），网上关于它的使用和讨论都止于10年了<br>采用xml配置文件的方式，可读性比较好，但是有些原生的有些功能没有实现就没法使用了<br>无法实现多目录同步，只能通过多个配置文件启动多个进程<br>文件排除功能太弱。这个要看需求，不是每个人都需要排除子目录。而对于我的环境中，这个功能很重要，而且排除的规则较多<br>虽然提供插件的功能，但很鸡肋，因为软件本身没有持续更新，也没有看到贡献有其它插件出现（可能是我知识面不够，还用不到里面的refreshCDN plugin）。</p></blockquote><h3 id="lsyncd"><a href="#lsyncd" class="headerlink" title="lsyncd"></a>lsyncd</h3><p>废话说这么多，本文就是介绍它了。有些博客说lsyncd是谷歌开源的，实际不是了，只是托管在了googlecode上而已，幸运的是已经迁移到github了：  <a href="https://github.com/826167518/lsyncd" target="_blank" rel="noopener">[https://github.com/826167518/lsyncd]</a></p><p>Lysncd 实际上是lua语言封装了 inotify 和 rsync 工具，采用了 Linux 内核（2.6.13 及以后）里的 inotify 触发机制，然后通过rsync去差异同步，达到实时的效果。我认为它最令人称道的特性是，完美解决了 inotify + rsync海量文件同步带来的文件频繁发送文件列表的问题 —— 通过时间延迟或累计触发事件次数实现。另外，它的配置方式很简单，lua本身就是一种配置语言，可读性非常强。lsyncd也有多种工作模式可以选择，本地目录cp，本地目录rsync，远程目录rsyncssh。</p><p>实现简单高效的本地目录同步备份（网络存储挂载也当作本地目录），一个命令搞定。</p><h2 id="使用-lsyncd-本地目录实时备份"><a href="#使用-lsyncd-本地目录实时备份" class="headerlink" title="使用 lsyncd 本地目录实时备份"></a>使用 lsyncd 本地目录实时备份</h2><p>这一节实现的功能是，本地目录source实时同步到另一个目录target，而在source下有大量的文件，并且有部分目录和临时文件不需要同步。</p><h3 id="安装lsyncd"><a href="#安装lsyncd" class="headerlink" title="安装lsyncd"></a>安装lsyncd</h3><p>安装lsyncd极为简单，已经收录在ubuntu的官方镜像源里，直接通过apt-get install lsyncd就可以。<br>在Redhat系（我的环境是CentOS 6.2 x86_64 ），可以手动去下载 lsyncd-2.1.5-6.fc21.x86_64.rpm，但首先你得安装两个依赖yum install lua lua-devel。也可以通过在线安装，需要epel-release扩展包：</p><pre><code># rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm# yum install lsyncd</code></pre><p>源码编译安装</p><p>从源码编译安装可以使用最新版的lsyncd程序，但必须要相应的依赖库文件和编译工具：  </p><pre><code>yum install lua lua-devel asciidoc cmake。</code></pre><p>从 googlecode lsyncd 上下载的lsyncd-2.1.5.tar.gz，直接./configure、make &amp;&amp; make install就可以了。</p><p>从github上下载<a href="https://github.com/axkibe/lsyncd/archive/master.zip" target="_blank" rel="noopener">lsyncd-master.zip</a> 的2.1.5版本使用的是 cmake 编译工具，无法./configure：</p><blockquote><p>uzip lsyncd-master.zip<br>cd lsyncd-master<br>cmake -DCMAKE_INSTALL_PREFIX=/usr/local/lsyncd-2.1.5<br>make &amp;&amp; make install  </p></blockquote><p>我这个版本编译时有个小bug，如果按照INSTALL在build目录中make，会提示：</p><blockquote><p>[100%] Generating doc/lsyncd.1<br>Updating the manpage<br>a2x: failed: source file not found: doc/lsyncd.1.txt<br>make[2]: <strong><em> [doc/lsyncd.1] Error 1<br>make[1]: </em></strong> [CMakeFiles/manpage.dir/all] Error 2<br>make: *** [all] Error 2  </p></blockquote><p>解决办法是要么直接在解压目录下cmake，不要mkdir build，要么在CMakeList.txt中搜索doc字符串，在前面加上${PROJECT_SOURCE_DIR}。</p><h3 id="lsyncd-conf"><a href="#lsyncd-conf" class="headerlink" title="lsyncd.conf"></a>lsyncd.conf</h3><p>下面都是在编译安装的情况下操作。</p><h4 id="lsyncd同步配置"><a href="#lsyncd同步配置" class="headerlink" title="lsyncd同步配置"></a>lsyncd同步配置</h4><pre><code>cd /usr/local/lsyncd-2.1.5mkdir etc varvim etc/lsyncd.confsettings {      logfile      =&quot;/usr/local/lsyncd-2.1.5/var/  lsyncd.log&quot;,      statusFile   =&quot;/usr/local/lsyncd-2.1.5/var/  lsyncd.status&quot;,      inotifyMode  = &quot;CloseWrite&quot;,      maxProcesses = 7,      -- nodaemon =true,      }  sync {     default.rsync,     source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest&quot;,     -- excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,     rsync     = {          binary    = &quot;/usr/bin/rsync&quot;,          archive   = true,          compress  = true,          verbose   = true          }      }  </code></pre><p>到这启动 lsycnd 就可以完成实时同步了，默认的许多参数可以满足绝大部分需求，非常简单。</p><h4 id="lsyncd-conf配置选项说明"><a href="#lsyncd-conf配置选项说明" class="headerlink" title="lsyncd.conf配置选项说明"></a>lsyncd.conf配置选项说明</h4><p>settings</p><p>里面是全局设置，–开头表示注释，下面是几个常用选项说明：</p><blockquote><p>logfile 定义日志文件<br>stausFile 定义状态文件<br>nodaemon=true 表示不启用守护模式，默认<br>statusInterval 将lsyncd的状态写入上面的statusFile的间隔，默认10秒<br>inotifyMode 指定inotify监控的事件，默认是CloseWrite，还可以是Modify或CloseWrite or Modify<br>maxProcesses 同步进程的最大个数。假如同时有20个文件需要同步，而&gt;maxProcesses = 8，则最大能看到有8个rysnc进程<br>maxDelays 累计到多少所监控的事件激活一次同步，即使后面的delay延迟时间还未到  </p></blockquote><p>sync</p><p>里面是定义同步参数，可以继续使用maxDelays来重写settings的全局变量。一般第一个参数指定lsyncd以什么模式运行：rsync、rsyncssh、direct三种模式：</p><blockquote><blockquote><p>default.rsync ：本地目录间同步，使用rsync，也可以达到使用ssh形式的远程rsync效果，或daemon方式连接远程rsyncd进程；<br>default.direct ：本地目录间同步，使用cp、rm等命令完成差异文件备份；<br>default.rsyncssh ：同步到远程主机目录，rsync的ssh模式，需要使用key来认证  </p></blockquote></blockquote><blockquote><p>source 同步的源目录，使用绝对路径。  </p><blockquote><p>target 定义目的地址.对应不同的模式有几种写法：<br>/tmp/dest ：本地目录同步，可用于direct和rsync模式<br>172.29.88.223:/tmp/dest ：同步到远程服务器目录，可用于rsync和rsyncssh模式，拼接的命令类似于/usr/bin/rsync -ltsd –delete –include-from=- –exclude=* SOURCE TARGET，剩下的就是rsync的内容了，比如指定username，免密码同步<br>172.29.88.223::module ：同步到远程服务器目录，用于rsync模式</p></blockquote><p>三种模式的示例会在后面给出。<br>init 这是一个优化选项，当init = false，只同步进程启动以后发生改动事件的文件，原有的目录即使有差异也不会同步。默认是true<br>delay 累计事件，等待rsync同步延时时间，默认15秒（最大累计到1000个不可合并的事件）。也就是15s内监控目录下发生的改动，会累积到一次rsync同步，避免过于频繁的同步。（可合并的意思是，15s内两次修改了同一文件，最后只同步最新的文件）<br>excludeFrom 排除选项，后面指定排除的列表文件，如excludeFrom = “/etc/lsyncd.exclude”，如果是简单的排除，可以使用exclude = LIST。  </p><blockquote><p>这里的排除规则写法与原生rsync有点不同，更为简单：<br>监控路径里的任何部分匹配到一个文本，都会被排除，例如/bin/foo/bar可以匹配规则foo<br>如果规则以斜线/开头，则从头开始要匹配全部<br>如果规则以/结尾，则要匹配监控路径的末尾<br>?匹配任何字符，但不包括/<br>*匹配0或多个字符，但不包括/<br>**匹配0或多个字符，可以是/<br>delete 为了保持target与souce完全同步，Lsyncd默认会delete = true来允许同步删除。它除了false，还有startup、running值。</p></blockquote></blockquote><p>rsync<br>（提示一下，delete和exclude本来都是rsync的选项，上面是配置在sync中的，我想这样做的原因是为了减少rsync的开销）</p><blockquote><p>bwlimit 限速，单位kb/s，与rsync相同（这么重要的选项在文档里竟然没有标出）<br>compress 压缩传输默认为true。在带宽与cpu负载之间权衡，本地目录同步可以考虑把它设为false<br>perms 默认保留文件权限。<br>其它rsync的选项  </p></blockquote><p>其它还有rsyncssh模式独有的配置项，如host、targetdir、rsync_path、password_file，见后文示例。rsyncOps={“-avz”,”–delete”}这样的写法在2.1.*版本已经不支持。</p><p>lsyncd.conf可以有多个sync，各自的source，各自的target，各自的模式，互不影响。</p><h3 id="启动lsyncd"><a href="#启动lsyncd" class="headerlink" title="启动lsyncd"></a>启动lsyncd</h3><p>使用命令加载配置文件，启动守护进程，自动同步目录操作。</p><pre><code>lsyncd -log Exec /usr/local/lsyncd-2.1.5/etc/lsyncd.conf</code></pre><h3 id="lsyncd-conf其它模式示例"><a href="#lsyncd-conf其它模式示例" class="headerlink" title="lsyncd.conf其它模式示例"></a>lsyncd.conf其它模式示例</h3><p>以下配置本人都已经过验证可行，必须根据实际需要裁剪配置：</p><pre><code>settings {logfile =&quot;/usr/local/lsyncd-2.1.5/var/lsyncd.log&quot;,statusFile =&quot;/usr/local/lsyncd-2.1.5/var/lsyncd.status&quot;,inotifyMode = &quot;CloseWrite&quot;,maxProcesses = 8,}-- I. 本地目录同步，direct：cp/rm/mv。 适用：500+万文件，变动不大sync {    default.direct,    source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest&quot;,    delay = 1    maxProcesses = 1    }-- II. 本地目录同步，rsync模式：rsyncsync {    default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest1&quot;,    excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,    rsync     = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,        compress = true,        bwlimit   = 2000        }     }-- III. 远程目录同步，rsync模式 + rsyncd daemonsync {    default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;syncuser@172.29.88.223::module1&quot;,    delete=&quot;running&quot;,    exclude = { &quot;.*&quot;, &quot;.tmp&quot; },    delay = 30,  init = false,    rsync     = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,       compress = true,       verbose   = true,        password_file = &quot;/etc/rsyncd.d/rsync.pwd&quot;,     _extra    = {&quot;--bwlimit=200&quot;}            }       }-- IV. 远程目录同步，rsync模式 + ssh shellsync {   default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;172.29.88.223:/tmp/dest&quot;,     -- target    = &quot;root@172.29.88.223:/remote/dest&quot;,  -- 上面target，注意如果是普通用户，必须拥有写权限  maxDelays = 5,  delay = 30,  -- init = true,  rsync     = {    binary = &quot;/usr/bin/rsync&quot;,    archive = true,    compress = true,    bwlimit   = 2000    -- rsh = &quot;/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no&quot;    -- 如果要指定其它端口，请用上面的rsh    }  } -- V. 远程目录同步，rsync模式 + rsyncssh，效果与上面相同sync {    default.rsyncssh,    source    = &quot;/tmp/src2&quot;,    host      = &quot;172.29.88.223&quot;,    targetdir = &quot;/remote/dir&quot;,    excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,    -- maxDelays = 5,    delay = 0,    -- init = false,    rsync    = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,        compress = true,         verbose   = true,      _extra = {&quot;--bwlimit=2000&quot;},        },    ssh      = {        port  =  1234        }    }</code></pre><p>上面的内容几乎涵盖了所有同步的模式，其中第III个要求像rsync一样配置rsyncd服务端，见本文开头。第IV、V配置ssh方式同步，达到的效果相同，但实际同步时你会发现每次同步都会提示输入ssh的密码，可以通过以下方法解决：</p><p>在远端被同步的服务器上开启ssh无密码登录，请注意用户身份：</p><pre><code>user$ ssh-keygen -t rsa一路回车...user$ cd ~/.sshuser$ cat id_rsa.pub &gt;&gt; authorized_keys</code></pre><p>把id_rsa私钥拷贝到执行lsyncd的机器上</p><pre><code>user$ chmod 600 ~/.ssh/id_rsa测试能否无密码登录user$ ssh user@172.29.88.223</code></pre><h2 id="lsyncd的其它功能"><a href="#lsyncd的其它功能" class="headerlink" title="lsyncd的其它功能"></a>lsyncd的其它功能</h2><p>lsyncd的功能不仅仅是同步，官方手册 <a href="https://axkibe.github.io/lsyncd/" target="_blank" rel="noopener">Lsyncd 2.1.x ‖ Layer 2 Config ‖ Advanced onAction</a> 高级功能提到，还可以监控某个目录下的文件，根据触发的事件自己定义要执行的命令，example是监控某个某个目录，只要是有jpg、gif、png格式的文件参数，就把它们转成pdf，然后同步到另一个目录。正好在我运维的一个项目中有这个需求，现在都是在java代码里转换，还容易出现异常，通过lsyncd可以代替这样的功能。但，门槛在于要会一点点lua语言（根据官方example还是可以写出来）。</p><p>另外偶然想到个问题，同时设置了maxDelays和delay，当监控目录一直没有文件变化了，也会发生同步操作，虽然没有可rsync的文件。</p><p>TO-DO：</p><p>其它同步工具：csync2，clsync，btsync，drdb 。</p><p>lsyncd双向同步：<a href="https://axkibe.github.io/lsyncd/" target="_blank" rel="noopener">GlusterFS</a></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;几大实时同步工具比较&quot;&gt;&lt;a href=&quot;#几大实时同步工具比较&quot; class=&quot;headerlink&quot; title=&quot;几大实时同步工具比较&quot;&gt;&lt;/a&gt;几大实时同步工具比较&lt;/h2&gt;
-    
-    </summary>
-    
-      <category term="lsync" scheme="http://datura.me/categories/lsync/"/>
-    
-    
-      <category term="lsync" scheme="http://datura.me/tags/lsync/"/>
+      <category term="lsync" scheme="http://datura.top/tags/lsync/"/>
     
   </entry>
   
   <entry>
     <title>linux 下同步工具inotify + rsync 使用详解</title>
-    <link href="http://datura.me/2017/09/13/linux_%E4%B8%8B%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7inotify_+_rsync_%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/</id>
+    <link href="http://datura.top/2017/09/13/linux_%E4%B8%8B%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7inotify_+_rsync_%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/</id>
     <published>2017-09-13T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.114Z</updated>
     
@@ -119,17 +120,39 @@
     
     </summary>
     
-      <category term="rsync" scheme="http://datura.me/categories/rsync/"/>
+      <category term="rsync" scheme="http://datura.top/categories/rsync/"/>
     
     
-      <category term="rsync" scheme="http://datura.me/tags/rsync/"/>
+      <category term="rsync" scheme="http://datura.top/tags/rsync/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>centos 7 部署 lsyncd 实时同步</title>
+    <link href="http://datura.top/2017/09/13/lsyncd%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5/"/>
+    <id>http://datura.top/2017/09/13/lsyncd实时同步/</id>
+    <published>2017-09-13T04:00:00.000Z</published>
+    <updated>2019-06-18T08:07:01.116Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="几大实时同步工具比较"><a href="#几大实时同步工具比较" class="headerlink" title="几大实时同步工具比较"></a>几大实时同步工具比较</h2><a id="more"></a><h3 id="inotify-rsync"><a href="#inotify-rsync" class="headerlink" title="inotify + rsync"></a>inotify + rsync</h3><p>最近一直在寻求生产服务服务器上的同步替代方案，原先使用的是inotify + rsync，但随着文件数量的增大到100W+，目录下的文件列表就达20M，在网络状况不佳或者限速的情况下，变更的文件可能10来个才几M，却因此要发送的文件列表就达20M，严重减低的带宽的使用效率以及同步效率；更为要紧的是，加入inotifywait在5s内监控到10个小文件发生变化，便会触发10个rsync同步操作，结果就是真正需要传输的才2-3M的文件，比对的文件列表就达200M。使用这两个组合的好处在于，它们都是最基本的软件，可以通过不同选项做到很精确的控制，比如排除同步的目录，同步多个模块或同步到多个主机。  </p><p>搭建过程参考<a href="http://www.datura.me/2017/09/13/linux_下同步工具inotify_+_rsync_使用详解/" target="_blank" rel="noopener">linux 下同步工具inotify + rsync 使用详解</a></p><h3 id="sersync"><a href="#sersync" class="headerlink" title="sersync"></a>sersync</h3><p>后来听同事说 sersync 这么个工具可以提高同步的性能，也解决了同步大文件时出现异常的问题，所以就尝试了一下。sersync是国内的一个开发者开源出来的，使用c++编写，采用多线程的方式进行同步，失败后还有重传机制，对临时文件过滤，自带crontab定时同步功能。网上看到有人说性能还不错，说一下我的观点：</p><blockquote><p>国产开源，文档不是很全，在2011年之后就没更新了（googlecode都要快关闭了，其实可以转交其他人维护），网上关于它的使用和讨论都止于10年了<br>采用xml配置文件的方式，可读性比较好，但是有些原生的有些功能没有实现就没法使用了<br>无法实现多目录同步，只能通过多个配置文件启动多个进程<br>文件排除功能太弱。这个要看需求，不是每个人都需要排除子目录。而对于我的环境中，这个功能很重要，而且排除的规则较多<br>虽然提供插件的功能，但很鸡肋，因为软件本身没有持续更新，也没有看到贡献有其它插件出现（可能是我知识面不够，还用不到里面的refreshCDN plugin）。</p></blockquote><h3 id="lsyncd"><a href="#lsyncd" class="headerlink" title="lsyncd"></a>lsyncd</h3><p>废话说这么多，本文就是介绍它了。有些博客说lsyncd是谷歌开源的，实际不是了，只是托管在了googlecode上而已，幸运的是已经迁移到github了：  <a href="https://github.com/826167518/lsyncd" target="_blank" rel="noopener">[https://github.com/826167518/lsyncd]</a></p><p>Lysncd 实际上是lua语言封装了 inotify 和 rsync 工具，采用了 Linux 内核（2.6.13 及以后）里的 inotify 触发机制，然后通过rsync去差异同步，达到实时的效果。我认为它最令人称道的特性是，完美解决了 inotify + rsync海量文件同步带来的文件频繁发送文件列表的问题 —— 通过时间延迟或累计触发事件次数实现。另外，它的配置方式很简单，lua本身就是一种配置语言，可读性非常强。lsyncd也有多种工作模式可以选择，本地目录cp，本地目录rsync，远程目录rsyncssh。</p><p>实现简单高效的本地目录同步备份（网络存储挂载也当作本地目录），一个命令搞定。</p><h2 id="使用-lsyncd-本地目录实时备份"><a href="#使用-lsyncd-本地目录实时备份" class="headerlink" title="使用 lsyncd 本地目录实时备份"></a>使用 lsyncd 本地目录实时备份</h2><p>这一节实现的功能是，本地目录source实时同步到另一个目录target，而在source下有大量的文件，并且有部分目录和临时文件不需要同步。</p><h3 id="安装lsyncd"><a href="#安装lsyncd" class="headerlink" title="安装lsyncd"></a>安装lsyncd</h3><p>安装lsyncd极为简单，已经收录在ubuntu的官方镜像源里，直接通过apt-get install lsyncd就可以。<br>在Redhat系（我的环境是CentOS 6.2 x86_64 ），可以手动去下载 lsyncd-2.1.5-6.fc21.x86_64.rpm，但首先你得安装两个依赖yum install lua lua-devel。也可以通过在线安装，需要epel-release扩展包：</p><pre><code># rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm# yum install lsyncd</code></pre><p>源码编译安装</p><p>从源码编译安装可以使用最新版的lsyncd程序，但必须要相应的依赖库文件和编译工具：  </p><pre><code>yum install lua lua-devel asciidoc cmake。</code></pre><p>从 googlecode lsyncd 上下载的lsyncd-2.1.5.tar.gz，直接./configure、make &amp;&amp; make install就可以了。</p><p>从github上下载<a href="https://github.com/axkibe/lsyncd/archive/master.zip" target="_blank" rel="noopener">lsyncd-master.zip</a> 的2.1.5版本使用的是 cmake 编译工具，无法./configure：</p><blockquote><p>uzip lsyncd-master.zip<br>cd lsyncd-master<br>cmake -DCMAKE_INSTALL_PREFIX=/usr/local/lsyncd-2.1.5<br>make &amp;&amp; make install  </p></blockquote><p>我这个版本编译时有个小bug，如果按照INSTALL在build目录中make，会提示：</p><blockquote><p>[100%] Generating doc/lsyncd.1<br>Updating the manpage<br>a2x: failed: source file not found: doc/lsyncd.1.txt<br>make[2]: <strong><em> [doc/lsyncd.1] Error 1<br>make[1]: </em></strong> [CMakeFiles/manpage.dir/all] Error 2<br>make: *** [all] Error 2  </p></blockquote><p>解决办法是要么直接在解压目录下cmake，不要mkdir build，要么在CMakeList.txt中搜索doc字符串，在前面加上${PROJECT_SOURCE_DIR}。</p><h3 id="lsyncd-conf"><a href="#lsyncd-conf" class="headerlink" title="lsyncd.conf"></a>lsyncd.conf</h3><p>下面都是在编译安装的情况下操作。</p><h4 id="lsyncd同步配置"><a href="#lsyncd同步配置" class="headerlink" title="lsyncd同步配置"></a>lsyncd同步配置</h4><pre><code>cd /usr/local/lsyncd-2.1.5mkdir etc varvim etc/lsyncd.confsettings {      logfile      =&quot;/usr/local/lsyncd-2.1.5/var/  lsyncd.log&quot;,      statusFile   =&quot;/usr/local/lsyncd-2.1.5/var/  lsyncd.status&quot;,      inotifyMode  = &quot;CloseWrite&quot;,      maxProcesses = 7,      -- nodaemon =true,      }  sync {     default.rsync,     source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest&quot;,     -- excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,     rsync     = {          binary    = &quot;/usr/bin/rsync&quot;,          archive   = true,          compress  = true,          verbose   = true          }      }  </code></pre><p>到这启动 lsycnd 就可以完成实时同步了，默认的许多参数可以满足绝大部分需求，非常简单。</p><h4 id="lsyncd-conf配置选项说明"><a href="#lsyncd-conf配置选项说明" class="headerlink" title="lsyncd.conf配置选项说明"></a>lsyncd.conf配置选项说明</h4><p>settings</p><p>里面是全局设置，–开头表示注释，下面是几个常用选项说明：</p><blockquote><p>logfile 定义日志文件<br>stausFile 定义状态文件<br>nodaemon=true 表示不启用守护模式，默认<br>statusInterval 将lsyncd的状态写入上面的statusFile的间隔，默认10秒<br>inotifyMode 指定inotify监控的事件，默认是CloseWrite，还可以是Modify或CloseWrite or Modify<br>maxProcesses 同步进程的最大个数。假如同时有20个文件需要同步，而&gt;maxProcesses = 8，则最大能看到有8个rysnc进程<br>maxDelays 累计到多少所监控的事件激活一次同步，即使后面的delay延迟时间还未到  </p></blockquote><p>sync</p><p>里面是定义同步参数，可以继续使用maxDelays来重写settings的全局变量。一般第一个参数指定lsyncd以什么模式运行：rsync、rsyncssh、direct三种模式：</p><blockquote><blockquote><p>default.rsync ：本地目录间同步，使用rsync，也可以达到使用ssh形式的远程rsync效果，或daemon方式连接远程rsyncd进程；<br>default.direct ：本地目录间同步，使用cp、rm等命令完成差异文件备份；<br>default.rsyncssh ：同步到远程主机目录，rsync的ssh模式，需要使用key来认证  </p></blockquote></blockquote><blockquote><p>source 同步的源目录，使用绝对路径。  </p><blockquote><p>target 定义目的地址.对应不同的模式有几种写法：<br>/tmp/dest ：本地目录同步，可用于direct和rsync模式<br>172.29.88.223:/tmp/dest ：同步到远程服务器目录，可用于rsync和rsyncssh模式，拼接的命令类似于/usr/bin/rsync -ltsd –delete –include-from=- –exclude=* SOURCE TARGET，剩下的就是rsync的内容了，比如指定username，免密码同步<br>172.29.88.223::module ：同步到远程服务器目录，用于rsync模式</p></blockquote><p>三种模式的示例会在后面给出。<br>init 这是一个优化选项，当init = false，只同步进程启动以后发生改动事件的文件，原有的目录即使有差异也不会同步。默认是true<br>delay 累计事件，等待rsync同步延时时间，默认15秒（最大累计到1000个不可合并的事件）。也就是15s内监控目录下发生的改动，会累积到一次rsync同步，避免过于频繁的同步。（可合并的意思是，15s内两次修改了同一文件，最后只同步最新的文件）<br>excludeFrom 排除选项，后面指定排除的列表文件，如excludeFrom = “/etc/lsyncd.exclude”，如果是简单的排除，可以使用exclude = LIST。  </p><blockquote><p>这里的排除规则写法与原生rsync有点不同，更为简单：<br>监控路径里的任何部分匹配到一个文本，都会被排除，例如/bin/foo/bar可以匹配规则foo<br>如果规则以斜线/开头，则从头开始要匹配全部<br>如果规则以/结尾，则要匹配监控路径的末尾<br>?匹配任何字符，但不包括/<br>*匹配0或多个字符，但不包括/<br>**匹配0或多个字符，可以是/<br>delete 为了保持target与souce完全同步，Lsyncd默认会delete = true来允许同步删除。它除了false，还有startup、running值。</p></blockquote></blockquote><p>rsync<br>（提示一下，delete和exclude本来都是rsync的选项，上面是配置在sync中的，我想这样做的原因是为了减少rsync的开销）</p><blockquote><p>bwlimit 限速，单位kb/s，与rsync相同（这么重要的选项在文档里竟然没有标出）<br>compress 压缩传输默认为true。在带宽与cpu负载之间权衡，本地目录同步可以考虑把它设为false<br>perms 默认保留文件权限。<br>其它rsync的选项  </p></blockquote><p>其它还有rsyncssh模式独有的配置项，如host、targetdir、rsync_path、password_file，见后文示例。rsyncOps={“-avz”,”–delete”}这样的写法在2.1.*版本已经不支持。</p><p>lsyncd.conf可以有多个sync，各自的source，各自的target，各自的模式，互不影响。</p><h3 id="启动lsyncd"><a href="#启动lsyncd" class="headerlink" title="启动lsyncd"></a>启动lsyncd</h3><p>使用命令加载配置文件，启动守护进程，自动同步目录操作。</p><pre><code>lsyncd -log Exec /usr/local/lsyncd-2.1.5/etc/lsyncd.conf</code></pre><h3 id="lsyncd-conf其它模式示例"><a href="#lsyncd-conf其它模式示例" class="headerlink" title="lsyncd.conf其它模式示例"></a>lsyncd.conf其它模式示例</h3><p>以下配置本人都已经过验证可行，必须根据实际需要裁剪配置：</p><pre><code>settings {logfile =&quot;/usr/local/lsyncd-2.1.5/var/lsyncd.log&quot;,statusFile =&quot;/usr/local/lsyncd-2.1.5/var/lsyncd.status&quot;,inotifyMode = &quot;CloseWrite&quot;,maxProcesses = 8,}-- I. 本地目录同步，direct：cp/rm/mv。 适用：500+万文件，变动不大sync {    default.direct,    source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest&quot;,    delay = 1    maxProcesses = 1    }-- II. 本地目录同步，rsync模式：rsyncsync {    default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;/tmp/dest1&quot;,    excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,    rsync     = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,        compress = true,        bwlimit   = 2000        }     }-- III. 远程目录同步，rsync模式 + rsyncd daemonsync {    default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;syncuser@172.29.88.223::module1&quot;,    delete=&quot;running&quot;,    exclude = { &quot;.*&quot;, &quot;.tmp&quot; },    delay = 30,  init = false,    rsync     = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,       compress = true,       verbose   = true,        password_file = &quot;/etc/rsyncd.d/rsync.pwd&quot;,     _extra    = {&quot;--bwlimit=200&quot;}            }       }-- IV. 远程目录同步，rsync模式 + ssh shellsync {   default.rsync,    source    = &quot;/tmp/src&quot;,    target    = &quot;172.29.88.223:/tmp/dest&quot;,     -- target    = &quot;root@172.29.88.223:/remote/dest&quot;,  -- 上面target，注意如果是普通用户，必须拥有写权限  maxDelays = 5,  delay = 30,  -- init = true,  rsync     = {    binary = &quot;/usr/bin/rsync&quot;,    archive = true,    compress = true,    bwlimit   = 2000    -- rsh = &quot;/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no&quot;    -- 如果要指定其它端口，请用上面的rsh    }  } -- V. 远程目录同步，rsync模式 + rsyncssh，效果与上面相同sync {    default.rsyncssh,    source    = &quot;/tmp/src2&quot;,    host      = &quot;172.29.88.223&quot;,    targetdir = &quot;/remote/dir&quot;,    excludeFrom = &quot;/etc/rsyncd.d/rsync_exclude.lst&quot;,    -- maxDelays = 5,    delay = 0,    -- init = false,    rsync    = {        binary = &quot;/usr/bin/rsync&quot;,        archive = true,        compress = true,         verbose   = true,      _extra = {&quot;--bwlimit=2000&quot;},        },    ssh      = {        port  =  1234        }    }</code></pre><p>上面的内容几乎涵盖了所有同步的模式，其中第III个要求像rsync一样配置rsyncd服务端，见本文开头。第IV、V配置ssh方式同步，达到的效果相同，但实际同步时你会发现每次同步都会提示输入ssh的密码，可以通过以下方法解决：</p><p>在远端被同步的服务器上开启ssh无密码登录，请注意用户身份：</p><pre><code>user$ ssh-keygen -t rsa一路回车...user$ cd ~/.sshuser$ cat id_rsa.pub &gt;&gt; authorized_keys</code></pre><p>把id_rsa私钥拷贝到执行lsyncd的机器上</p><pre><code>user$ chmod 600 ~/.ssh/id_rsa测试能否无密码登录user$ ssh user@172.29.88.223</code></pre><h2 id="lsyncd的其它功能"><a href="#lsyncd的其它功能" class="headerlink" title="lsyncd的其它功能"></a>lsyncd的其它功能</h2><p>lsyncd的功能不仅仅是同步，官方手册 <a href="https://axkibe.github.io/lsyncd/" target="_blank" rel="noopener">Lsyncd 2.1.x ‖ Layer 2 Config ‖ Advanced onAction</a> 高级功能提到，还可以监控某个目录下的文件，根据触发的事件自己定义要执行的命令，example是监控某个某个目录，只要是有jpg、gif、png格式的文件参数，就把它们转成pdf，然后同步到另一个目录。正好在我运维的一个项目中有这个需求，现在都是在java代码里转换，还容易出现异常，通过lsyncd可以代替这样的功能。但，门槛在于要会一点点lua语言（根据官方example还是可以写出来）。</p><p>另外偶然想到个问题，同时设置了maxDelays和delay，当监控目录一直没有文件变化了，也会发生同步操作，虽然没有可rsync的文件。</p><p>TO-DO：</p><p>其它同步工具：csync2，clsync，btsync，drdb 。</p><p>lsyncd双向同步：<a href="https://axkibe.github.io/lsyncd/" target="_blank" rel="noopener">GlusterFS</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;几大实时同步工具比较&quot;&gt;&lt;a href=&quot;#几大实时同步工具比较&quot; class=&quot;headerlink&quot; title=&quot;几大实时同步工具比较&quot;&gt;&lt;/a&gt;几大实时同步工具比较&lt;/h2&gt;
+    
+    </summary>
+    
+      <category term="lsync" scheme="http://datura.top/categories/lsync/"/>
+    
+    
+      <category term="lsync" scheme="http://datura.top/tags/lsync/"/>
     
   </entry>
   
   <entry>
     <title>centos 7 部署 gitlab</title>
-    <link href="http://datura.me/2017/09/08/gitlab%E5%AE%89%E8%A3%85/"/>
-    <id>http://datura.me/2017/09/08/gitlab安装/</id>
+    <link href="http://datura.top/2017/09/08/gitlab%E5%AE%89%E8%A3%85/"/>
+    <id>http://datura.top/2017/09/08/gitlab安装/</id>
     <published>2017-09-08T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.113Z</updated>
     
@@ -141,17 +164,17 @@
     
     </summary>
     
-      <category term="git" scheme="http://datura.me/categories/git/"/>
+      <category term="git" scheme="http://datura.top/categories/git/"/>
     
     
-      <category term="git" scheme="http://datura.me/tags/git/"/>
+      <category term="git" scheme="http://datura.top/tags/git/"/>
     
   </entry>
   
   <entry>
     <title>centos 7 部署 open-falcon 0.2.1</title>
-    <link href="http://datura.me/2017/08/31/open-falcon%E5%AE%89%E8%A3%85/"/>
-    <id>http://datura.me/2017/08/31/open-falcon安装/</id>
+    <link href="http://datura.top/2017/08/31/open-falcon%E5%AE%89%E8%A3%85/"/>
+    <id>http://datura.top/2017/08/31/open-falcon安装/</id>
     <published>2017-08-31T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.117Z</updated>
     
@@ -163,17 +186,17 @@
     
     </summary>
     
-      <category term="open-falcon" scheme="http://datura.me/categories/open-falcon/"/>
+      <category term="open-falcon" scheme="http://datura.top/categories/open-falcon/"/>
     
     
-      <category term="open-falcon" scheme="http://datura.me/tags/open-falcon/"/>
+      <category term="open-falcon" scheme="http://datura.top/tags/open-falcon/"/>
     
   </entry>
   
   <entry>
     <title>Python笔记</title>
-    <link href="http://datura.me/2017/07/05/Python(%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B)%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2017/07/05/Python(基础数据类型)详解/</id>
+    <link href="http://datura.top/2017/07/05/Python(%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B)%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2017/07/05/Python(基础数据类型)详解/</id>
     <published>2017-07-05T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.113Z</updated>
     
@@ -185,17 +208,17 @@
     
     </summary>
     
-      <category term="python" scheme="http://datura.me/categories/python/"/>
+      <category term="python" scheme="http://datura.top/categories/python/"/>
     
     
-      <category term="python" scheme="http://datura.me/tags/python/"/>
+      <category term="python" scheme="http://datura.top/tags/python/"/>
     
   </entry>
   
   <entry>
     <title>linux开机启动顺序</title>
-    <link href="http://datura.me/2017/06/28/linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E9%A1%BA%E5%BA%8F/"/>
-    <id>http://datura.me/2017/06/28/linux开机启动顺序/</id>
+    <link href="http://datura.top/2017/06/28/linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E9%A1%BA%E5%BA%8F/"/>
+    <id>http://datura.top/2017/06/28/linux开机启动顺序/</id>
     <published>2017-06-28T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.115Z</updated>
     
@@ -208,17 +231,17 @@
     
     </summary>
     
-      <category term="linux" scheme="http://datura.me/categories/linux/"/>
+      <category term="linux" scheme="http://datura.top/categories/linux/"/>
     
     
-      <category term="linux" scheme="http://datura.me/tags/linux/"/>
+      <category term="linux" scheme="http://datura.top/tags/linux/"/>
     
   </entry>
   
   <entry>
     <title>git使用说明详解</title>
-    <link href="http://datura.me/2017/06/16/git%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/"/>
-    <id>http://datura.me/2017/06/16/git使用说明/</id>
+    <link href="http://datura.top/2017/06/16/git%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/"/>
+    <id>http://datura.top/2017/06/16/git使用说明/</id>
     <published>2017-06-16T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.113Z</updated>
     
@@ -230,17 +253,17 @@
     
     </summary>
     
-      <category term="git" scheme="http://datura.me/categories/git/"/>
+      <category term="git" scheme="http://datura.top/categories/git/"/>
     
     
-      <category term="git" scheme="http://datura.me/tags/git/"/>
+      <category term="git" scheme="http://datura.top/tags/git/"/>
     
   </entry>
   
   <entry>
     <title>用Kibana和logstash快速搭建实时日志查询、收集与分析系统</title>
-    <link href="http://datura.me/2017/03/03/%E7%94%A8Kibana%E5%92%8Clogstash%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E5%AE%9E%E6%97%B6%E6%97%A5%E5%BF%97%E6%9F%A5%E8%AF%A2%E3%80%81%E6%94%B6%E9%9B%86%E4%B8%8E%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/"/>
-    <id>http://datura.me/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/</id>
+    <link href="http://datura.top/2017/03/03/%E7%94%A8Kibana%E5%92%8Clogstash%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E5%AE%9E%E6%97%B6%E6%97%A5%E5%BF%97%E6%9F%A5%E8%AF%A2%E3%80%81%E6%94%B6%E9%9B%86%E4%B8%8E%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/"/>
+    <id>http://datura.top/2017/03/03/用Kibana和logstash快速搭建实时日志查询、收集与分析系统/</id>
     <published>2017-03-03T05:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.118Z</updated>
     
@@ -252,17 +275,17 @@
     
     </summary>
     
-      <category term="elk" scheme="http://datura.me/categories/elk/"/>
+      <category term="elk" scheme="http://datura.top/categories/elk/"/>
     
     
-      <category term="elk" scheme="http://datura.me/tags/elk/"/>
+      <category term="elk" scheme="http://datura.top/tags/elk/"/>
     
   </entry>
   
   <entry>
     <title>tcpdump：理论、自动抓包及业务架构树的生成</title>
-    <link href="http://datura.me/2017/03/02/tcpdump%EF%BC%9A%E7%90%86%E8%AE%BA%E3%80%81%E8%87%AA%E5%8A%A8%E6%8A%93%E5%8C%85%E5%8F%8A%E4%B8%9A%E5%8A%A1%E6%9E%B6%E6%9E%84%E6%A0%91%E7%9A%84%E7%94%9F%E6%88%90/"/>
-    <id>http://datura.me/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/</id>
+    <link href="http://datura.top/2017/03/02/tcpdump%EF%BC%9A%E7%90%86%E8%AE%BA%E3%80%81%E8%87%AA%E5%8A%A8%E6%8A%93%E5%8C%85%E5%8F%8A%E4%B8%9A%E5%8A%A1%E6%9E%B6%E6%9E%84%E6%A0%91%E7%9A%84%E7%94%9F%E6%88%90/"/>
+    <id>http://datura.top/2017/03/02/tcpdump：理论、自动抓包及业务架构树的生成/</id>
     <published>2017-03-02T05:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.117Z</updated>
     
@@ -276,17 +299,17 @@
     
     </summary>
     
-      <category term="linux" scheme="http://datura.me/categories/linux/"/>
+      <category term="linux" scheme="http://datura.top/categories/linux/"/>
     
     
-      <category term="tcpdump" scheme="http://datura.me/tags/tcpdump/"/>
+      <category term="tcpdump" scheme="http://datura.top/tags/tcpdump/"/>
     
   </entry>
   
   <entry>
     <title>Glances</title>
-    <link href="http://datura.me/2017/02/28/Glances/"/>
-    <id>http://datura.me/2017/02/28/Glances/</id>
+    <link href="http://datura.top/2017/02/28/Glances/"/>
+    <id>http://datura.top/2017/02/28/Glances/</id>
     <published>2017-02-28T05:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.112Z</updated>
     
@@ -298,17 +321,17 @@
     
     </summary>
     
-      <category term="Glances" scheme="http://datura.me/categories/Glances/"/>
+      <category term="Glances" scheme="http://datura.top/categories/Glances/"/>
     
     
-      <category term="Glances" scheme="http://datura.me/tags/Glances/"/>
+      <category term="Glances" scheme="http://datura.top/tags/Glances/"/>
     
   </entry>
   
   <entry>
     <title>tsung使用说明</title>
-    <link href="http://datura.me/2017/01/08/tsung%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3/"/>
-    <id>http://datura.me/2017/01/08/tsung说明文档/</id>
+    <link href="http://datura.top/2017/01/08/tsung%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3/"/>
+    <id>http://datura.top/2017/01/08/tsung说明文档/</id>
     <published>2017-01-08T05:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.117Z</updated>
     
@@ -321,17 +344,17 @@
     
     </summary>
     
-      <category term="tsung" scheme="http://datura.me/categories/tsung/"/>
+      <category term="tsung" scheme="http://datura.top/categories/tsung/"/>
     
     
-      <category term="tsung" scheme="http://datura.me/tags/tsung/"/>
+      <category term="tsung" scheme="http://datura.top/tags/tsung/"/>
     
   </entry>
   
   <entry>
     <title>yum仓库搭建之RPM包制作</title>
-    <link href="http://datura.me/2016/11/05/yum%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E4%B9%8BRPM%E5%8C%85%E5%88%B6%E4%BD%9C/"/>
-    <id>http://datura.me/2016/11/05/yum仓库搭建之RPM包制作/</id>
+    <link href="http://datura.top/2016/11/05/yum%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E4%B9%8BRPM%E5%8C%85%E5%88%B6%E4%BD%9C/"/>
+    <id>http://datura.top/2016/11/05/yum仓库搭建之RPM包制作/</id>
     <published>2016-11-05T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.118Z</updated>
     
@@ -343,39 +366,17 @@
     
     </summary>
     
-      <category term="rpm" scheme="http://datura.me/categories/rpm/"/>
+      <category term="rpm" scheme="http://datura.top/categories/rpm/"/>
     
     
-      <category term="rpm" scheme="http://datura.me/tags/rpm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>路由跟踪指令traceroute</title>
-    <link href="http://datura.me/2016/11/03/linux_traceroute_%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2016/11/03/linux_traceroute_命令详解/</id>
-    <published>2016-11-03T04:00:00.000Z</published>
-    <updated>2019-06-18T08:07:01.114Z</updated>
-    
-    <content type="html"><![CDATA[<p>通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的<br><a id="more"></a><br>linux系统中，我们称之为traceroute,在MS Windows中为tracert。 traceroute通过发送小的数据包到目的设备直到其返回，来测量其需要多长时间。一条路径上的每个设备traceroute要测3次。输出结果中包括每次测试的时间(ms)和设备的名称（如有的话）及其IP地址。<br>在大多数情况下，我们会在linux主机系统下，直接执行命令行：traceroute hostname<br>而在Windows系统下是执行tracert的命令： tracert hostname  </p><p>###1.命令格式：</p><pre><code>traceroute[参数][主机]</code></pre><p>###2.命令功能：<br>traceroute指令让你追踪网络数据包的路由途径，预设数据包大小是40Bytes，用户可另行设置。<br>具体参数格式：<br>traceroute [-dFlnrvx][-f&lt;存活数值&gt;][-g&lt;网关&gt;…][-i&lt;网络界面&gt;][-m&lt;存活数值&gt;][-p&lt;通信端口&gt;][-s&lt;来源地址&gt;][-t&lt;服务类型&gt;][-w&lt;超时秒数&gt;][主机名称或IP地址][数据包大小]  </p><p>###3.命令参数：<br>    -d 使用Socket层级的排错功能。<br>    -f 设置第一个检测数据包的存活数值TTL的大小。<br>    -F 设置勿离断位。<br>    -g 设置来源路由网关，最多可设置8个。<br>    -i 使用指定的网络界面送出数据包。<br>    -I 使用ICMP回应取代UDP资料信息。<br>    -m 设置检测数据包的最大存活数值TTL的大小。<br>    -n 直接使用IP地址而非主机名称。<br>    -p 设置UDP传输协议的通信端口。<br>    -r 忽略普通的Routing Table，直接将数据包送到远端主机上。<br>    -s 设置本地主机送出数据包的IP地址。<br>    -t 设置检测数据包的TOS数值。<br>    -v 详细显示指令的执行过程。<br>    -w 设置等待远端主机回报的时间。<br>    -x 开启或关闭数据包的正确性检验。  </p><p>###4.使用实例：<br>实例1：traceroute 用法简单、最常用的用法<br>命令：traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>输出：</p><p>复制代码<br>代码如下:</p><pre><code>[root@localhost ~]# traceroute www.baidu.com  traceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets  1 192.168.74.2 (192.168.74.2) 2.606 ms 2.771 ms 2.950 ms2 211.151.56.57 (211.151.56.57) 0.596 ms 0.598 ms 0.591 ms3 211.151.227.206 (211.151.227.206) 0.546 ms 0.544 ms 0.538 ms4 210.77.139.145 (210.77.139.145) 0.710 ms 0.748 ms 0.801 ms5 202.106.42.101 (202.106.42.101) 6.759 ms 6.945 ms 7.107 ms6 61.148.154.97 (61.148.154.97) 718.908 ms * bt-228-025.bta.net.cn (202.106.228.25) 5.177 ms7 124.65.58.213 (124.65.58.213) 4.343 ms 4.336 ms 4.367 ms8 202.106.35.190 (202.106.35.190) 1.795 ms 61.148.156.138 (61.148.156.138) 1.899 ms 1.951 ms9 * * *30 * * *[root@localhost ~]# 说明：  记录按序列号从1开始，每个纪录就是一跳 ，每跳表示一个网关，我们看到每行有三个时间，单位是 ms，其实就是-q的默认参数。探测数据包向每个网关发送三个数据包后，网关响应后返回的时间；如果您用 traceroute -q 4 www.58.com ，表示向每个网关发送4个数据包。      有时我们traceroute 一台主机时，会看到有一些行是以星号表示的。出现这样的情况，可能是防火墙封掉了ICMP的返回信息，所以我们得不到什么相关的数据包返回数据。有时我们在某一网关处延时比较长，有可能是某台网关比较阻塞，也可能是物理设备本身的原因。当然如果某台DNS出现问题时，不能解析主机名、域名时，也会 有延时长的现象；您可以加-n 参数来避免DNS解析，以IP格式输出数据。如果在局域网中的不同网段之间，我们可以通过traceroute 来排查问题所在，是主机的问题还是网关的问题。如果我们通过远程来访问某台服务器遇到问题时，我们用到traceroute 追踪数据包所经过的网关，提交IDC服务商，也有助于解决问题；但目前看来在国内解决这样的问题是比较困难的，就是我们发现问题所在，IDC服务商也不可能帮助我们解决。</code></pre><p>实例2：跳数设置<br>    命令：traceroute -m 10 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -m 10 www.baidu.comtraceroute to www.baidu.com (61.135.169.105), 10 hops max, 40 byte packets1 192.168.74.2 (192.168.74.2) 1.534 ms 1.775 ms 1.961 ms2 211.151.56.1 (211.151.56.1) 0.508 ms 0.514 ms 0.507 ms3 211.151.227.206 (211.151.227.206) 0.571 ms 0.558 ms 0.550 ms4 210.77.139.145 (210.77.139.145) 0.708 ms 0.729 ms 0.785 ms5 202.106.42.101 (202.106.42.101) 7.978 ms 8.155 ms 8.311 ms6 bt-228-037.bta.net.cn (202.106.228.37) 772.460 ms bt-228-025.bta.net.cn (202.106.228.25) 2.152 ms 61.148.154.97 (61.148.154.97) 772.107 ms7 124.65.58.221 (124.65.58.221) 4.875 ms 61.148.146.29 (61.148.146.29) 2.124 ms 124.65.58.221 (124.65.58.221) 4.854 ms8 123.126.6.198 (123.126.6.198) 2.944 ms 61.148.156.6 (61.148.156.6) 3.505 ms 123.126.6.198 (123.126.6.198) 2.885 ms9 * * *10 * * *[root@localhost ~]#</code></pre><p>实例3：显示IP地址，不查主机名<br>    命令：traceroute -n <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -n www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 5.430 ms 5.636 ms 5.802 ms2 211.151.56.57 0.627 ms 0.625 ms 0.617 ms3 211.151.227.206 0.575 ms 0.584 ms 0.576 ms4 210.77.139.145 0.703 ms 0.754 ms 0.806 ms5 202.106.42.101 23.683 ms 23.869 ms 23.998 ms6 202.106.228.37 247.101 ms * *7 61.148.146.29 5.256 ms 124.65.58.213 4.386 ms 4.373 ms8 202.106.35.190 1.610 ms 61.148.156.138 1.786 ms 61.148.3.34 2.089 ms9 * * *30 * * *[root@localhost ~]# traceroute www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 4.671 ms 4.865 ms 5.055 ms2 211.151.56.57 (211.151.56.57) 0.619 ms 0.618 ms 0.612 ms3 211.151.227.206 (211.151.227.206) 0.620 ms 0.642 ms 0.636 ms4 210.77.139.145 (210.77.139.145) 0.720 ms 0.772 ms 0.816 ms5 202.106.42.101 (202.106.42.101) 7.667 ms 7.910 ms 8.012 ms6 bt-228-025.bta.net.cn (202.106.228.25) 2.965 ms 2.440 ms 61.148.154.97 (61.148.154.97) 431.337 ms7 124.65.58.213 (124.65.58.213) 5.134 ms 5.124 ms 5.044 ms8 202.106.35.190 (202.106.35.190) 1.917 ms 2.052 ms 2.059 ms9 * * *30 * * *[root@localhost ~]# </code></pre><p>实例4：探测包使用的基本UDP端口设置6888<br>    命令：traceroute -p 6888 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -p 6888 www.baidu.comtraceroute to www.baidu.com (220.181.111.147), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 4.927 ms 5.121 ms 5.298 ms2 211.151.56.1 (211.151.56.1) 0.500 ms 0.499 ms 0.509 ms3 211.151.224.90 (211.151.224.90) 0.637 ms 0.631 ms 0.641 ms4 * * *5 220.181.70.98 (220.181.70.98) 5.050 ms 5.313 ms 5.596 ms6 220.181.17.94 (220.181.17.94) 1.665 ms !X * *[root@localhost ~]# </code></pre><p>实例5：把探测包的个数设置为值4<br>    命令：traceroute -q 4 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -q 4 www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 40.633 ms 40.819 ms 41.004 ms 41.188 ms2 211.151.56.57 (211.151.56.57) 0.637 ms 0.633 ms 0.627 ms 0.619 ms3 211.151.227.206 (211.151.227.206) 0.505 ms 0.580 ms 0.571 ms 0.569 ms4 210.77.139.145 (210.77.139.145) 0.753 ms 0.800 ms 0.853 ms 0.904 ms5 202.106.42.101 (202.106.42.101) 7.449 ms 7.543 ms 7.738 ms 7.893 ms6 61.148.154.97 (61.148.154.97) 316.817 ms bt-228-025.bta.net.cn (202.106.228.25) 3.695 ms 3.672 ms *7 124.65.58.213 (124.65.58.213) 3.056 ms 2.993 ms 2.960 ms 61.148.146.29 (61.148.146.29) 2.837 ms8 61.148.3.34 (61.148.3.34) 2.179 ms 2.295 ms 2.442 ms 202.106.35.190 (202.106.35.190) 7.136 ms9 * * * *30 * * * *[root@localhost ~]# </code></pre><p>实例6：绕过正常的路由表，直接发送到网络相连的主机<br>    命令：traceroute -r <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -r www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packetsconnect: 网络不可达[root@localhost ~]# </code></pre><p>实例7：把对外发探测包的等待响应时间设置为3秒<br>    命令：traceroute -w 3 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -w 3 www.baidu.comtraceroute to www.baidu.com (61.135.169.105), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 2.306 ms 2.469 ms 2.650 ms2 211.151.56.1 (211.151.56.1) 0.621 ms 0.613 ms 0.603 ms3 211.151.227.206 (211.151.227.206) 0.557 ms 0.560 ms 0.552 ms4 210.77.139.145 (210.77.139.145) 0.708 ms 0.761 ms 0.817 ms5 202.106.42.101 (202.106.42.101) 7.520 ms 7.774 ms 7.902 ms6 bt-228-025.bta.net.cn (202.106.228.25) 2.890 ms 2.369 ms 61.148.154.97 (61.148.154.97) 471.961 ms7 124.65.58.221 (124.65.58.221) 4.490 ms 4.483 ms 4.472 ms8 123.126.6.198 (123.126.6.198) 2.948 ms 61.148.156.6 (61.148.156.6) 7.688 ms 7.756 ms9 * * *30 * * *[root@localhost ~]# </code></pre><p>###Traceroute的工作原理：<br>Traceroute最简单的基本用法是：traceroute hostname<br>Traceroute程序的设计是利用ICMP及IP header的TTL（Time To Live）栏位（field）。首先，traceroute送出一个TTL是1的IP datagram（其实，每次送出的为3个40字节的包，包括源地址，目的地址和包发出的时间标签）到目的地，当路径上的第一个路由器（router）收到这个datagram时，它将TTL减1。此时，TTL变为0了，所以该路由器会将此datagram丢掉，并送回一个「ICMP time exceeded」消息（包括发IP包的源地址，IP包的所有内容及路由器的IP地址），traceroute 收到这个消息后，便知道这个路由器存在于这个路径上，接着traceroute 再送出另一个TTL是2 的datagram，发现第2 个路由器…… traceroute 每次将送出的datagram的TTL 加1来发现另一个路由器，这个重复的动作一直持续到某个datagram 抵达目的地。当datagram到达目的地后，该主机并不会送回ICMP time exceeded消息，因为它已是目的地了，那么traceroute如何得知目的地到达了呢？<br>Traceroute在送出UDP datagrams到目的地时，它所选择送达的port number 是一个一般应用程序都不会用的号码（30000 以上），所以当此UDP datagram 到达目的地后该主机会送回一个「ICMP port unreachable」的消息，而当traceroute 收到这个消息时，便知道目的地已经到达了。所以traceroute 在Server端也是没有所谓的Daemon 程式。<br>Traceroute提取发 ICMP TTL到期消息设备的IP地址并作域名解析。每次 ，Traceroute都打印出一系列数据,包括所经过的路由设备的域名及 IP地址,三个包每次来回所花时间。<br>windows之tracert:<br>格式：  </p><pre><code>tracert [-d] [-h maximum_hops] [-j host-list] [-w timeout] target_name  </code></pre><p>参数说明：  </p><pre><code>tracert [-d] [-h maximum_hops] [-j computer-list] [-w timeout] target_name  </code></pre><p>该诊断实用程序通过向目的地发送具有不同生存时间 (TL) 的 Internet 控制信息协议 (CMP) 回应报文，以确定至目的地的路由。路径上的每个路由器都要在转发该 ICMP 回应报文之前将其 TTL 值至少减 1，因此 TTL 是有效的跳转计数。当报文的 TTL 值减少到 0 时，路由器向源系统发回 ICMP 超时信息。通过发送 TTL 为 1 的第一个回应报文并且在随后的发送中每次将 TTL 值加 1，直到目标响应或达到最大 TTL 值，Tracert 可以确定路由。通过检查中间路由器发发回的 ICMP 超时 (ime Exceeded) 信息，可以确定路由器。注意，有些路由器“安静”地丢弃生存时间     (TLS) 过期的报文并且对 tracert 无效。  </p><pre><code>参数：  -d 指定不对计算机名解析地址。  -h maximum_hops 指定查找目标的跳转的最大数目。  -jcomputer-list 指定在 computer-list 中松散源路由。  -w timeout 等待由 timeout 对每个应答指定的毫秒数。  target_name 目标计算机的名称。  </code></pre><p>实例：  </p><p>复制代码<br>代码如下:  </p><pre><code>C:\Users\Administrator&gt;tracert www.58.comTracing route to www.58.com [221.187.111.30]over a maximum of 30 hops:1 1 ms 1 ms 1 ms 10.58.156.12 1 ms &lt;1 ms &lt;1 ms 10.10.10.13 1 ms 1 ms 1 ms 211.103.193.1294 2 ms 2 ms 2 ms 10.255.109.1295 1 ms 1 ms 3 ms 124.205.98.2056 2 ms 2 ms 2 ms 124.205.98.2537 2 ms 6 ms 1 ms 202.99.1.1258 5 ms 6 ms 5 ms 118.186.0.1139 207 ms * * 118.186.0.10610 8 ms 6 ms 11 ms 124.238.226.20111 6 ms 7 ms 6 ms 219.148.19.17712 12 ms 12 ms 16 ms 219.148.18.11713 14 ms 17 ms 16 ms 219.148.19.12514 13 ms 13 ms 12 ms 202.97.80.11315 * * * Request timed out.16 12 ms 12 ms 17 ms bj141-147-82.bjtelecom.net [219.141.147.82]17 13 ms 13 ms 12 ms 202.97.48.218 * * * Request timed out.19 14 ms 14 ms 12 ms 221.187.224.8520 15 ms 13 ms 12 ms 221.187.104.221 * * * Request timed out.22 15 ms 17 ms 18 ms 221.187.111.30Trace complete.</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的&lt;br&gt;
-    
-    </summary>
-    
-      <category term="linux" scheme="http://datura.me/categories/linux/"/>
-    
-    
-      <category term="traceroute" scheme="http://datura.me/tags/traceroute/"/>
+      <category term="rpm" scheme="http://datura.top/tags/rpm/"/>
     
   </entry>
   
   <entry>
     <title>路由跟踪指令traceroute</title>
-    <link href="http://datura.me/2016/11/03/linux%20traceroute%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2016/11/03/linux traceroute 命令详解/</id>
+    <link href="http://datura.top/2016/11/03/linux%20traceroute%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2016/11/03/linux traceroute 命令详解/</id>
     <published>2016-11-03T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.114Z</updated>
     
@@ -392,8 +393,8 @@
   
   <entry>
     <title>mtr命令详解</title>
-    <link href="http://datura.me/2016/11/03/mtr%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2016/11/03/mtr命令详解/</id>
+    <link href="http://datura.top/2016/11/03/mtr%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2016/11/03/mtr命令详解/</id>
     <published>2016-11-03T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.116Z</updated>
     
@@ -405,17 +406,39 @@
     
     </summary>
     
-      <category term="mtr" scheme="http://datura.me/categories/mtr/"/>
+      <category term="mtr" scheme="http://datura.top/categories/mtr/"/>
     
     
-      <category term="mtr" scheme="http://datura.me/tags/mtr/"/>
+      <category term="mtr" scheme="http://datura.top/tags/mtr/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>路由跟踪指令traceroute</title>
+    <link href="http://datura.top/2016/11/03/linux_traceroute_%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2016/11/03/linux_traceroute_命令详解/</id>
+    <published>2016-11-03T04:00:00.000Z</published>
+    <updated>2019-06-18T08:07:01.114Z</updated>
+    
+    <content type="html"><![CDATA[<p>通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的<br><a id="more"></a><br>linux系统中，我们称之为traceroute,在MS Windows中为tracert。 traceroute通过发送小的数据包到目的设备直到其返回，来测量其需要多长时间。一条路径上的每个设备traceroute要测3次。输出结果中包括每次测试的时间(ms)和设备的名称（如有的话）及其IP地址。<br>在大多数情况下，我们会在linux主机系统下，直接执行命令行：traceroute hostname<br>而在Windows系统下是执行tracert的命令： tracert hostname  </p><p>###1.命令格式：</p><pre><code>traceroute[参数][主机]</code></pre><p>###2.命令功能：<br>traceroute指令让你追踪网络数据包的路由途径，预设数据包大小是40Bytes，用户可另行设置。<br>具体参数格式：<br>traceroute [-dFlnrvx][-f&lt;存活数值&gt;][-g&lt;网关&gt;…][-i&lt;网络界面&gt;][-m&lt;存活数值&gt;][-p&lt;通信端口&gt;][-s&lt;来源地址&gt;][-t&lt;服务类型&gt;][-w&lt;超时秒数&gt;][主机名称或IP地址][数据包大小]  </p><p>###3.命令参数：<br>    -d 使用Socket层级的排错功能。<br>    -f 设置第一个检测数据包的存活数值TTL的大小。<br>    -F 设置勿离断位。<br>    -g 设置来源路由网关，最多可设置8个。<br>    -i 使用指定的网络界面送出数据包。<br>    -I 使用ICMP回应取代UDP资料信息。<br>    -m 设置检测数据包的最大存活数值TTL的大小。<br>    -n 直接使用IP地址而非主机名称。<br>    -p 设置UDP传输协议的通信端口。<br>    -r 忽略普通的Routing Table，直接将数据包送到远端主机上。<br>    -s 设置本地主机送出数据包的IP地址。<br>    -t 设置检测数据包的TOS数值。<br>    -v 详细显示指令的执行过程。<br>    -w 设置等待远端主机回报的时间。<br>    -x 开启或关闭数据包的正确性检验。  </p><p>###4.使用实例：<br>实例1：traceroute 用法简单、最常用的用法<br>命令：traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>输出：</p><p>复制代码<br>代码如下:</p><pre><code>[root@localhost ~]# traceroute www.baidu.com  traceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets  1 192.168.74.2 (192.168.74.2) 2.606 ms 2.771 ms 2.950 ms2 211.151.56.57 (211.151.56.57) 0.596 ms 0.598 ms 0.591 ms3 211.151.227.206 (211.151.227.206) 0.546 ms 0.544 ms 0.538 ms4 210.77.139.145 (210.77.139.145) 0.710 ms 0.748 ms 0.801 ms5 202.106.42.101 (202.106.42.101) 6.759 ms 6.945 ms 7.107 ms6 61.148.154.97 (61.148.154.97) 718.908 ms * bt-228-025.bta.net.cn (202.106.228.25) 5.177 ms7 124.65.58.213 (124.65.58.213) 4.343 ms 4.336 ms 4.367 ms8 202.106.35.190 (202.106.35.190) 1.795 ms 61.148.156.138 (61.148.156.138) 1.899 ms 1.951 ms9 * * *30 * * *[root@localhost ~]# 说明：  记录按序列号从1开始，每个纪录就是一跳 ，每跳表示一个网关，我们看到每行有三个时间，单位是 ms，其实就是-q的默认参数。探测数据包向每个网关发送三个数据包后，网关响应后返回的时间；如果您用 traceroute -q 4 www.58.com ，表示向每个网关发送4个数据包。      有时我们traceroute 一台主机时，会看到有一些行是以星号表示的。出现这样的情况，可能是防火墙封掉了ICMP的返回信息，所以我们得不到什么相关的数据包返回数据。有时我们在某一网关处延时比较长，有可能是某台网关比较阻塞，也可能是物理设备本身的原因。当然如果某台DNS出现问题时，不能解析主机名、域名时，也会 有延时长的现象；您可以加-n 参数来避免DNS解析，以IP格式输出数据。如果在局域网中的不同网段之间，我们可以通过traceroute 来排查问题所在，是主机的问题还是网关的问题。如果我们通过远程来访问某台服务器遇到问题时，我们用到traceroute 追踪数据包所经过的网关，提交IDC服务商，也有助于解决问题；但目前看来在国内解决这样的问题是比较困难的，就是我们发现问题所在，IDC服务商也不可能帮助我们解决。</code></pre><p>实例2：跳数设置<br>    命令：traceroute -m 10 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -m 10 www.baidu.comtraceroute to www.baidu.com (61.135.169.105), 10 hops max, 40 byte packets1 192.168.74.2 (192.168.74.2) 1.534 ms 1.775 ms 1.961 ms2 211.151.56.1 (211.151.56.1) 0.508 ms 0.514 ms 0.507 ms3 211.151.227.206 (211.151.227.206) 0.571 ms 0.558 ms 0.550 ms4 210.77.139.145 (210.77.139.145) 0.708 ms 0.729 ms 0.785 ms5 202.106.42.101 (202.106.42.101) 7.978 ms 8.155 ms 8.311 ms6 bt-228-037.bta.net.cn (202.106.228.37) 772.460 ms bt-228-025.bta.net.cn (202.106.228.25) 2.152 ms 61.148.154.97 (61.148.154.97) 772.107 ms7 124.65.58.221 (124.65.58.221) 4.875 ms 61.148.146.29 (61.148.146.29) 2.124 ms 124.65.58.221 (124.65.58.221) 4.854 ms8 123.126.6.198 (123.126.6.198) 2.944 ms 61.148.156.6 (61.148.156.6) 3.505 ms 123.126.6.198 (123.126.6.198) 2.885 ms9 * * *10 * * *[root@localhost ~]#</code></pre><p>实例3：显示IP地址，不查主机名<br>    命令：traceroute -n <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -n www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 5.430 ms 5.636 ms 5.802 ms2 211.151.56.57 0.627 ms 0.625 ms 0.617 ms3 211.151.227.206 0.575 ms 0.584 ms 0.576 ms4 210.77.139.145 0.703 ms 0.754 ms 0.806 ms5 202.106.42.101 23.683 ms 23.869 ms 23.998 ms6 202.106.228.37 247.101 ms * *7 61.148.146.29 5.256 ms 124.65.58.213 4.386 ms 4.373 ms8 202.106.35.190 1.610 ms 61.148.156.138 1.786 ms 61.148.3.34 2.089 ms9 * * *30 * * *[root@localhost ~]# traceroute www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 4.671 ms 4.865 ms 5.055 ms2 211.151.56.57 (211.151.56.57) 0.619 ms 0.618 ms 0.612 ms3 211.151.227.206 (211.151.227.206) 0.620 ms 0.642 ms 0.636 ms4 210.77.139.145 (210.77.139.145) 0.720 ms 0.772 ms 0.816 ms5 202.106.42.101 (202.106.42.101) 7.667 ms 7.910 ms 8.012 ms6 bt-228-025.bta.net.cn (202.106.228.25) 2.965 ms 2.440 ms 61.148.154.97 (61.148.154.97) 431.337 ms7 124.65.58.213 (124.65.58.213) 5.134 ms 5.124 ms 5.044 ms8 202.106.35.190 (202.106.35.190) 1.917 ms 2.052 ms 2.059 ms9 * * *30 * * *[root@localhost ~]# </code></pre><p>实例4：探测包使用的基本UDP端口设置6888<br>    命令：traceroute -p 6888 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -p 6888 www.baidu.comtraceroute to www.baidu.com (220.181.111.147), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 4.927 ms 5.121 ms 5.298 ms2 211.151.56.1 (211.151.56.1) 0.500 ms 0.499 ms 0.509 ms3 211.151.224.90 (211.151.224.90) 0.637 ms 0.631 ms 0.641 ms4 * * *5 220.181.70.98 (220.181.70.98) 5.050 ms 5.313 ms 5.596 ms6 220.181.17.94 (220.181.17.94) 1.665 ms !X * *[root@localhost ~]# </code></pre><p>实例5：把探测包的个数设置为值4<br>    命令：traceroute -q 4 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -q 4 www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 40.633 ms 40.819 ms 41.004 ms 41.188 ms2 211.151.56.57 (211.151.56.57) 0.637 ms 0.633 ms 0.627 ms 0.619 ms3 211.151.227.206 (211.151.227.206) 0.505 ms 0.580 ms 0.571 ms 0.569 ms4 210.77.139.145 (210.77.139.145) 0.753 ms 0.800 ms 0.853 ms 0.904 ms5 202.106.42.101 (202.106.42.101) 7.449 ms 7.543 ms 7.738 ms 7.893 ms6 61.148.154.97 (61.148.154.97) 316.817 ms bt-228-025.bta.net.cn (202.106.228.25) 3.695 ms 3.672 ms *7 124.65.58.213 (124.65.58.213) 3.056 ms 2.993 ms 2.960 ms 61.148.146.29 (61.148.146.29) 2.837 ms8 61.148.3.34 (61.148.3.34) 2.179 ms 2.295 ms 2.442 ms 202.106.35.190 (202.106.35.190) 7.136 ms9 * * * *30 * * * *[root@localhost ~]# </code></pre><p>实例6：绕过正常的路由表，直接发送到网络相连的主机<br>    命令：traceroute -r <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -r www.baidu.comtraceroute to www.baidu.com (61.135.169.125), 30 hops max, 40 byte packetsconnect: 网络不可达[root@localhost ~]# </code></pre><p>实例7：把对外发探测包的等待响应时间设置为3秒<br>    命令：traceroute -w 3 <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>    输出：</p><pre><code>复制代码代码如下:[root@localhost ~]# traceroute -w 3 www.baidu.comtraceroute to www.baidu.com (61.135.169.105), 30 hops max, 40 byte packets1 211.151.74.2 (211.151.74.2) 2.306 ms 2.469 ms 2.650 ms2 211.151.56.1 (211.151.56.1) 0.621 ms 0.613 ms 0.603 ms3 211.151.227.206 (211.151.227.206) 0.557 ms 0.560 ms 0.552 ms4 210.77.139.145 (210.77.139.145) 0.708 ms 0.761 ms 0.817 ms5 202.106.42.101 (202.106.42.101) 7.520 ms 7.774 ms 7.902 ms6 bt-228-025.bta.net.cn (202.106.228.25) 2.890 ms 2.369 ms 61.148.154.97 (61.148.154.97) 471.961 ms7 124.65.58.221 (124.65.58.221) 4.490 ms 4.483 ms 4.472 ms8 123.126.6.198 (123.126.6.198) 2.948 ms 61.148.156.6 (61.148.156.6) 7.688 ms 7.756 ms9 * * *30 * * *[root@localhost ~]# </code></pre><p>###Traceroute的工作原理：<br>Traceroute最简单的基本用法是：traceroute hostname<br>Traceroute程序的设计是利用ICMP及IP header的TTL（Time To Live）栏位（field）。首先，traceroute送出一个TTL是1的IP datagram（其实，每次送出的为3个40字节的包，包括源地址，目的地址和包发出的时间标签）到目的地，当路径上的第一个路由器（router）收到这个datagram时，它将TTL减1。此时，TTL变为0了，所以该路由器会将此datagram丢掉，并送回一个「ICMP time exceeded」消息（包括发IP包的源地址，IP包的所有内容及路由器的IP地址），traceroute 收到这个消息后，便知道这个路由器存在于这个路径上，接着traceroute 再送出另一个TTL是2 的datagram，发现第2 个路由器…… traceroute 每次将送出的datagram的TTL 加1来发现另一个路由器，这个重复的动作一直持续到某个datagram 抵达目的地。当datagram到达目的地后，该主机并不会送回ICMP time exceeded消息，因为它已是目的地了，那么traceroute如何得知目的地到达了呢？<br>Traceroute在送出UDP datagrams到目的地时，它所选择送达的port number 是一个一般应用程序都不会用的号码（30000 以上），所以当此UDP datagram 到达目的地后该主机会送回一个「ICMP port unreachable」的消息，而当traceroute 收到这个消息时，便知道目的地已经到达了。所以traceroute 在Server端也是没有所谓的Daemon 程式。<br>Traceroute提取发 ICMP TTL到期消息设备的IP地址并作域名解析。每次 ，Traceroute都打印出一系列数据,包括所经过的路由设备的域名及 IP地址,三个包每次来回所花时间。<br>windows之tracert:<br>格式：  </p><pre><code>tracert [-d] [-h maximum_hops] [-j host-list] [-w timeout] target_name  </code></pre><p>参数说明：  </p><pre><code>tracert [-d] [-h maximum_hops] [-j computer-list] [-w timeout] target_name  </code></pre><p>该诊断实用程序通过向目的地发送具有不同生存时间 (TL) 的 Internet 控制信息协议 (CMP) 回应报文，以确定至目的地的路由。路径上的每个路由器都要在转发该 ICMP 回应报文之前将其 TTL 值至少减 1，因此 TTL 是有效的跳转计数。当报文的 TTL 值减少到 0 时，路由器向源系统发回 ICMP 超时信息。通过发送 TTL 为 1 的第一个回应报文并且在随后的发送中每次将 TTL 值加 1，直到目标响应或达到最大 TTL 值，Tracert 可以确定路由。通过检查中间路由器发发回的 ICMP 超时 (ime Exceeded) 信息，可以确定路由器。注意，有些路由器“安静”地丢弃生存时间     (TLS) 过期的报文并且对 tracert 无效。  </p><pre><code>参数：  -d 指定不对计算机名解析地址。  -h maximum_hops 指定查找目标的跳转的最大数目。  -jcomputer-list 指定在 computer-list 中松散源路由。  -w timeout 等待由 timeout 对每个应答指定的毫秒数。  target_name 目标计算机的名称。  </code></pre><p>实例：  </p><p>复制代码<br>代码如下:  </p><pre><code>C:\Users\Administrator&gt;tracert www.58.comTracing route to www.58.com [221.187.111.30]over a maximum of 30 hops:1 1 ms 1 ms 1 ms 10.58.156.12 1 ms &lt;1 ms &lt;1 ms 10.10.10.13 1 ms 1 ms 1 ms 211.103.193.1294 2 ms 2 ms 2 ms 10.255.109.1295 1 ms 1 ms 3 ms 124.205.98.2056 2 ms 2 ms 2 ms 124.205.98.2537 2 ms 6 ms 1 ms 202.99.1.1258 5 ms 6 ms 5 ms 118.186.0.1139 207 ms * * 118.186.0.10610 8 ms 6 ms 11 ms 124.238.226.20111 6 ms 7 ms 6 ms 219.148.19.17712 12 ms 12 ms 16 ms 219.148.18.11713 14 ms 17 ms 16 ms 219.148.19.12514 13 ms 13 ms 12 ms 202.97.80.11315 * * * Request timed out.16 12 ms 12 ms 17 ms bj141-147-82.bjtelecom.net [219.141.147.82]17 13 ms 13 ms 12 ms 202.97.48.218 * * * Request timed out.19 14 ms 14 ms 12 ms 221.187.224.8520 15 ms 13 ms 12 ms 221.187.104.221 * * * Request timed out.22 15 ms 17 ms 18 ms 221.187.111.30Trace complete.</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的&lt;br&gt;
+    
+    </summary>
+    
+      <category term="linux" scheme="http://datura.top/categories/linux/"/>
+    
+    
+      <category term="traceroute" scheme="http://datura.top/tags/traceroute/"/>
     
   </entry>
   
   <entry>
     <title>tcpdump抓包命令详解</title>
-    <link href="http://datura.me/2016/11/03/tcpdump%E6%8A%93%E5%8C%85%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://datura.me/2016/11/03/tcpdump抓包命令详解/</id>
+    <link href="http://datura.top/2016/11/03/tcpdump%E6%8A%93%E5%8C%85%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://datura.top/2016/11/03/tcpdump抓包命令详解/</id>
     <published>2016-11-03T04:00:00.000Z</published>
     <updated>2019-06-18T08:07:01.117Z</updated>
     
@@ -427,34 +450,10 @@
     
     </summary>
     
-      <category term="linux" scheme="http://datura.me/categories/linux/"/>
+      <category term="linux" scheme="http://datura.top/categories/linux/"/>
     
     
-      <category term="tcpdum" scheme="http://datura.me/tags/tcpdum/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>linux 命令rsync+crontab实现自动同步</title>
-    <link href="http://datura.me/2016/10/05/linux_%E5%91%BD%E4%BB%A4rsync+crontab%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%90%8C%E6%AD%A5/"/>
-    <id>http://datura.me/2016/10/05/linux_命令rsync+crontab实现自动同步/</id>
-    <published>2016-10-05T04:00:00.000Z</published>
-    <updated>2019-06-18T08:07:01.115Z</updated>
-    
-    <content type="html"><![CDATA[<p>linux 命令rsync+crontab实现自动同步,这个技术现在已经用得很广泛了,比起第三方的软件要可靠好使,所以得到系统管理员的广泛应用;在此,我给大伙来分享一下;请指教.</p><p>首先,我们来了解一下这个命令:</p><p>rsync命令格式:rsync [option] 源路径 目标路径;<br><a id="more"></a><br>其中:  </p><p>[option]:  </p><pre><code>a:使用archive模式,等于-rlptgoD,即保持原有的文件权限;z:表示传输时压缩数据;v:显示到屏幕中;e:使用远程shell程序(可以使用rsh或ssh;--delete:精确保存副本,源主机删除的文件,目标主机也会同步删除;--include=PATTERN:不排除符合PATTERN的文件或目录;--exclude=PATTERN:排除所有符合PATTERN的文件或目录;--password-file:指定用于rsync服务器的用户验证密码;</code></pre><p>源路径和目标路径可以使用如下格式:</p><pre><code>rsync://[USER@]Host[:Port]/Path #--rsync服务器路径;[USER@]Host::Path   #--rsync服务器的另一种表示形式;[USER@]Host:Path#--远程路径;LocalPath   #--本地路径;</code></pre><p>知道上述命令的基本格式了吗?</p><p>下面我们来讲安装rsyn命令;</p><pre><code>[root@dbserver ~]#yum list rsync*Loaded plugins: fastestmirror, refresh-packagekit, securityLoading mirror speeds from cached hostfile * rpmforge: mirrors.neusoft.edu.cnInstalled Packagesrsync.i686  3.0.6-9.el6   @anaconda-CentOS-201207051201.i386/6.3[root@dbserver ~]#yum -y install rsync*</code></pre><p>前面是查看rsync RPM包,后面是安装rsync这个命令;</p><p>安装完后,我们便可以来配置rsync服务器与客服端了;</p><p>实例:</p><p>A服务器:192.168.1.213</p><p>B客户端:192.168.1.210</p><p>首先人们配置服务器,look,</p><p>在配置服务器之前要先生成密钥,ssh-keygen -t rsa,生成密钥如下:</p><pre><code>[root@masternagios .ssh]# lsid_rsa  id_rsa.pub[root@masternagios .ssh]#  scp id_rsa_pub root@192.168.1.210:/root/.ssh/authorized_keys</code></pre><p>在客户端也要如下操作:</p><pre><code>[root@masternagios .ssh]# ssh-keygen -t rsa[root@masternagios .ssh]# lsid_rsa  id_rsa.pub  authorized_keys(213的公钥)[root@masternagios.ssh]#scp id_rsa_pub root@192.168.1.213:/root/.ssh/authorized_keys</code></pre><p>这样两台机可以无密码SSH登陆,以便后面我们同步方便;当然,不要上述的操作也能实现;那么如下操作:</p><p>服务端:</p><pre><code>vi /etc/sery.pass  权限:600(chmod 600 /etc/sery.pass)root:123456</code></pre><p>客服端:</p><pre><code>vi /etc/sery_client.pass  权限:600(chmod 600 /etc/sery_client.pass)123456</code></pre><p>生成的这两件文件后面有用处的;</p><p>然后新建配置文件vi /etc/rsyncd.conf,内容如下图示:<br><img src="http://hiphotos.baidu.com/exp/pic/item/d872d695d143ad4b038f881c83025aafa50f060e.jpg" alt=""><br>解析如下:</p><pre><code>uid = root           #root用户访问(我这里用ROOT用户,也可以用其他新建的用户)gid = root           #root组用户访问use chroot = no      #不能使用chrootmax connections = 10  #最大连接数list = yes           #允许列出文件清单pid file = /var/run/rsyncd.pidlock file = /var/run/rsyncd.locklog file = /var/log/rsyncd.loghosts allow  = 192.168.1.2      #只允许这个主机访问</code></pre><p>   [data]                    #发布项(注意这个命名)</p><pre><code>path = /webapps/IDManage         #发布的路径ignore errorsread only = yes            #只读auth users = root                #认证用户为rootsecrets file = /etc/sery.pass    #密码文件</code></pre><p>然后我们来启动:</p><p>[root@masternagios ~]# rsync –daemon –config=/etc/rsyncd.conf</p><pre><code>[root@masternagios ~]# ps -ef |grep rsyncroot     21359     1  0 Aug24 ?        00:00:00 rsync --daemon --     config=/etc/rsyncd.confroot     24018 23885  0 10:38 pts/0    00:00:00 grep rsync[root@masternagios ~]#lsof -i:873COMMAND   PID USER   FD   TYPE  DEVICE SIZE/OFF NODE NAMErsync   21359 root    4u  IPv4 1558266      0t0  TCP *:rsync (LISTEN)rsync   21359 root    5u  IPv6 1558267      0t0  TCP *:rsync (LISTEN)</code></pre><p>然后在客户端测试:</p><pre><code>[root@dbserver ~]# telnet 192.168.1.213 873Trying 192.168.1.213...Connected to 192.168.1.213.Escape character is &apos;^]&apos;.@RSYNCD: 30.0^]telnet&gt; qConnection closed.</code></pre><p>说明网络端口开放,没有问题;通常在这配置时会发现一些问题,比如报错(111)–说明服务器端口未开启,就检查一下rsync服务有没有开启;</p><p>报错(1503)(1536)–说明无 [data] #发布项(注意这个命名),这里命令一定要对应上同步::[data];</p><p>我们再来把服务端rsync加自动启动;</p><pre><code>echo &quot;/usr/bin/rsync --daemon --config=/etc/rsyncd.conf&quot; &gt;&gt;/etc/rc.local</code></pre><p>配置客户端;</p><p>客户端只要安装rsync这个命令便可以实现,所以,我们来测试同步实现;</p><pre><code>[root@dbserver ~]#rsync -aSvH /webapps/IDManage/ root@192.168.1.213::data --password-file=/etc/sery_client.pass</code></pre><p>可以看到:<br><img src="http://hiphotos.baidu.com/exp/pic/item/346bd85c10385343bd094ffd9213b07ec88088ed.jpg" alt=""><br>命令执行成功;说明服务端与客户端都没有问题;</p><p>如何自实rsync客户端自动与rsync服务器端同步呢?这里我们用到计划任务命令:crontab;</p><p>首先,我们来做一个shell脚本,</p><pre><code>[root@dbserver ~]#vi /tmp/rsyncd.sh#!/bin/bashrsync -aSvH /webapps/IDManage/ root@192.168.1.213::data --password-file=/etc/sery_client.passwq!   ##保存退出[root@dbserver ~]#crontab -e*/5 * * * * sh /tmp/rsyncd.sh #第5分钟执行一次同步;wq!   ##保存退出</code></pre><p>看了,到此分享linux 命令rsync+crontab实现自动同步,已经结束;总结一点:rsync命令格式一定要知道:rsync [option] 源路径目标路径,目标路径的格式有几种,大家只要记得一两种便可以了;</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;linux 命令rsync+crontab实现自动同步,这个技术现在已经用得很广泛了,比起第三方的软件要可靠好使,所以得到系统管理员的广泛应用;在此,我给大伙来分享一下;请指教.&lt;/p&gt;
-&lt;p&gt;首先,我们来了解一下这个命令:&lt;/p&gt;
-&lt;p&gt;rsync命令格式:rsync [option] 源路径 目标路径;&lt;br&gt;
-    
-    </summary>
-    
-      <category term="rsync" scheme="http://datura.me/categories/rsync/"/>
-    
-    
-      <category term="rsync" scheme="http://datura.me/tags/rsync/"/>
+      <category term="tcpdum" scheme="http://datura.top/tags/tcpdum/"/>
     
   </entry>
   
