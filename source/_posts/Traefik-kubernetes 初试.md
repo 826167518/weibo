@@ -1,7 +1,7 @@
 
 
 ---
-title: Glances
+title: Traefik-kubernetes 初试
 date: 2019-06-27
 tags: Traefik-kubernetes 初试
 categories: Glances
@@ -43,7 +43,7 @@ Ingress 简单理解就是个规则定义；比如说某个域名对应某个 se
 从上图中可以很清晰的看到，实际上请求进来还是被负载均衡器拦截，比如 nginx，然后 Ingress Controller 通过跟 Ingress 交互得知某个域名对应哪个 service，再通过跟 kubernetes API 交互得知 service 地址等信息；综合以后生成配置文件实时写入负载均衡器，然后负载均衡器 reload 该规则便可实现服务发现，即动态映射
 
 了解了以上内容以后，这也就很好的说明了我为什么喜欢把负载均衡器部署为 Daemon Set；因为无论如何请求首先是被负载均衡器拦截的，所以在每个 node 上都部署一下，同时 hostport 方式监听 80 端口；那么就解决了其他方式部署不确定 负载均衡器在哪的问题，同时访问每个 node 的 80 都能正确解析请求；如果前端再 放个 nginx 就又实现了一层负载均衡
-#### 二、Traefik 使用
+### 二、Traefik 使用
 由于微服务架构以及 Docker 技术和 kubernetes 编排工具最近几年才开始逐渐流行，所以一开始的反向代理服务器比如 nginx、apache 并未提供其支持，毕竟他们也不是先知；所以才会出现 Ingress Controller 这种东西来做 kubernetes 和前端负载均衡器如 nginx 之间做衔接；即 Ingress Controller 的存在就是为了能跟 kubernetes 交互，又能写 nginx 配置，还能 reload 它，这是一种折中方案；而最近开始出现的 traefik 天生就是提供了对 kubernetes 的支持，也就是说 traefik 本身就能跟 kubernetes API 交互，感知后端变化，因此可以得知: 在使用 traefik 时，Ingress Controller 已经无卵用了，所以整体架构如下
 ![](http://www.liuhaihua.cn/wp-content/uploads/2016/12/Rfe67b3.jpg)
 #### 2.1、部署 Traefik
