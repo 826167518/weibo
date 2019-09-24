@@ -1,6 +1,6 @@
 ---
 title: Jira和Confluence迁移简介
-date: 2019-09-17
+date: 2019-09-24
 tags: jira
 categories: jira
 ---
@@ -53,8 +53,8 @@ max_allowed_packet=256M
 innodb_log_file_size=256M
 
 
-sql_mode = NO_AUTO_VALUE_ON_ZERO
-
+#sql_mode = NO_AUTO_VALUE_ON_ZERO
+sql_mode = ""
 
 symbolic-links=0
 
@@ -83,39 +83,24 @@ docker run -d --restart=always --name mysql \
 
 Kubelete方式启动
 ```
-apiVersion: app.k8s.io/v1beta1
-kind: Application
-metadata:
-  name: mysql-jira
-  namespace: production-business-jira
-spec:
-  assemblyPhase: Succeeded
-  componentKinds:
-    - group: apps
-      kind: Deployment
-    - group: ''
-      kind: Service
-  descriptor: {}
-  selector:
-    matchLabels:
-      app.io/name: mysql-jira.production-business-jira
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app.io/name: mysql-jira.production-business-jira
-  name: mysql-jira-mysql
+    app.test.io/name: test-mysql-jira.production-business-jira
+  name: test-mysql-jira-mysql
   namespace: production-business-jira
+  selfLink: >-
+    /apis/extensions/v1beta1/namespaces/production-business-jira/deployments/test-mysql-jira-mysql
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.io/name: mysql-jira.production-business-jira
-      project.io/name: production-business
-      service.io/name: deployment-mysql-jira-mysql
+      app.test.io/name: test-mysql-jira.production-business-jira
+      project.test.io/name: production-business
+      service.test.io/name: deployment-test-mysql-jira-mysql
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -123,11 +108,12 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: deployment-mysql-jira-mysql
-        app.io/name: mysql-jira.production-business-jira
-        project.io/name: production-business
-        service.io/name: deployment-mysql-jira-mysql
+        app: deployment-test-mysql-jira-mysql
+        app.test.io/name: test-mysql-jira.production-business-jira
+        project.test.io/name: production-business
+        service.test.io/name: deployment-test-mysql-jira-mysql
         version: v1
     spec:
       containers:
@@ -147,6 +133,7 @@ spec:
             limits:
               cpu: '4'
               memory: 4Gi
+          terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /var/lib/mysql
@@ -180,10 +167,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    test.io/creator: admin@test.io
   labels:
-    app.io/name: mysql-jira.production-business-jira
-  name: mysql-jira-mysql
+    app.test.io/name: test-mysql-jira.production-business-jira
+  name: test-mysql-jira-mysql
   namespace: production-business-jira
+  ownerReferences:
+    - apiVersion: app.k8s.io/v1beta1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Application
+      name: test-mysql-jira
+  resourceVersion: '2489793'
+  selfLink: /api/v1/namespaces/production-business-jira/services/test-mysql-jira-mysql
+  uid: f8ea4a3c-d507-11e9-a5de-525400ed59d9
 spec:
   ports:
     - name: tcp-3306-3306
@@ -191,13 +189,14 @@ spec:
       protocol: TCP
       targetPort: 3306
   selector:
-    app.io/name: mysql-jira.production-business-jira
-    service.io/name: deployment-mysql-jira-mysql
+    app.test.io/name: test-mysql-jira.production-business-jira
+    service.test.io/name: deployment-test-mysql-jira-mysql
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 10800
   type: ClusterIP
+
 ```
 
 ### 启动Jira
@@ -216,47 +215,24 @@ atlassian-agent.jar是破解包，详情请见https://gitee.com/pengzhile/atlass
 
 Kubelete方式
 ```
-apiVersion: app.k8s.io/v1beta1
-kind: Application
-metadata:
-  annotations:
-  labels:
-  name: jira
-  namespace: production-business-jira
-spec:
-  assemblyPhase: Succeeded
-  componentKinds:
-    - group: apps
-      kind: Deployment
-    - group: ''
-      kind: Service
-  descriptor: {}
-  selector:
-    matchLabels:
-      app.io/name: jira.production-business-jira
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app.io/name: jira.production-business-jira
-  name: jira-atlassian-jira
+    app.test.io/name: test-jira.production-business-jira
+  name: test-jira-atlassian-jira
   namespace: production-business-jira
-  ownerReferences:
-    - apiVersion: app.k8s.io/v1beta1
-      blockOwnerDeletion: true
-      controller: true
-      kind: Application
-      name: jira
+  selfLink: >-
+    /apis/extensions/v1beta1/namespaces/production-business-jira/deployments/test-jira-atlassian-jira
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.io/name: jira.production-business-jira
-      project.io/name: production-business
-      service.io/name: deployment-jira-atlassian-jira
+      app.test.io/name: test-jira.production-business-jira
+      project.test.io/name: production-business
+      service.test.io/name: deployment-test-jira-atlassian-jira
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -266,13 +242,12 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: deployment-jira-atlassian-jira
-        app.io/name: jira.production-business-jira
-        project.io/name: production-business
-        service.io/name: deployment-jira-atlassian-jira
+        app: deployment-test-jira-atlassian-jira
+        app.test.io/name: test-jira.production-business-jira
+        project.test.io/name: production-business
+        service.test.io/name: deployment-test-jira-atlassian-jira
         version: v1
     spec:
-      hostNetwork: true
       containers:
         - env:
             - name: JAVA_OPTS
@@ -284,6 +259,7 @@ spec:
             limits:
               cpu: '8'
               memory: 16Gi
+          terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /var/atlassian/jira
@@ -313,15 +289,11 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.io/name: jira.production-business-jira
-  name: jira-atlassian-jira
+    app.test.io/name: test-jira.production-business-jira
+  name: test-jira-atlassian-jira
   namespace: production-business-jira
-  ownerReferences:
-    - apiVersion: app.k8s.io/v1beta1
-      blockOwnerDeletion: true
-      controller: true
-      kind: Application
-      name: jira
+  selfLink: >-
+    /api/v1/namespaces/production-business-jira/services/test-jira-atlassian-jira
 spec:
   ports:
     - name: tcp-8080-8080
@@ -329,10 +301,11 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app.io/name: jira.production-business-jira
-    service.io/name: deployment-jira-atlassian-jira
+    app.test.io/name: test-jira.production-business-jira
+    service.test.io/name: deployment-test-jira-atlassian-jira
   sessionAffinity: None
   type: ClusterIP
+
 ```
 #### 登录Jira开始对Jira进行初始化
 
@@ -460,8 +433,8 @@ max_allowed_packet=256M
 innodb_log_file_size=256M
 
 
-sql_mode = NO_AUTO_VALUE_ON_ZERO
-
+#sql_mode = NO_AUTO_VALUE_ON_ZERO
+sql_mode = ""
 
 symbolic-links=0
 
@@ -489,41 +462,25 @@ docker run -d --restart=always --name mysql \
 ```
 Kubelete方式启动
 ```
-apiVersion: app.k8s.io/v1beta1
-kind: Application
-metadata:
-  name: mysql-confluence
-  namespace: production-business-confluence
-spec:
-  assemblyPhase: Succeeded
-  componentKinds:
-    - group: apps
-      kind: Deployment
-    - group: ''
-      kind: Service
-  descriptor: {}
-  selector:
-    matchLabels:
-      app.io/name: mysql-confluence.production-business-confluence
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  generation: 8
+  generation: 26
   labels:
-    app.io/name: mysql-confluence.production-business-confluence
-    app.io/uuid: b0353aca-d537-11e9-ab02-5254002bc0d6
-  name: mysql-confluence-mysql-confluence
+    app.test.io/name: test-mysql-confluence.production-business-confluence
+  name: test-mysql-confluence-mysql-confluence
   namespace: production-business-confluence
+  selfLink: >-
+    /apis/extensions/v1beta1/namespaces/production-business-confluence/deployments/test-mysql-confluence-mysql-confluence
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.io/name: mysql-confluence.production-business-confluence
-      project.io/name: production-business
-      service.io/name: deployment-mysql-confluence-mysql-confluence
+      app.test.io/name: test-mysql-confluence.production-business-confluence
+      project.test.io/name: production-business
+      service.test.io/name: deployment-test-mysql-confluence-mysql-confluence
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -533,10 +490,10 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: deployment-mysql-confluence-mysql-confluence
-        app.io/name: mysql-confluence.production-business-confluence
-        project.io/name: production-business
-        service.io/name: deployment-mysql-confluence-mysql-confluence
+        app: deployment-test-mysql-confluence-mysql-confluence
+        app.test.io/name: test-mysql-confluence.production-business-confluence
+        project.test.io/name: production-business
+        service.test.io/name: deployment-test-mysql-confluence-mysql-confluence
         version: v1
     spec:
       containers:
@@ -556,6 +513,7 @@ spec:
             limits:
               cpu: '2'
               memory: 4Gi
+          terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /var/lib/mysql
@@ -565,7 +523,6 @@ spec:
               readOnly: true
               subPath: my.cnf
       dnsPolicy: ClusterFirst
-      hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: slave-2
       restartPolicy: Always
@@ -590,8 +547,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-confluence
+  labels:
+    app.test.io/name: test-mysql-confluence.production-business-confluence
+  name: test-mysql-confluence
   namespace: production-business-confluence
+  selfLink: >-
+    /api/v1/namespaces/production-business-confluence/services/test-mysql-confluence
 spec:
   ports:
     - name: tcp-3306-3306
@@ -599,13 +560,14 @@ spec:
       protocol: TCP
       targetPort: 3306
   selector:
-    app.io/name: mysql-confluence.production-business-confluence
-    service.io/name: deployment-mysql-confluence-mysql-confluence
+    app.test.io/name: test-mysql-confluence.production-business-confluence
+    service.test.io/name: deployment-test-mysql-confluence-mysql-confluence
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 10800
   type: ClusterIP
+
 ```
 
 ### 启动Confluence
@@ -623,39 +585,24 @@ docker.io/atlassian/confluence-server
 
 Kubelete方式启动
 ```
-apiVersion: app.k8s.io/v1beta1
-kind: Application
-metadata:
-  name: confluence
-  namespace: production-business-confluence
-spec:
-  assemblyPhase: Succeeded
-  componentKinds:
-    - group: apps
-      kind: Deployment
-    - group: ''
-      kind: Service
-  descriptor: {}
-  selector:
-    matchLabels:
-      app.io/name: confluence.production-business-confluence
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app.io/name: confluence.production-business-confluence
+    app.test.io/name: confluence.production-business-confluence
   name: confluence-confluence
   namespace: production-business-confluence
+  selfLink: >-
+    /apis/extensions/v1beta1/namespaces/production-business-confluence/deployments/confluence-confluence
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.io/name: confluence.production-business-confluence
-      project.io/name: production-business
-      service.io/name: deployment-confluence-confluence
+      app.test.io/name: confluence.production-business-confluence
+      project.test.io/name: production-business
+      service.test.io/name: deployment-confluence-confluence
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -666,12 +613,11 @@ spec:
       creationTimestamp: null
       labels:
         app: deployment-confluence-confluence
-        app.io/name: confluence.production-business-confluence
-        project.io/name: production-business
-        service.io/name: deployment-confluence-confluence
+        app.test.io/name: confluence.production-business-confluence
+        project.test.io/name: production-business
+        service.test.io/name: deployment-confluence-confluence
         version: v1
     spec:
-      hostNetwork: true
       containers:
         - env:
             - name: JAVA_OPTS
@@ -713,9 +659,11 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.io/name: confluence.production-business-confluence
+    app.test.io/name: confluence.production-business-confluence
   name: confluence-confluence
   namespace: production-business-confluence
+  selfLink: >-
+    /api/v1/namespaces/production-business-confluence/services/confluence-confluence
 spec:
   ports:
     - name: tcp-8090-8090
@@ -723,13 +671,14 @@ spec:
       protocol: TCP
       targetPort: 8090
   selector:
-    app.io/name: confluence.production-business-confluence
-    service.io/name: deployment-confluence-confluence
+    app.test.io/name: confluence.production-business-confluence
+    service.test.io/name: deployment-confluence-confluence
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 10800
   type: ClusterIP
+
 ```
 
 #### 登录Confluence开始对Confluence进行初始化
