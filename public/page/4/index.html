@@ -228,10 +228,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-hexo" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-zabbix2.6安装" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/02/hexo/" class="article-date">
+      <a href="/2016/09/02/zabbix2.6安装/" class="article-date">
       <time datetime="2016-09-02T04:00:00.000Z" itemprop="datePublished">2016-09-02</time>
 </a>
     </div>
@@ -245,7 +245,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/02/hexo/">搭建Hexo</a>
+      <a class="article-title" href="/2016/09/02/zabbix2.6安装/">zabbix2.6安装</a>
     </h1>
   
 
@@ -255,19 +255,29 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <p>1、安装编译npm基础包<br>    rpm -Uvh <a href="http://download-i2.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm" target="_blank" rel="noopener">http://download-i2.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm</a><br>
+              <ol>
+<li>安装lnmp架构<br><code>yum -y install gcc gcc-c++ autoconf httpd php mysql mysql-server php-mysql httpd-manual mod_ssl mod_perl mod_auth_mysql php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-bcmath mysql-connector-odbc mysql-devel libdbi-dbd-mysql net-snmp-devel curl-devel</code></li>
+<li><p>启动服务<br> service mysqld start<br> service httpd start</p>
           
       
-    </p></div>
+    </li></ol></div>
     
     <div class="article-info article-info-index">
       
       
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/zabbix/">zabbix</a>
+    </div>
+
 
       
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zabbix/">zabbix</a></li></ul>
+    </div>
+
       
         <p class="article-more-link">
-          <a href="/2016/09/02/hexo/#more">大航海 >></a>
+          <a href="/2016/09/02/zabbix2.6安装/#more">大航海 >></a>
         </p>
       
       <div class="clearfix"></div>
